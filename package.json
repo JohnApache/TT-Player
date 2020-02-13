@@ -25,13 +25,13 @@
   "scripts": {
     "build:rollup": "rollup -c",
     "build:ts": "tsc --build",
-    "lint": "eslint package/**/src/*.ts --ext .jsx --ext .js --cache --ext .tsx --ext .ts --fix",
+    "lint": "eslint packages/**/src/*.ts --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
     "watch:rollup": "rollup --watch",
     "watch:ts": "tsc --watch"
   },
   "lint-staged": {
-    "**/*.{jsx,js,ts,tsx}": [
-      "npm run lint",
+    "packages/**/src/*.{jsx,js,ts,tsx}": [
+      "eslint packages/**/src/*.ts --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
       "git add"
     ]
   },
