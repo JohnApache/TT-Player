@@ -1,6 +1,6 @@
 {
   "name": "@dking/ttplayer-core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "ttplayer-core",
   "author": "cjw <1468733552@qq.com>",
   "homepage": "https://github.com/JohnApache/TT-Player#readme",
@@ -53,7 +53,7 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "@dking/ttplayer-utils": "^0.0.0",
+    "@dking/ttplayer-utils": "^0.0.1",
     "events": "^3.1.0"
   }
 }

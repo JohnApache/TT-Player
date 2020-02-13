@@ -1,6 +1,6 @@
 {
   "name": "@dking/ttplayer-video",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "ccplayer-video",
   "author": "cjw <1468733552@qq.com>",
   "homepage": "https://github.com/JohnApache/TT-Player#readme",
@@ -51,6 +51,5 @@
     "rollup-plugin-typescript2": "^0.24.3",
     "ts-node": "^8.3.0",
     "typescript": "^3.6.4"
-  },
-  "dependencies": {}
+  }
 }
