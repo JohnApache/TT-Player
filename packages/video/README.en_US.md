@@ -1,4 +1,4 @@
-# 项目名称
+# Project Name
 
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
@@ -20,46 +20,46 @@
 - [English](README.en_US.md)
 - [简体中文](README.md)
 
-> 这是一个中文文档
+> This is an example file with maximal choices selected.
 
-- [安装](#安装)
-- [使用](#使用)
-- [配置](#配置)
-- [注意](#注意)
-- [示例](#示例)
-- [建议](#建议)
+- [Install](#install)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [TIPS](#tips)
+- [Example](#example)
+- [Questions](#questions)
 - [License](#license)
 
-## 安装
+## Install
 ```bash
 $ npm i :packageName --save 
 $ yarn add :packageName 
 ```
 
-## 使用
+## Usage
 
 ```js
-// 使用方式
+// usage ways
 ```
 
-## 配置
+## Configuration
 
 ```js
-// 配置文件
+// config
 ```
 
-## 注意
+## TIPS
 
-> 注意事项
+> Some tips
 
-## 示例
+## Example
 
 ```js
-// 使用示例
+// example
 ```
 
-## 建议
-欢迎创建issue 或者 pr [here](https://github.com/JohnApache/egg-kafka-node/issues).
+## Questions
+Please open an issue [here](https://github.com/JohnApache/hasaki-cli/issues).
 
 ## License
 
