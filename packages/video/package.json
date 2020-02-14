@@ -1,6 +1,6 @@
 {
   "name": "@dking/ttplayer-video",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ccplayer-video",
   "author": "cjw <1468733552@qq.com>",
   "homepage": "https://github.com/JohnApache/TT-Player#readme",
@@ -25,7 +25,5 @@
   "scripts": {},
   "bugs": {
     "url": "https://github.com/JohnApache/TT-Player/issues"
-  },
-  "devDependencies": {},
-  "dependencies": {}
+  }
 }
