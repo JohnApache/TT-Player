@@ -1,5 +1,6 @@
-import { EventEmitter } from 'events';
+// import EventEmitter from 'eventemitter3';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
+import EventEmitter from 'eventemitter3';
 import Options, { OptionsType } from './options';
 
 interface Plugin {
@@ -38,8 +39,16 @@ class TTPlayerCore {
         this.event = new EventEmitter();
         this.options = new Options(options);
         this.root = new DOMUtils(this.options.root);
+    }
 
-        // new Video();
+    async test (): Promise<void> {
+        await new Promise((resolve, reject) => {
+            if (Math.random() > 0.1) {
+                resolve();
+                return;
+            }
+            reject();
+        });
     }
 
     init () {

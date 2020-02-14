@@ -7,7 +7,10 @@ const plugins = [
     ],
 ];
 
-const ignore = [ 'node_modules/**' ];
+const ignore = [
+    'node_modules/**',
+    'packages/*/node_modules/**',
+];
 
 
 module.exports = {

@@ -4,6 +4,10 @@ class TTPlayerVideo {
         console.log('object');
     }
 
+    sayHello () {
+        console.log('hello');
+    }
+
 }
 
 

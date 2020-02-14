@@ -2,9 +2,16 @@
   "name": "root",
   "private": true,
   "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@dking/eslint-config-typescript": "^0.0.5",
+    "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-json": "^4.0.0",
+    "@rollup/plugin-node-resolve": "^7.1.1",
     "@rollup/plugin-replace": "^2.2.1",
+    "@rollup/plugin-typescript": "^3.0.0",
     "@types/node": "^12.7.5",
     "@typescript-eslint/eslint-plugin": "^2.13.0",
     "@typescript-eslint/parser": "^2.13.0",
@@ -16,17 +23,16 @@
     "lerna": "^3.20.2",
     "lint-staged": "^8.1.7",
     "rollup": "^1.21.4",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-typescript2": "^0.24.3",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.5"
   },
   "scripts": {
+    "build:babel": "babel src --out-dir lib",
     "build:rollup": "rollup -c",
     "build:ts": "tsc --build",
     "lint": "eslint packages/**/src/*.ts --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
-    "watch:rollup": "rollup --watch",
+    "watch:rollup": "rollup -c --watch",
     "watch:ts": "tsc --watch"
   },
   "lint-staged": {
@@ -48,5 +54,7 @@
     "trailingComma": "es5",
     "proseWrap": "preserve"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.5.5"
+  }
 }

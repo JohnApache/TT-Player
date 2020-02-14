@@ -1,98 +1,111 @@
 import path from 'path';
-import os from 'os';
-import resolve from 'rollup-plugin-node-resolve';
-import common from 'rollup-plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import common from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
-import { terser } from 'rollup-plugin-terser';
+import babel from 'rollup-plugin-babel';
 import typescript from 'rollup-plugin-typescript2';
 
 
-const cpuNums = os.cpus().length;
+const GenRollupConfig = task => {
+    const {
+        input,
+        output,
+        format,
+        name,
+        packageName,
+        useBabel = false,
+    } = task;
+    return {
+        input  : input,
+        plugins: [
+            typescript({
+                tsconfigOverride: {
+                    compilerOptions: {
+                        module : 'ES2015',
+                        target : 'ES2015',
+                        outDir : path.resolve(__dirname, `packages/${ packageName }/lib`),
+                        rootDir: path.resolve(__dirname, `packages/${ packageName }/src`),
+                    },
+                    include: [ `packages/${ packageName }/src/*.ts` ],
+                },
+            }),
+            resolve({
+                mainFields: [
+                    'browser',
+                    'module',
+                    'main',
+                ],
 
-const DEV_BUILD_CONFIG = {
-    input  : { main: path.resolve(__dirname, './packages/core/src/index.ts') },
-    plugins: [
-        typescript({ tsconfigOverride: { compilerOptions: { module: 'ES2015' }}}),
-        resolve({
-            mainFields: [
-                'module',
-                'main',
-            ],
-            browser: false, // 适配需要加载browser 模块的包
-        }),
-        json(),
-        common({
-            include   : 'node_modules/**', // 包括
-            exclude   : [],  // 排除
-            extensions: [
-                '.js',
-                '.ts',
-            ],
-        }),
-        replace({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
-    ],
-    output: {
-        dir           : path.resolve(__dirname, 'dist'),
-        format        : 'umd',
-        name          : 'rollupTest',
-        entryFileNames: '[name]-[format].js',
-        chunkFileNames: '[name]-[format].js',
-        compact       : false,
-        banner        : '/* Created By @dking/hasaki-cli */',
-        footer        : '/* hasaki-cli git: https://github.com/JohnApache/hasaki-cli */',
-        extend        : false,
-        sourcemap     : false,
-    },
-    treeshake: { moduleSideEffects: true },
+                // customResolveOptions: { moduleDirectory: 'node_modules' },
+                browser: true, // 适配需要加载browser 模块的包
+            }),
+            json(),
+            useBabel && babel({
+                runtimeHelpers: true,
+                extensions    : [
+                    '.js',
+                    '.ts',
+                ],
+            }),
+            common({
+                include: [
+                    './node_modules/**',
+                    `./packages/${ packageName }/node_modules/**`,
+                ], // 包括
+                exclude   : [],  // 排除
+                extensions: [
+                    '.js',
+                    '.ts',
+                ],
+            }),
+            replace({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
+        ],
+        output: {
+            file     : output,
+            format   : format,
+            name     : name,
+            compact  : false,
+            banner   : '/* Created By @dking/hasaki-cli */',
+            footer   : '/* hasaki-cli git: https://github.com/JohnApache/hasaki-cli */',
+            extend   : false,
+            sourcemap: false,
+        },
+        treeshake: { moduleSideEffects: true },
+    };
 };
 
-const PROD_BUILD_TASK = {
-    input  : { main: path.resolve(__dirname, './src/index.ts') },
-    plugins: [
-        typescript({ tsconfigOverride: { compilerOptions: { module: 'ES2015' }}}),
-        resolve({
-            mainFields: [
-                'module',
-                'main',
-            ],
-            browser: false, // 适配需要加载browser 模块的包
-        }),
-        json(),
-        common({
-            include   : 'node_modules/**', // 包括
-            exclude   : [],  // 排除
-            extensions: [
-                '.js',
-                '.ts',
-            ],
-        }),
-        replace({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }),
-        terser({
-            output    : { comments: false },
-            include   : [ /^.+\.js$/ ],
-            exclude   : [ 'node_moudles/**' ],
-            numWorkers: cpuNums,
-            sourcemap : false,
-        }),
-    ],
-    output: {
-        dir           : path.resolve(__dirname, 'dist'),
-        format        : 'umd',
-        name          : 'rollupTest',
-        entryFileNames: '[name]-[format].min.js',
-        chunkFileNames: '[name]-[format].min..js',
-        compact       : false,
-        banner        : '/* Created By @dking/hasaki-cli */',
-        footer        : '/* hasaki-cli git: https://github.com/JohnApache/hasaki-cli */',
-        extend        : false,
-        sourcemap     : false,
-    },
-    treeshake: { moduleSideEffects: true },
-};
+const USE_BABEL = true;
 
-export default [
-    DEV_BUILD_CONFIG,
-
-    // PROD_BUILD_TASK,
+const Packages = [
+    'utils',
+    'core',
+    'video',
 ];
+
+const PascalCase = str => {
+    const regex = /-(\w)/g;
+    const newStr = str.replace(regex, (match, group1) => group1.toUpperCase());
+    return newStr.charAt(0).toUpperCase() + newStr.slice(1);
+};
+
+const GenTask = (packageName, isEsm) => ({
+    packageName: packageName,
+    input      : path.resolve(__dirname, `packages/${ packageName }/src/index.ts`),
+    output     : path.resolve(__dirname, `packages/${ packageName }/lib/index${ isEsm ? '.esm' : '' }.js`),
+    name       : `TTPlayer${ PascalCase(packageName) }`,
+    format     : isEsm ? 'es' : 'umd',
+    useBabel   : USE_BABEL && !isEsm,
+});
+
+const BuildTasks = Packages.reduce((prev, cur) => {
+    const esmTask = GenTask(cur, true);
+    const umdTask = GenTask(cur, false);
+
+    prev.push(GenRollupConfig(esmTask));
+    prev.push(GenRollupConfig(umdTask));
+    return prev;
+}, []);
+
+
+export default BuildTasks;
