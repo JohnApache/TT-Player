@@ -497,7 +497,7 @@ class Options {
             this.width = `${this.width}px`;
         }
         Object.keys(options).forEach(item => {
-            if (item === 'width' || item === 'height' || item === 'root')
+            if (typeof this[item] !== 'undefined')
                 return;
             this[item] = options[item];
         });

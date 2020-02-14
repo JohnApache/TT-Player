@@ -1,0 +1,13 @@
+export declare const VideoBeforeInit = "VideoBeforeInit";
+export declare const VideoIdle = "VideoIdle";
+export declare const VideoInitialized = "VideoInitialized";
+export declare const VideoPreparing = "VideoPreparing";
+export declare const VideoPrepared = "VideoPrepared";
+export declare const VideoStarted = "VideoStarted";
+export declare const VideoStopped = "VideoStopped";
+export declare const VideoPaused = "VideoPaused";
+export declare const VideoPlaybackCompleted = "VideoPlaybackCompleted";
+export declare const VideoEnd = "VideoEnd";
+export declare const VideoError = "VideoError";
+export declare const VideoAutoPlayStarted = "VideoAutoPlayStarted";
+export declare const VideoAutoPlayPrevented = "VideoAutoPlayPrevented";

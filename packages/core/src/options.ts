@@ -34,7 +34,7 @@ class Options {
         }
 
         Object.keys(options).forEach(item => {
-            if (item === 'width' || item === 'height' || item === 'root') return;
+            if (typeof this[item] !== 'undefined') return;
             this[item] = options[item];
         });
     }

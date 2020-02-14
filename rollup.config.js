@@ -14,7 +14,7 @@ const GenRollupConfig = task => {
         format,
         name,
         packageName,
-        useBabel = false,
+        useBabel,
     } = task;
     return {
         input  : input,

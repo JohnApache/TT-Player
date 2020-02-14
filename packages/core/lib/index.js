@@ -3614,7 +3614,7 @@
     }
 
     forEach$2(_context = keys$3(options)).call(_context, function (item) {
-      if (item === 'width' || item === 'height' || item === 'root') return;
+      if (typeof _this[item] !== 'undefined') return;
       _this[item] = options[item];
     });
   };

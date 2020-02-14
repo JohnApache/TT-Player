@@ -25,5 +25,10 @@
   "scripts": {},
   "bugs": {
     "url": "https://github.com/JohnApache/TT-Player/issues"
+  },
+  "dependencies": {
+    "@dking/ttplayer-core": "^0.0.2",
+    "@dking/ttplayer-utils": "^0.0.2",
+    "eventemitter3": "^4.0.0"
   }
 }
