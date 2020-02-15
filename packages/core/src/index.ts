@@ -16,39 +16,40 @@ interface InstalledPluginsMap {
     [key: string]: boolean;
 }
 
-interface PluginCtor {
+interface PluginCtor{
     pluginName: string;
     new (player: TTPlayerCore): any;
 }
 
 class TTPlayerCore {
 
-    static pluginsCtor: PluginCtor[] = [];
-    static installedPluginsMap: InstalledPluginsMap = {}
-
     private plugins: Plugin[] = [];
     private pluginsMap: PluginsMap = {};
 
+    static pluginsCtor: PluginCtor[] = [];
+    static installedPluginsMap: InstalledPluginsMap = {}
+
     public event: EventEmitter;
     public options: Options;
-    public pluginsCtor: PluginCtor[];
     public root: DOMUtils<HTMLElement>;
+    public pluginsCtor: PluginCtor[] = [];
 
     constructor (options: Partial<OptionsType>) {
-        this.pluginsCtor = TTPlayerCore.pluginsCtor;
         this.event = new EventEmitter();
         this.options = new Options(options);
         this.root = new DOMUtils(this.options.root);
+        this.pluginsCtor = TTPlayerCore.pluginsCtor;
     }
 
-    async test (): Promise<void> {
-        await new Promise((resolve, reject) => {
-            if (Math.random() > 0.1) {
-                resolve();
-                return;
-            }
-            reject();
-        });
+    static use (ctor: PluginCtor) {
+        const pluginName = ctor.pluginName;
+        if (!pluginName) throw new Error(`plugin's name cannot be empty`);
+
+        const installed = this.installedPluginsMap[ctor.pluginName];
+        if (installed) return this;
+
+        this.pluginsCtor.push(ctor);
+        return this;
     }
 
     init () {
@@ -94,14 +95,6 @@ class TTPlayerCore {
     }
 
     private unInstallPlugin (): TTPlayerCore {
-        return this;
-    }
-
-    static use (ctor: PluginCtor) {
-        const installed = this.installedPluginsMap[ctor.pluginName];
-        if (installed) return this;
-
-        this.pluginsCtor.push(ctor);
         return this;
     }
 
