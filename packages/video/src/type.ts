@@ -43,3 +43,8 @@ export interface SpecialVideoAttributes {
 export interface VideoOptionsType extends Partial<VideoAttributes> {
     [key: string]: any;
 }
+
+
+export interface VideoActionsType {
+    [key: string]: string;
+}

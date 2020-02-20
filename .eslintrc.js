@@ -26,6 +26,8 @@ module.exports =  {
     extends:  [
       '@dking/typescript'
     ],
-    rules:  {},
+    rules:  {
+      'no-dupe-class-members': 0,
+    },
   };
   

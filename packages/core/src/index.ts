@@ -1,30 +1,22 @@
-// import EventEmitter from 'eventemitter3';
-import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 import EventEmitter from 'eventemitter3';
 import Options, { OptionsType } from './options';
+import PlayerHooks from './hooks';
+import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 
-interface Plugin {
+interface PluginCtor{
     pluginName: string;
-    [key: string]: any;
-}
-
-interface PluginsMap {
-    [key: string]: Plugin;
+    new (player: TTPlayerCore): Plugin;
 }
 
 interface InstalledPluginsMap {
     [key: string]: boolean;
 }
 
-interface PluginCtor{
-    pluginName: string;
-    new (player: TTPlayerCore): any;
+interface PluginsMap {
+    [key: string]: Plugin;
 }
 
 class TTPlayerCore {
-
-    private plugins: Plugin[] = [];
-    private pluginsMap: PluginsMap = {};
 
     static pluginsCtor: PluginCtor[] = [];
     static installedPluginsMap: InstalledPluginsMap = {}
@@ -33,6 +25,9 @@ class TTPlayerCore {
     public options: Options;
     public root: DOMUtils<HTMLElement>;
     public pluginsCtor: PluginCtor[] = [];
+
+    private plugins: Plugin[] = [];
+    private pluginsMap: PluginsMap = {};
 
     constructor (options: Partial<OptionsType>) {
         this.event = new EventEmitter();
@@ -53,20 +48,30 @@ class TTPlayerCore {
     }
 
     init () {
+        this.event.emit(PlayerHooks.BeforeInit);
         this.installPlugins()
             .render()
             .ready();
+        return this;
+    }
+
+    destroy () {
+        this.event.emit(PlayerHooks.BeforeDestroy);
+        this.plugins.forEach(plug => plug.destroy());
+        this.event.emit(PlayerHooks.Destroyed);
+        return this;
     }
 
     private ready () {
-        this.event.emit('ready');
+        this.event.emit(PlayerHooks.Ready);
         return this;
     }
 
     private render () {
+        this.event.emit(PlayerHooks.BeforeRender);
         this.renderContainer()
             .renderPlugins();
-
+        this.event.emit(PlayerHooks.Rendered);
         return this;
     }
 
@@ -94,9 +99,45 @@ class TTPlayerCore {
         return this;
     }
 
-    private unInstallPlugin (): TTPlayerCore {
+    private removePlugin (pluginName: string): TTPlayerCore {
+        this.pluginsCtor = this.pluginsCtor.filter(ctor => ctor.pluginName !== pluginName);
+        TTPlayerCore.pluginsCtor = this.pluginsCtor;
+        this.plugins = this.plugins.filter(plug => plug.pluginName !== pluginName);
+
+        const plug = this.pluginsMap[pluginName];
+        plug.destroy();
+        delete this.pluginsMap[pluginName];
         return this;
     }
+
+    private addPlugin (ctor: PluginCtor): TTPlayerCore {
+        if (this.pluginsCtor.some(plug => plug.pluginName === ctor.pluginName)) {
+            const error = new Error('The plug-in already exists.');
+            this.event.emit(PlayerHooks.Error, error);
+            throw error;
+        }
+
+        this.pluginsCtor.push(ctor);
+        TTPlayerCore.pluginsCtor = this.pluginsCtor;
+
+        const plugInstance = new ctor(this);
+        this.plugins.push(plugInstance);
+        this.pluginsMap[plugInstance.pluginName] = plugInstance;
+        plugInstance.init();
+        plugInstance.render();
+        return this;
+    }
+
+}
+
+export abstract class Plugin {
+
+    static pluginName: string;
+
+    abstract pluginName: string;
+    abstract init(): any;
+    abstract render(): any;
+    abstract destroy(): any;
 
 }
 

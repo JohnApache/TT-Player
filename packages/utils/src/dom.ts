@@ -1,10 +1,16 @@
-import bUtils from './browser';
-
-type HTMLElementMap = HTMLElementTagNameMap[keyof HTMLElementTagNameMap];
+import { isUndefined } from 'util';
+import {
+    FindDom, CreateDom, FindAllDoms,
+} from './browser';
+import { isString } from './base';
 
 interface NormalObject {
     [key: string]: any;
 }
+
+type HTMLElementMap = HTMLElementTagNameMap[keyof HTMLElementTagNameMap];
+type CSSStyleKey = keyof CSSStyleDeclaration;
+type ValidCSSStyleKey = Exclude<CSSStyleKey, 'length'| 'parentRule' | number>;
 
 class DOMUtils <K extends HTMLElementMap> {
 
@@ -75,13 +81,27 @@ class DOMUtils <K extends HTMLElementMap> {
         return this;
     }
 
+    getAttribute (key: string): string | null {
+        return this.element.getAttribute(key);
+    }
+
+    prepend (ele: HTMLElement) {
+        this.element.insertBefore(ele, this.element.firstChild);
+        return this;
+    }
+
     prependTo (root: HTMLElement) {
         root.insertBefore(this.element, root.firstChild);
         return this;
     }
 
-    appendChild (element: HTMLElement) {
+    append (element: HTMLElement) {
         this.element.appendChild(element);
+        return this;
+    }
+
+    appendTo (root: HTMLElement) {
+        root.appendChild(this.element);
         return this;
     }
 
@@ -90,7 +110,79 @@ class DOMUtils <K extends HTMLElementMap> {
             return this.element.querySelector(selector);
         }
 
-        return bUtils.findDom(selector);
+        return FindDom(selector);
+    }
+
+    findAllDoms (selector: string): NodeListOf<HTMLElement> | null {
+        if (typeof this.element.querySelectorAll === 'function') {
+            return this.element.querySelectorAll(selector);
+        }
+        return FindAllDoms(selector);
+    }
+
+    remove (): DOMUtils<K>;
+    remove (selector: string): DOMUtils<K>;
+    remove (selector?: string): DOMUtils<K> {
+        if (isString(selector)) {
+            const doms = this.findAllDoms(selector);
+            if (doms) {
+                doms.forEach(dom => {
+                    const parentNode = dom.parentNode;
+                    if (parentNode) {
+                        parentNode.removeChild(dom);
+                    }
+                });
+            }
+            return this;
+        }
+
+        const parentNode = this.element.parentNode;
+        if (parentNode) {
+            parentNode.removeChild(this.element);
+        }
+        return this;
+    }
+
+    html (): string;
+    html (htmlString: string): DOMUtils<K>;
+    html (htmlString?: string): string | DOMUtils<K> {
+        if (isString(htmlString)) {
+            this.element.innerHTML = htmlString;
+            return this;
+        }
+        return this.element.innerHTML;
+    }
+
+    css (key: ValidCSSStyleKey): any;
+    css (styles: NormalObject): DOMUtils<K>;
+    css (key: ValidCSSStyleKey, value: any): DOMUtils<K>;
+    css (key: ValidCSSStyleKey | NormalObject, value?: any): any | DOMUtils<K> {
+        if (isString(key)) {
+            if (isUndefined(value)) {
+                return this.element.style[key];
+            }
+            this.element.style[key] = value;
+            return this;
+        }
+
+        const styles = Object.keys(key) as ValidCSSStyleKey[];
+        styles.forEach(item => {
+            this.element.style[item] = key[item];
+        });
+        return this;
+    }
+
+    attr (key: string): any;
+    attr (key: string, value: any): DOMUtils<K>;
+    attr (key: NormalObject): DOMUtils<K>;
+    attr (key: string | NormalObject, value?: any): DOMUtils<K> | any {
+        if (!isString(key)) {
+            return this.setAttributes(key);
+        }
+        if (isUndefined(value)) {
+            return this.getAttribute(key);
+        }
+        return this.setAttribute(key, value);
     }
 
     getInstance () {
@@ -102,7 +194,7 @@ class DOMUtils <K extends HTMLElementMap> {
     }
 
     static createUtilDom <T extends keyof HTMLElementTagNameMap> (tagName: T): DOMUtils<HTMLElementTagNameMap[T]> {
-        return new DOMUtils(bUtils.createDom(tagName));
+        return new DOMUtils(CreateDom(tagName));
     }
 
 }
