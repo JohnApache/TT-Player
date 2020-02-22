@@ -5,6 +5,8 @@ import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import babel from 'rollup-plugin-babel';
 import typescript from 'rollup-plugin-typescript2';
+import postcss from 'rollup-plugin-postcss';
+import autoprefixer from 'autoprefixer';
 
 
 const GenRollupConfig = task => {
@@ -19,13 +21,29 @@ const GenRollupConfig = task => {
     return {
         input  : input,
         plugins: [
+            postcss({
+                extract : false,
+                modules : false,
+                minimize: false,
+                plugins : [
+                    autoprefixer({
+                        env                 : 'production',
+                        grid                : 'autoplace',
+                        overrideBrowserslist: [ 'last 2 version' ],
+                    }),
+                ],
+            }),
             typescript({
                 tsconfigOverride: {
                     compilerOptions: {
-                        module : 'ES2015',
-                        target : 'ES2015',
-                        outDir : path.resolve(__dirname, `packages/${ packageName }/lib`),
-                        rootDir: path.resolve(__dirname, `packages/${ packageName }/src`),
+                        module: 'ES2015',
+                        target: 'ES2015',
+                        outDir: path.resolve(__dirname, `packages/${ packageName }/lib`),
+
+                        // rootDir: path.resolve(__dirname, `packages/${ packageName }/src`),
+                        rootDirs: [ path.resolve(__dirname, `packages/*/src`) ],
+
+                        paths: null,
                     },
                     include: [ `packages/${ packageName }/src/*.ts` ],
                 },
@@ -81,6 +99,8 @@ const Packages = [
     'utils',
     'core',
     'video',
+    'video-play-button',
+    'ttplayer',
 ];
 
 const PascalCase = str => {
@@ -103,7 +123,11 @@ const BuildTasks = Packages.reduce((prev, cur) => {
     const umdTask = GenTask(cur, false);
 
     prev.push(GenRollupConfig(esmTask));
-    prev.push(GenRollupConfig(umdTask));
+    if (cur === 'ttplayer') {
+        prev.push(GenRollupConfig(umdTask));
+    }
+
+    // prev.push(GenRollupConfig(umdTask));
     return prev;
 }, []);
 
