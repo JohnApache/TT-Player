@@ -106,3 +106,5 @@ dist
 **/yarn.lock
 
 packages/*/lib
+
+packages/*/__features__
