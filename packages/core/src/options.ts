@@ -34,7 +34,7 @@ class Options {
         }
 
         if (typeof this.height === 'number') {
-            this.width = `${ this.width }px`;
+            this.height = `${ this.height }px`;
         }
 
         this.mediaType = options.mediaType || DEFAULT_OPTIONS.mediaType;

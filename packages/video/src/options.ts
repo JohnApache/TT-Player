@@ -31,7 +31,7 @@ class VideoOptions {
     public controls: boolean;
     [key: string]: any;
 
-    constructor (options: VideoOptionsType) {
+    constructor (options: VideoOptionsType = {}) {
 
         this.src = options.src || DEFAULT_OPTIONS.src;
         this.width = options.width || DEFAULT_OPTIONS.width;

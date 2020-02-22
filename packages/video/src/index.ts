@@ -1,11 +1,14 @@
 import EventEmitter from 'eventemitter3';
-import { VideoSource, VideoPreload } from './type';
+import {
+    VideoActionsType, VideoSource, VideoPreload,
+} from './type';
+
 import VideoOptions from './options';
-import VIDEO_EVENTS from './events';
+import { VIDEO_NATIVE_EVENTS } from './events';
 import VideoActions from './actions';
 import { PLUGIN_NAME } from './config';
-import { dUtils as DOMUtils, bUtils } from '@dking/ttplayer-utils';
 import TTPlayerCore, { Plugin } from '@dking/ttplayer-core';
+import { dUtils as DOMUtils, bUtils } from '@dking/ttplayer-utils';
 
 class TTPlayerVideo extends Plugin {
 
@@ -17,7 +20,7 @@ class TTPlayerVideo extends Plugin {
     public video: DOMUtils<HTMLVideoElement>;
     public root: DOMUtils<HTMLElement>;
     public options: VideoOptions
-    public evs: string[] = VIDEO_EVENTS;
+    public evs: string[] = VIDEO_NATIVE_EVENTS;
 
     private ugs: Function[] = [];
     private actUgs: Function[] = [];
@@ -28,19 +31,21 @@ class TTPlayerVideo extends Plugin {
         this.root = this.player.root;
         this.event = this.player.event;
         this.video = DOMUtils.createUtilDom('video');
-        this.options = new VideoOptions(player.options);
+        this.options = new VideoOptions(player.options.video);
     }
 
     init () {
         this.bindEvents()
             .bindActions()
             .initVideoStyle()
-            .initVideoMedia();
+            .initVideoMedia()
+            .render();
         return this;
     }
 
     render () {
         this.root.prepend(this.video.getInstance());
+        return this;
     }
 
     destroy () {
@@ -59,7 +64,11 @@ class TTPlayerVideo extends Plugin {
 
     private initVideoStyle () {
         this.video
-            .addClass('ttplayer--video');
+            .addClass('ttplayer--video')
+            .css({
+                width : '100%',
+                height: '100%',
+            });
         return this;
     }
 
@@ -128,7 +137,10 @@ class TTPlayerVideo extends Plugin {
     }
 
     private spreadVideoNativeEvent (ev: string, data: any) {
-        this.event.emit(`${ PLUGIN_NAME }${ ev.charAt(0).toUpperCase() }${ ev.slice(1) }`, data);
+        this.event.emit(ev, data);
+
+        // this.event.emit(`${ PLUGIN_NAME }${ ev.charAt(0).toUpperCase() }${ ev.slice(1) }`, data);
+        return this;
     }
 
     private bindEvents () {
@@ -146,11 +158,14 @@ class TTPlayerVideo extends Plugin {
 
     private removeEvents () {
         this.ugs.forEach(ug => ug());
+        this.ugs = [];
         return this;
     }
 
     private bindActions () {
-        Object.keys(VideoActions).forEach(actionName => {
+        const VVideoActions: VideoActionsType = VideoActions;
+        Object.keys(VVideoActions).forEach(item => {
+            const actionName = VVideoActions[item];
             const fn = (data: any) => {
                 switch (actionName) {
                     case VideoActions.PlayAction:
@@ -192,6 +207,7 @@ class TTPlayerVideo extends Plugin {
 
     private removeActions () {
         this.actUgs.forEach(ug => ug());
+        this.actUgs = [];
         return this;
     }
 

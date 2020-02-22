@@ -69,8 +69,9 @@ class TTPlayerCore {
 
     private render () {
         this.event.emit(PlayerHooks.BeforeRender);
-        this.renderContainer()
-            .renderPlugins();
+        this.renderPlugins()
+            .renderContainer();
+
         this.event.emit(PlayerHooks.Rendered);
         return this;
     }
@@ -79,14 +80,13 @@ class TTPlayerCore {
         const { width, height } = this.options;
         this.root
             .addClass('ttplayer--container')
-            .setStyles({ width, height })
-            .prependTo(this.options.root);
-
+            .css({ width, height });
         return this;
     }
 
     private renderPlugins () {
         this.plugins.forEach(plug => plug.render && plug.render());
+        return this;
     }
 
     private installPlugins (): TTPlayerCore {

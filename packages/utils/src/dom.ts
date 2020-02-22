@@ -1,8 +1,8 @@
-import { isUndefined } from 'util';
+import { isUndefined, isString } from './base';
 import {
     FindDom, CreateDom, FindAllDoms,
 } from './browser';
-import { isString } from './base';
+
 
 interface NormalObject {
     [key: string]: any;
@@ -183,6 +183,17 @@ class DOMUtils <K extends HTMLElementMap> {
             return this.getAttribute(key);
         }
         return this.setAttribute(key, value);
+    }
+
+    on (eventName: string, fn: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined) {
+        this.element.addEventListener(eventName, fn, options);
+        const offFn = this.off.bind(this, eventName, fn, options);
+        return offFn;
+    }
+
+    off (eventName: string, fn: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined) {
+        this.element.removeEventListener(eventName, fn, options);
+        return this;
     }
 
     getInstance () {

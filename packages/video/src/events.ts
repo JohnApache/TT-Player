@@ -1,4 +1,4 @@
-const VIDEO_EVENTS: string[] = [
+export const VIDEO_NATIVE_EVENTS: string[] = [
     'play',
     'playing',
     'pause',
@@ -15,5 +15,3 @@ const VIDEO_EVENTS: string[] = [
     'loadeddata',
 ];
 
-
-export default VIDEO_EVENTS;

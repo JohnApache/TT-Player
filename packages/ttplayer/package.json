@@ -1,0 +1,34 @@
+{
+  "name": "@dking/ttplayer",
+  "version": "0.0.3",
+  "description": "ttplayer",
+  "author": "cjw <1468733552@qq.com>",
+  "homepage": "https://github.com/JohnApache/TT-Player#readme",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "module": "./lib/index.esm.js",
+  "typings": "./lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnApache/TT-Player.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/JohnApache/TT-Player/issues"
+  },
+  "dependencies": {
+    "@dking/ttplayer-core": "^0.0.3",
+    "@dking/ttplayer-utils": "^0.0.3",
+    "@dking/ttplayer-video": "^0.0.3",
+    "@dking/ttplayer-video-play-button": "^0.0.3"
+  }
+}
