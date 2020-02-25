@@ -1,8 +1,8 @@
 import EventEmitter from 'eventemitter3';
-import { DispatchPauseAction, DispatchPlayAction } from '@dking/ttplayer-video/src/dispatch';
 import pasition from 'pasition';
 import { PLUGIN_NAME, DEFAULT_PASITION_TIME } from './config';
 import PlayButtonOptions from './options';
+import { DispatchAction } from '@dking/ttplayer-video';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 import TTPlayerCore, { Plugin } from '@dking/ttplayer-core';
 
@@ -34,7 +34,9 @@ class VideoPlayButton extends Plugin {
 
     constructor (player: TTPlayerCore) {
         super();
+
         this.player = player;
+
         this.root = this.player.root;
         this.event = this.player.event;
         this.options = new PlayButtonOptions(this.player.options.videoPlayButton);
@@ -99,6 +101,7 @@ class VideoPlayButton extends Plugin {
     }
 
     private handleClick () {
+        const { DispatchPlayAction, DispatchPauseAction } = DispatchAction;
         this.paused ? DispatchPlayAction(this.event) : DispatchPauseAction(this.event);
         return this;
     }

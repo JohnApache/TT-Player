@@ -8,7 +8,6 @@ import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
 
-
 const GenRollupConfig = task => {
     const {
         input,
@@ -40,8 +39,9 @@ const GenRollupConfig = task => {
                         target: 'ES2015',
                         outDir: path.resolve(__dirname, `packages/${ packageName }/lib`),
 
-                        // rootDir: path.resolve(__dirname, `packages/${ packageName }/src`),
-                        rootDirs: [ path.resolve(__dirname, `packages/*/src`) ],
+                        rootDir: path.resolve(__dirname, `packages/${ packageName }/src`),
+
+                        // rootDirs: [ path.resolve(__dirname, `packages/*/src`) ],
 
                         paths: null,
                     },
@@ -123,11 +123,12 @@ const BuildTasks = Packages.reduce((prev, cur) => {
     const umdTask = GenTask(cur, false);
 
     prev.push(GenRollupConfig(esmTask));
-    if (cur === 'ttplayer') {
-        prev.push(GenRollupConfig(umdTask));
-    }
 
-    // prev.push(GenRollupConfig(umdTask));
+    // if (cur === 'ttplayer') {
+    //     prev.push(GenRollupConfig(umdTask));
+    // }
+
+    prev.push(GenRollupConfig(umdTask));
     return prev;
 }, []);
 

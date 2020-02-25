@@ -4,6 +4,7 @@
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
+    "@babel/node": "^7.8.4",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@dking/eslint-config-typescript": "^0.0.5",
@@ -15,7 +16,9 @@
     "@types/node": "^12.7.5",
     "@typescript-eslint/eslint-plugin": "^2.13.0",
     "@typescript-eslint/parser": "^2.13.0",
+    "async": "^3.2.0",
     "autoprefixer": "^9.7.4",
+    "del": "^5.1.0",
     "eslint": "^6.8.0",
     "eslint-import-resolver-typescript": "^2.0.0",
     "eslint-plugin-import": "^2.19.1",
@@ -35,8 +38,9 @@
     "build:rollup": "rollup -c",
     "build:ts": "tsc --build",
     "lint": "eslint packages/**/src/*.ts --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
-    "watch:rollup": "rollup -c --watch",
-    "watch:ts": "tsc --watch"
+    "watch:rollup": "babel-node ./scripts/watch.js",
+    "watch:ts": "tsc --watch",
+    "clean:lib":  "babel-node ./scripts/clean.js"
   },
   "lint-staged": {
     "packages/**/src/*.{jsx,js,ts,tsx}": [

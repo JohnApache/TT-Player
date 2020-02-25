@@ -2,11 +2,11 @@ import EventEmitter from 'eventemitter3';
 import {
     VideoActionsType, VideoSource, VideoPreload,
 } from './type';
-
 import VideoOptions from './options';
 import { VIDEO_NATIVE_EVENTS } from './events';
 import VideoActions from './actions';
 import { PLUGIN_NAME } from './config';
+import * as DispatchAction from './dispatch';
 import TTPlayerCore, { Plugin } from '@dking/ttplayer-core';
 import { dUtils as DOMUtils, bUtils } from '@dking/ttplayer-utils';
 
@@ -64,11 +64,7 @@ class TTPlayerVideo extends Plugin {
 
     private initVideoStyle () {
         this.video
-            .addClass('ttplayer--video')
-            .css({
-                width : '100%',
-                height: '100%',
-            });
+            .addClass('ttplayer--video');
         return this;
     }
 
@@ -213,4 +209,5 @@ class TTPlayerVideo extends Plugin {
 
 }
 
+export { DispatchAction };
 export default TTPlayerVideo;
