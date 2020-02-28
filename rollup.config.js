@@ -21,7 +21,7 @@ const GenRollupConfig = task => {
         input  : input,
         plugins: [
             postcss({
-                extract : false,
+                extract : true,
                 modules : false,
                 minimize: false,
                 plugins : [
@@ -96,11 +96,20 @@ const GenRollupConfig = task => {
 const USE_BABEL = true;
 
 const Packages = [
-    'utils',
-    'core',
-    'video',
-    'video-play-button',
-    'ttplayer',
+    // 'utils',
+    // 'core',
+    // 'svg-icons',
+    // 'video',
+    // 'video-play-button',
+    // 'video-control',
+    {
+        name   : 'ttplayer',
+        libName: 'TTPlayer',
+        umd    : true,
+        esm    : false,
+    },
+
+    // 'resize-svg-path-by-viewbox',
 ];
 
 const PascalCase = str => {
@@ -109,26 +118,54 @@ const PascalCase = str => {
     return newStr.charAt(0).toUpperCase() + newStr.slice(1);
 };
 
-const GenTask = (packageName, isEsm) => ({
-    packageName: packageName,
-    input      : path.resolve(__dirname, `packages/${ packageName }/src/index.ts`),
-    output     : path.resolve(__dirname, `packages/${ packageName }/lib/index${ isEsm ? '.esm' : '' }.js`),
-    name       : `TTPlayer${ PascalCase(packageName) }`,
-    format     : isEsm ? 'es' : 'umd',
-    useBabel   : USE_BABEL && !isEsm,
-});
+const GenTask = pkgInfo => {
+    const {
+        packageName, isEsm, libName,
+    } = pkgInfo;
+
+    const LibraryName = libName && libName.length > 0 ? PascalCase(libName) : `TTPlayer${ PascalCase(packageName) }`;
+
+    return {
+        packageName: packageName,
+        input      : path.resolve(__dirname, `./packages/${ packageName }/src/index.ts`),
+        output     : path.resolve(__dirname, `./packages/${ packageName }/lib/index${ isEsm ? '.esm' : '' }.js`),
+        name       : LibraryName,
+        format     : isEsm ? 'es' : 'umd',
+        useBabel   : USE_BABEL && !isEsm,
+    };
+};
 
 const BuildTasks = Packages.reduce((prev, cur) => {
-    const esmTask = GenTask(cur, true);
-    const umdTask = GenTask(cur, false);
 
-    prev.push(GenRollupConfig(esmTask));
+    let packageName = '';
+    let libName = ''; // umd格式库名
+    let BuildESMTask = true; // 是否开启监视 输出 esm 模式任务
+    let BuildUMDTask = false; // 是否开启监视 输出 umd 模式任务
 
-    // if (cur === 'ttplayer') {
-    //     prev.push(GenRollupConfig(umdTask));
-    // }
+    if (typeof cur === 'string') {
+        packageName = cur.trim();
+    } else {
+        packageName = cur.name.trim();
+        libName = cur.libName.trim();
+        BuildESMTask = typeof cur.esm === 'undefined' ? true : !!cur.esm;
+        BuildUMDTask = typeof cur.umd === 'undefined' ? false : !!cur.umd;
+    }
 
-    prev.push(GenRollupConfig(umdTask));
+    const pkgOption = {
+        packageName: packageName,
+        libName    : libName,
+    };
+
+    if (BuildESMTask) {
+        const esmTask = GenTask({ ...pkgOption, isEsm: true });
+        prev.push(GenRollupConfig(esmTask));
+    }
+
+    if (BuildUMDTask) {
+        const umdTask = GenTask({ ...pkgOption, isEsm: false });
+        prev.push(GenRollupConfig(umdTask));
+    }
+
     return prev;
 }, []);
 

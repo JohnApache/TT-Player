@@ -109,12 +109,15 @@ const GenRollupConfig = task => {
 const WatchPackages = [
     'utils',
     'core',
+    'svg-icons',
     'video',
     'video-play-button',
+    'video-control',
     {
-        name: 'ttplayer',
-        esm : false,
-        umd : true,
+        name   : 'ttplayer',
+        libName: 'TTPlayer',
+        esm    : false,
+        umd    : true,
     },
 ];
 
@@ -124,17 +127,23 @@ const PascalCase = str => {
     return newStr.charAt(0).toUpperCase() + newStr.slice(1);
 };
 
-const GenWatchTask = (packageName, isEsm) => {
+const GenWatchTask = pkg => {
+
+    const {
+        packageName, isEsm, libName,
+    } = pkg;
 
     const watchInclude = [ path.resolve(__dirname, `../packages/${ packageName }/src/**`) ];
 
     const watchExclude = [ path.resolve(__dirname, `../packages/${ packageName }/node_modules/**`) ];
 
+    const LibraryName = libName && libName.length > 0 ? PascalCase(libName) : `TTPlayer${ PascalCase(packageName) }`;
+
     return {
         packageName : packageName,
         input       : path.resolve(__dirname, `../packages/${ packageName }/src/index.ts`),
         output      : path.resolve(__dirname, `../packages/${ packageName }/lib/index${ isEsm ? '.esm' : '' }.js`),
-        name        : `TTPlayer${ PascalCase(packageName) }`,
+        name        : LibraryName,
         format      : isEsm ? 'es' : 'umd',
         useBabel    : USE_BABEL && !isEsm,
         watchInclude: watchInclude,
@@ -147,22 +156,30 @@ async.eachSeries(WatchPackages, (pkg, callback) => {
     let packageName = '';
     let WatchESMTask = true; // 是否开启监视 输出 esm 模式任务
     let WatchUMDTask = false; // 是否开启监视 输出 umd 模式任务
-    let flag = true;
+    let libName = ''; // umd格式库名
+    let flag = true; // 限制阀
 
     if (typeof pkg === 'string') {
-        packageName = pkg;
+        packageName = pkg.trim();
     } else {
-        packageName = pkg.name;
+        packageName = pkg.name.trim();
+        libName = pkg.libName.trim();
         WatchESMTask = typeof pkg.esm === 'undefined' ? true : !!pkg.esm;
-        WatchUMDTask = typeof pkg.umd === 'undefined' ? true : !!pkg.umd;
+        WatchUMDTask = typeof pkg.umd === 'undefined' ? false : !!pkg.umd;
     }
 
     let esmTaskDone = !WatchESMTask;
     let umdTaskDone = !WatchUMDTask;
 
     if (!WatchESMTask && !WatchUMDTask) return callback();
+
+    const pkgOption = {
+        packageName: packageName,
+        libName    : libName,
+    };
+
     if (WatchESMTask) {
-        const esmWatchTask = GenWatchTask(packageName, true);
+        const esmWatchTask = GenWatchTask({ ...pkgOption, isEsm: true });
         const esmWatcher = watch(GenRollupConfig(esmWatchTask));
         esmWatcher.on('event', event => {
             console.log(`[WATCH_LOG]: @dking/ttplayer-${ packageName } format: [ESM] EventCode: ${ event.code }`);
@@ -181,7 +198,7 @@ async.eachSeries(WatchPackages, (pkg, callback) => {
     }
 
     if (WatchUMDTask) {
-        const umdWatchTask = GenWatchTask(packageName, false);
+        const umdWatchTask = GenWatchTask({ ...pkgOption, isEsm: false });
         const umdWatcher = watch(GenRollupConfig(umdWatchTask));
         umdWatcher.on('event', event => {
             console.log(`[WATCH_LOG]: @dking/ttplayer-${ packageName } format: [UMD] EventCode: ${ event.code }`);
