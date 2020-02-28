@@ -1,7 +1,7 @@
 {
-  "name": "@dking/ttplayer-video-play-button",
+  "name": "resize-svg-path-by-viewbox",
   "version": "0.0.3",
-  "description": "video-play-button for ttplayer-video",
+  "description": "> TODO: description",
   "author": "cjw <1468733552@qq.com>",
   "homepage": "https://github.com/JohnApache/TT-Player#readme",
   "license": "MIT",
@@ -26,10 +26,6 @@
     "url": "https://github.com/JohnApache/TT-Player/issues"
   },
   "dependencies": {
-    "@dking/ttplayer-core": "^0.0.3",
-    "@dking/ttplayer-svg-icons": "^0.0.3",
-    "@dking/ttplayer-utils": "^0.0.3",
-    "@dking/ttplayer-video": "^0.0.3",
-    "eventemitter3": "^4.0.0"
+    "@dking/ttplayer-utils": "^0.0.3"
   }
 }

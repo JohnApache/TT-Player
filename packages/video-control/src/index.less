@@ -1,0 +1,44 @@
+.video--control {
+    height: 40px;
+    width: 100%;
+    background-color: #000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    user-select: none;
+    .left--container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        padding-left: 20px;
+    }
+    .right--container {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        padding-right: 20px;
+    }
+
+    .left--container,
+    .right--container {
+        display: flex;
+        align-items: center;
+        .icon--container {
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: .8;
+            &:hover {
+                opacity: 1;
+            }
+            .icon--svg {
+                fill: #fff;
+                
+            }
+        }
+    }
+}

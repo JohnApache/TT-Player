@@ -96,20 +96,23 @@ const GenRollupConfig = task => {
 const USE_BABEL = true;
 
 const Packages = [
-    // 'utils',
-    // 'core',
-    // 'svg-icons',
-    // 'video',
-    // 'video-play-button',
-    // 'video-control',
+    'utils',
+    'core',
+    'svg-icons',
+    'video',
+    'video-play-button',
+    'video-control',
     {
         name   : 'ttplayer',
         libName: 'TTPlayer',
         umd    : true,
         esm    : false,
     },
-
-    // 'resize-svg-path-by-viewbox',
+    {
+        name: 'resize-svg-path-by-viewbox',
+        umd : true,
+        esm : false,
+    },
 ];
 
 const PascalCase = str => {
@@ -145,8 +148,8 @@ const BuildTasks = Packages.reduce((prev, cur) => {
     if (typeof cur === 'string') {
         packageName = cur.trim();
     } else {
-        packageName = cur.name.trim();
-        libName = cur.libName.trim();
+        packageName = (cur.name || '').trim();
+        libName = (cur.libName || '').trim();
         BuildESMTask = typeof cur.esm === 'undefined' ? true : !!cur.esm;
         BuildUMDTask = typeof cur.umd === 'undefined' ? false : !!cur.umd;
     }
