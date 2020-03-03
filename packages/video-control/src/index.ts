@@ -1,14 +1,31 @@
 import EventEmitter from 'eventemitter3';
 import { PLUGIN_NAME } from './config';
 import VideoControlOptions from './options';
-import ControlPlayButton from './component/play-button';
-import { ControlComponent } from './type';
+import ControlVolume from './components/volume';
+import ControlPlay from './components/play';
+import ControlDurationText from './components/duration';
 import TTPlayerCore, { Plugin } from '@dking/ttplayer-core';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
+
+abstract class ControlComponent {
+
+    abstract componentName: string;
+    abstract init: ()=> any;
+    abstract destroy: ()=> any;
+    abstract getInstance: ()=> HTMLElement;
+
+}
+
+interface ControlComponentCtor {
+    new (control: TTPlayerVideoControl): ControlComponent;
+}
 
 class TTPlayerVideoControl extends Plugin {
 
     static pluginName: string = PLUGIN_NAME;
+    static leftComponentsCtor: ControlComponentCtor[] = [];
+    static rightComponentsCtor: ControlComponentCtor[] = [];
+
     public pluginName: string = PLUGIN_NAME;
     public player: TTPlayerCore;
     public event: EventEmitter;
@@ -35,7 +52,7 @@ class TTPlayerVideoControl extends Plugin {
         this.bindEvents()
             .bindActions()
             .initControl()
-            .loadControlComponents()
+            .renderControlComponents()
             .render();
         return this;
     }
@@ -48,7 +65,7 @@ class TTPlayerVideoControl extends Plugin {
     destroy () {
         this.removeEvents()
             .removeActions()
-            .unloadControlComponents();
+            .removeControlComponents();
         return this;
     }
 
@@ -67,29 +84,52 @@ class TTPlayerVideoControl extends Plugin {
         return this;
     }
 
-    private loadControlComponents () {
-        const { playButton } = this.options;
-
-        playButton && this.leftComponents.push(new ControlPlayButton(this));
-
-        this.leftComponents.forEach(comp => {
-            comp.init();
-            this.leftControl.append(comp.getInstance());
-        });
-
-        this.rightComponents.forEach(comp => {
-            comp.init();
-            this.rightControl.append(comp.getInstance());
-        });
-
+    private addLeftControlComponent (controlComponent: ControlComponent) {
+        controlComponent.init();
+        this.leftComponents.push(controlComponent);
         return this;
     }
 
-    private unloadControlComponents () {
+    private addRightControlComponent (controlComponent: ControlComponent) {
+        controlComponent.init();
+        this.rightComponents.push(controlComponent);
+        return this;
+    }
+
+    private renderControlComponents () {
+        const { leftComponentsCtor, rightComponentsCtor } = TTPlayerVideoControl;
+        leftComponentsCtor.forEach(ctor => {
+            const comp = new ctor(this);
+            comp.init();
+            this.leftComponents.push(comp);
+            this.leftControl.append(comp.getInstance());
+        });
+
+        rightComponentsCtor.forEach(ctor => {
+            const comp = new ctor(this);
+            comp.init();
+            this.rightComponents.push(comp);
+            this.rightControl.append(comp.getInstance());
+        });
+        return this;
+    }
+
+    private removeControlComponents () {
         this.leftComponents.forEach(comp => comp.destroy());
         this.rightComponents.forEach(comp => comp.destroy());
         this.leftComponents = [];
         this.rightComponents = [];
+        return this;
+    }
+
+    private removeLeftControlComponent (componentName: string) {
+        this.leftComponents = this.leftComponents.filter(comp => {
+            if (comp.componentName === componentName) {
+                comp.destroy();
+                return false;
+            }
+            return true;
+        });
         return this;
     }
 
@@ -109,6 +149,21 @@ class TTPlayerVideoControl extends Plugin {
         return this;
     }
 
+    static useInLeft (controlComponentCtor: ControlComponentCtor) {
+        this.leftComponentsCtor.push(controlComponentCtor);
+        return this;
+    }
+
+    static useInRight (controlComponentCtor: ControlComponentCtor) {
+        this.leftComponentsCtor.push(controlComponentCtor);
+        return this;
+    }
+
 }
+
+TTPlayerVideoControl
+    .useInLeft(ControlPlay)
+    .useInLeft(ControlVolume)
+    .useInLeft(ControlDurationText);
 
 export default TTPlayerVideoControl;

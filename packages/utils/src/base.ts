@@ -1,4 +1,5 @@
 export const isString = (data: any): data is string => typeof data === 'string';
+export const isNumber = (data: any): data is number => typeof data === 'number';
 export const isUndefined = (data: any): data is undefined => typeof data === 'undefined';
 
 export const PascalCase = (str: string) => {

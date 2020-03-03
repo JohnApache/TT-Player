@@ -41,6 +41,7 @@ class SVGIcons {
     init () {
         this.renderIcon()
             .renderPath();
+        return this;
     }
 
     getInstance () {
@@ -131,6 +132,10 @@ class SVGIcons {
                 return point.join(' ');
             }).join('');
         }).join('');
+    }
+
+    static createSvg (svgName: SVGName, options?: SVGOptionsType): SVGIcons {
+        return new SVGIcons({ ...options, svgName });
     }
 
 }

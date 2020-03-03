@@ -1,12 +1,12 @@
 import EventEmitter from 'eventemitter3';
 import TTPlayerVideoControl from '../../index';
-import { ControlComponent } from '../../type';
 import { DispatchAction } from '@dking/ttplayer-video';
 import SVGIcons from '@dking/ttplayer-svg-icons';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 
-class ControlPlayButton extends ControlComponent {
+class ControlPlayButton {
 
+    public componentName: string = 'ControlPlayComponent'
     public controller: TTPlayerVideoControl;
     public control: DOMUtils<HTMLElement>;
     public button: DOMUtils<HTMLDivElement>;
@@ -18,7 +18,6 @@ class ControlPlayButton extends ControlComponent {
     private actUgs: Function[] = [];
 
     constructor (controller: TTPlayerVideoControl) {
-        super();
         this.controller = controller;
         this.control = controller.control;
         this.event = controller.event;

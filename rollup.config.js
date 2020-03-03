@@ -96,23 +96,30 @@ const GenRollupConfig = task => {
 const USE_BABEL = true;
 
 const Packages = [
-    'utils',
-    'core',
-    'svg-icons',
-    'video',
-    'video-play-button',
-    'video-control',
     {
-        name   : 'ttplayer',
-        libName: 'TTPlayer',
+        name   : 'movable',
+        libName: 'Movable',
         umd    : true,
-        esm    : false,
+        esm    : true,
     },
-    {
-        name: 'resize-svg-path-by-viewbox',
-        umd : true,
-        esm : false,
-    },
+
+    // 'utils',
+    // 'core',
+    // 'svg-icons',
+    // 'video',
+    // 'video-play-button',
+    // 'video-control',
+    // {
+    //     name   : 'ttplayer',
+    //     libName: 'TTPlayer',
+    //     umd    : true,
+    //     esm    : false,
+    // },
+    // {
+    //     name: 'resize-svg-path-by-viewbox',
+    //     umd : true,
+    //     esm : false,
+    // },
 ];
 
 const PascalCase = str => {

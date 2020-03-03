@@ -1,4 +1,6 @@
-import { isUndefined, isString } from './base';
+import {
+    isUndefined, isString, isNumber,
+} from './base';
 import {
     FindDom, CreateDom, FindAllDoms,
 } from './browser';
@@ -120,6 +122,22 @@ class DOMUtils <K extends HTMLElementMap> {
         return FindAllDoms(selector);
     }
 
+    find (selector: string): DOMUtils<HTMLElement> | null {
+        const dom = this.findDom(selector);
+        if (!dom) return null;
+        return new DOMUtils(dom);
+    }
+
+    findAll (selector: string): DOMUtils<HTMLElement>[] | null {
+        const doms = this.findAllDoms(selector);
+        if (!doms) return null;
+        const result = Array(doms.length);
+        doms.forEach((dom, i) => {
+            result[i] = new DOMUtils(dom);
+        });
+        return result;
+    }
+
     remove (): DOMUtils<K>;
     remove (selector: string): DOMUtils<K>;
     remove (selector?: string): DOMUtils<K> {
@@ -198,6 +216,41 @@ class DOMUtils <K extends HTMLElementMap> {
 
     getInstance () {
         return this.element;
+    }
+
+    height(h: number | string): void;
+    height (): number;
+    height (h?: number | string): number | void {
+        if (isUndefined(h)) {
+            return this.element.offsetHeight;
+        }
+        if (isNumber(h)) {
+            this.css('height', `${ h }px`);
+            return;
+        }
+        this.css('height', h);
+    }
+
+    width(w: number | string): void;
+    width (): number;
+    width (w?: number | string): number | void {
+        if (isUndefined(w)) {
+            return this.element.offsetWidth;
+        }
+        if (isNumber(w)) {
+            this.css('width', `${ w }px`);
+            return;
+        }
+
+        this.css('width', w);
+    }
+
+    getBoundingClientRect () {
+        return this.element.getBoundingClientRect();
+    }
+
+    getComputedStyle (propertyName: string): string {
+        return window.getComputedStyle(this.element).getPropertyValue(propertyName);
     }
 
     static createInstance <T extends HTMLElementMap> (element: T): DOMUtils<T> {

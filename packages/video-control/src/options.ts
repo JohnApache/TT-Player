@@ -6,12 +6,10 @@ const DEFAULT_OPTIONS = { height: '100px' };
 class VideoControlOptions {
 
     public height: string;
-    public playButton: boolean;
-
     [key: string]: any;
 
     constructor (options: VideoControlOptionsType = {}) {
-        const { height, playButton } = options;
+        const { height } = options;
         const { isUndefined } = utils;
 
         if (isUndefined(height)) {
@@ -20,12 +18,6 @@ class VideoControlOptions {
             this.height = height;
         } else {
             this.height = `${ height }px`;
-        }
-
-        if (isUndefined(playButton)) {
-            this.playButton = true;
-        } else {
-            this.playButton = !!playButton;
         }
 
         Object.keys(options).forEach(item => {

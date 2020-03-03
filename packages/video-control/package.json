@@ -26,6 +26,7 @@
     "url": "https://github.com/JohnApache/TT-Player/issues"
   },
   "dependencies": {
+    "@dking/movable": "^0.0.3",
     "@dking/ttplayer-core": "^0.0.3",
     "@dking/ttplayer-svg-icons": "^0.0.3",
     "@dking/ttplayer-utils": "^0.0.3",
