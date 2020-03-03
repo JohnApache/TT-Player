@@ -5,11 +5,14 @@ import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 import SVGIcons from '@dking/ttplayer-svg-icons';
 import { DispatchAction } from '@dking/ttplayer-video';
 
+/* eslint-disable */
 enum VOLUME_LEVEL {
     Lv0 = 0,
     Lv1 = 0.3,
     Lv2 = 0.7
 }
+/* eslint-disable */
+
 class ControlVolume {
 
     public componentName: string = 'ControlVolumeComponent'
