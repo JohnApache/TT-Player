@@ -27,7 +27,7 @@ const GenRollupConfig = task => {
         input  : input,
         plugins: [
             postcss({
-                extract : false,
+                extract : true,
                 modules : false,
                 minimize: false,
                 plugins : [
