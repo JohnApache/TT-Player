@@ -29,3 +29,7 @@ export const DispatchPosterAction = (event: EventEmitter, poster: string) => {
 export const DispatchPreloadAction = (event: EventEmitter, preload: VideoPreload) => {
     event.emit(VideoActions.PreloadAction, preload);
 };
+
+export const DispatchSeekAction = (event: EventEmitter, time: number) => {
+    event.emit(VideoActions.SeekAction, time);
+};

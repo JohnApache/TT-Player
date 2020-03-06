@@ -130,6 +130,8 @@ class TTPlayerCore {
 
 }
 
+export { PlayerHooks };
+
 export abstract class Plugin {
 
     static pluginName: string;

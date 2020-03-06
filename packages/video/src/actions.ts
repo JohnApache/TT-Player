@@ -12,6 +12,7 @@ const VideoActions = {
     PreloadAction: action('preload'),
     PosterAction : action('poster'),
     DestroyAction: action('destroy'),
+    SeekAction   : action('seek'),
 };
 
 export default VideoActions;

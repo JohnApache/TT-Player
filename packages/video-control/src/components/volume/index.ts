@@ -26,7 +26,6 @@ class ControlVolume {
     public iconDom: DOMUtils<HTMLDivElement>
     public muted: boolean = false;
     public volume: number = VOLUME_LEVEL.Lv2;
-    public canMove: boolean = false;
 
     private ugs: Function[] = [];
     private actUgs: Function[] = [];
@@ -40,12 +39,16 @@ class ControlVolume {
         this.event = controller.event;
         this.icon = SVGIcons.createSvg('volume-lv0');
         this.iconDom = this.icon.icon;
+        this.init();
     }
 
     init () {
+        this.render();
+    }
+
+    onReady () {
         this.bindEvents()
-            .bindActions()
-            .render();
+            .bindActions();
     }
 
     destroy () {
@@ -149,22 +152,18 @@ class ControlVolume {
 
     private bindActions () {
 
-        // 切换静音
-        const switchMuted = this.switchMuted.bind(this);
-        this.iconDom.on('click', switchMuted);
+        this.actUgs.push(
 
-        this.actUgs.push(() => {
-            this.iconDom.off('click', switchMuted);
-        });
+            // 阻止事件冲突
+            this.thumb.on('click', (e) => e.stopPropagation()),
 
-        // 调整声音
-        const handelClickVolumeBar = this.handelClickVolumeBar.bind(this);
-        this.volumeBar.on('click', handelClickVolumeBar);
+            // 切换静音
+            this.iconDom.on('click', this.switchMuted.bind(this)),
 
-        this.actUgs.push(() => {
-            this.volumeBar.off('click', handelClickVolumeBar);
-        });
-
+            // 调整声音
+            this.volumeBar.on('click', this.handelClickVolumeBar.bind(this))
+            
+        );
 
         const removeMovable = Movable(
             this.thumb.getInstance(),

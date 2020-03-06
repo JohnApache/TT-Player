@@ -132,6 +132,15 @@ class TTPlayerVideo extends Plugin {
         return this;
     }
 
+    private seek (time: number) {
+        const video = this.video.getInstance();
+        let nextTime = time;
+        if (nextTime < 0) nextTime = 0;
+        if (nextTime > video.duration) nextTime = video.duration;
+        video.currentTime = nextTime;
+        return this;
+    }
+
     private spreadVideoNativeEvent (ev: string, data: any) {
         this.event.emit(ev, data);
 
@@ -169,6 +178,9 @@ class TTPlayerVideo extends Plugin {
                         break;
                     case VideoActions.PauseAction:
                         this.pause();
+                        break;
+                    case VideoActions.SeekAction:
+                        this.seek(data);
                         break;
                     case VideoActions.VolumeAction:
                         this.setVolume(data);

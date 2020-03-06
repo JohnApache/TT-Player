@@ -20,11 +20,15 @@ class ControlDurationText {
         this.duration = DOMUtils.createUtilDom('span');
         this.splitLine = DOMUtils.createUtilDom('span');
         this.event = control.event;
+        this.init();
     }
 
     init () {
-        this.bindEvents()
-            .render();
+        this.render();
+    }
+
+    onReady () {
+        this.bindEvents();
     }
 
     destroy () {

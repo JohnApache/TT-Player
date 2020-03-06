@@ -24,12 +24,16 @@ class ControlPlayButton {
         this.button = DOMUtils.createUtilDom('div');
         this.icon = new SVGIcons({ svgName: 'small-play' });
         this.icon.init();
+        this.init();
     }
 
     init () {
+        this.render();
+    }
+
+    onReady () {
         this.bindEvents()
-            .bindActions()
-            .render();
+            .bindActions();
     }
 
     destroy () {

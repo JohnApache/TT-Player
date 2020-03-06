@@ -10,9 +10,15 @@ interface NormalObject {
     [key: string]: any;
 }
 
+interface SelectorAttributes {
+    id: string;
+    className: string;
+}
+
 type HTMLElementMap = HTMLElementTagNameMap[keyof HTMLElementTagNameMap];
 type CSSStyleKey = keyof CSSStyleDeclaration;
 type ValidCSSStyleKey = Exclude<CSSStyleKey, 'length'| 'parentRule' | number>;
+
 
 class DOMUtils <K extends HTMLElementMap> {
 
@@ -257,8 +263,18 @@ class DOMUtils <K extends HTMLElementMap> {
         return new DOMUtils(element);
     }
 
-    static createUtilDom <T extends keyof HTMLElementTagNameMap> (tagName: T): DOMUtils<HTMLElementTagNameMap[T]> {
-        return new DOMUtils(CreateDom(tagName));
+    static createUtilDom <T extends keyof HTMLElementTagNameMap> (
+        tagName: T,
+        selectorAttr?: Partial<SelectorAttributes> | string,
+    ): DOMUtils<HTMLElementTagNameMap[T]> {
+        const udom = new DOMUtils(CreateDom(tagName));
+        if (!selectorAttr) return udom;
+        if (isString(selectorAttr)) return udom.addClass(selectorAttr);
+
+        const { id, className } = selectorAttr;
+        isString(id) && udom.attr('id', id);
+        isString(className) && udom.addClass(className);
+        return udom;
     }
 
 }
