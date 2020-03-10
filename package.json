@@ -40,7 +40,7 @@
     "lint": "eslint packages/**/src/*.ts --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
     "watch:rollup": "babel-node ./scripts/watch.js",
     "watch:ts": "tsc --watch",
-    "clean:lib":  "babel-node ./scripts/clean.js"
+    "clean:lib": "babel-node ./scripts/clean.js"
   },
   "lint-staged": {
     "packages/**/src/*.{jsx,js,ts,tsx}": [
@@ -62,6 +62,7 @@
     "proseWrap": "preserve"
   },
   "dependencies": {
-    "@babel/runtime-corejs3": "^7.5.5"
+    "@babel/runtime-corejs3": "^7.5.5",
+    "@types/webtorrent": "^0.107.1"
   }
 }

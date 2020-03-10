@@ -9,6 +9,7 @@ TTPlayerCore
     .use(TTPlayerVideoPlayButton)
     .use(TTPlayerVideoControl);
 
+
 export default TTPlayerCore;
 
 

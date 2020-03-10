@@ -7,8 +7,12 @@ import { VIDEO_NATIVE_EVENTS } from './events';
 import VideoActions from './actions';
 import { PLUGIN_NAME } from './config';
 import * as DispatchAction from './dispatch';
-import TTPlayerCore, { Plugin } from '@dking/ttplayer-core';
+import initFlvMSE from './mse/flv';
+import initHlsMSE from './mse/hls';
+import initDashMSE from './mse/dash';
+import initWebTorrentMSE from './mse/webtorrent';
 import { dUtils as DOMUtils, bUtils } from '@dking/ttplayer-utils';
+import TTPlayerCore, { Plugin } from '@dking/ttplayer-core';
 
 class TTPlayerVideo extends Plugin {
 
@@ -24,6 +28,10 @@ class TTPlayerVideo extends Plugin {
 
     private ugs: Function[] = [];
     private actUgs: Function[] = [];
+    private __flv__: FlvJs.Player | null = null;
+    private __hls__: Hls | null = null;
+    private __dash__: dashjs.MediaPlayerClass | null = null;
+    private __webtorrent__: WebTorrent.Instance | null = null;
 
     constructor (player: TTPlayerCore) {
         super();
@@ -39,6 +47,7 @@ class TTPlayerVideo extends Plugin {
             .bindActions()
             .initVideoStyle()
             .initVideoMedia()
+            .initMSE()
             .render();
         return this;
     }
@@ -49,8 +58,26 @@ class TTPlayerVideo extends Plugin {
     }
 
     destroy () {
-        this.removeEvents()
+        this.clearMSE()
+            .removeEvents()
             .removeActions();
+        return this;
+    }
+
+    protected initVideoStyle () {
+        this.video
+            .addClass('ttplayer--video');
+        return this;
+    }
+
+    protected initVideoMedia () {
+        const {
+            src, volume, muted,
+        } = this.options;
+
+        this.setVideoSrc(src)
+            .setVolume(volume)
+            .setMuted(muted);
         return this;
     }
 
@@ -60,23 +87,6 @@ class TTPlayerVideo extends Plugin {
 
     private pause () {
         this.video.getInstance().pause();
-    }
-
-    private initVideoStyle () {
-        this.video
-            .addClass('ttplayer--video');
-        return this;
-    }
-
-    private initVideoMedia () {
-        const {
-            src, volume, muted,
-        } = this.options;
-
-        this.setVideoSrc(src)
-            .setVolume(volume)
-            .setMuted(muted);
-        return this;
     }
 
     private setVideoSrc (src: string | VideoSource[]) {
@@ -148,7 +158,7 @@ class TTPlayerVideo extends Plugin {
         return this;
     }
 
-    private bindEvents () {
+    protected bindEvents () {
         const video = this.video.getInstance();
         this.evs.forEach(ev => {
             const fn = this.spreadVideoNativeEvent.bind(this, ev);
@@ -161,13 +171,13 @@ class TTPlayerVideo extends Plugin {
         return this;
     }
 
-    private removeEvents () {
+    protected removeEvents () {
         this.ugs.forEach(ug => ug());
         this.ugs = [];
         return this;
     }
 
-    private bindActions () {
+    protected bindActions () {
         const VVideoActions: VideoActionsType = VideoActions;
         Object.keys(VVideoActions).forEach(item => {
             const actionName = VVideoActions[item];
@@ -213,9 +223,78 @@ class TTPlayerVideo extends Plugin {
         return this;
     }
 
-    private removeActions () {
+    protected removeActions () {
         this.actUgs.forEach(ug => ug());
         this.actUgs = [];
+        return this;
+    }
+
+    private initMSE () {
+        this.clearMSE();
+        let {
+            type, src, flvjs, hlsjs, dashjs, webtorrent,
+        } = this.options;
+        const video = this.video.getInstance();
+        if (type === 'auto') {
+            if ((/m3u8(#|\?|$)/i).exec(src)) {
+                type = 'hls';
+            } else if ((/.flv(#|\?|$)/i).exec(src)) {
+                type = 'flv';
+            } else if ((/.mpd(#|\?|$)/i).exec(src)) {
+                type = 'dash';
+            } else {
+                type = 'normal';
+            }
+        }
+
+        // 能直接播放hls的 不需要解析
+        if (
+            type === 'hls' &&
+            (
+                video.canPlayType('application/x-mpegURL') ||
+                video.canPlayType('application/vnd.apple.mpegURL')
+            )
+        ) {
+            type = 'normal';
+        }
+
+        this.options.type = type;
+
+        try {
+            switch (type) {
+                case 'flv':
+                    this.__flv__ = initFlvMSE(src, video, flvjs);
+                    break;
+                case 'hls':
+                    this.__hls__ = initHlsMSE(src, video, hlsjs);
+                    break;
+                case 'dash':
+                    this.__dash__ = initDashMSE(src, video, dashjs);
+                    break;
+                case 'webtorrent':
+                    this.__webtorrent__ = initWebTorrentMSE(src, video, webtorrent);
+                    break;
+                default:
+            }
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+
+        return this;
+    }
+
+    private clearMSE () {
+        const {
+            __flv__, __hls__, __dash__, __webtorrent__,
+        } = this;
+
+        __flv__ && __flv__.destroy();
+        __hls__ && __hls__.destroy();
+        __dash__ && __dash__.reset();
+        __webtorrent__ && __webtorrent__.destroy();
+
+        this.__flv__ = this.__hls__ = this.__dash__ = this.__webtorrent__ = null;
         return this;
     }
 
