@@ -5,6 +5,8 @@ import ControlVolume from './components/volume';
 import ControlPlay from './components/play';
 import ControlDurationText from './components/duration';
 import ControlProgress from './components/progress';
+import ControlScreenShot from './components/screenshot';
+import ControlFullscreen from './components/fullscreen';
 import TTPlayerCore, { Plugin, PlayerHooks } from '@dking/ttplayer-core';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 
@@ -166,7 +168,7 @@ class TTPlayerVideoControl extends Plugin {
     }
 
     static useInRight (controlComponentCtor: ControlComponentCtor) {
-        this.leftComponentsCtor.push(controlComponentCtor);
+        this.rightComponentsCtor.push(controlComponentCtor);
         return this;
     }
 
@@ -181,6 +183,8 @@ TTPlayerVideoControl
     .useInLeft(ControlPlay)
     .useInLeft(ControlVolume)
     .useInLeft(ControlDurationText)
+    .useInRight(ControlScreenShot)
+    .useInRight(ControlFullscreen)
     .use(ControlProgress);
 
 export default TTPlayerVideoControl;

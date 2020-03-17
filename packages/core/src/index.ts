@@ -26,8 +26,8 @@ class TTPlayerCore {
     public root: DOMUtils<HTMLElement>;
     public pluginsCtor: PluginCtor[] = [];
 
-    private plugins: Plugin[] = [];
-    private pluginsMap: PluginsMap = {};
+    public plugins: Plugin[] = [];
+    public pluginsMap: PluginsMap = {};
 
     constructor (options: Partial<OptionsType>) {
         this.event = new EventEmitter();

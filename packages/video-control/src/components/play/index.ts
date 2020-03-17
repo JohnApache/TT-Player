@@ -22,7 +22,7 @@ class ControlPlayButton {
         this.control = controller.control;
         this.event = controller.event;
         this.button = DOMUtils.createUtilDom('div');
-        this.icon = new SVGIcons({ svgName: 'small-play' });
+        this.icon = SVGIcons.createSvg('small-play');
         this.icon.init();
         this.init();
     }

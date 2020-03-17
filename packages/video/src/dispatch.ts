@@ -33,3 +33,7 @@ export const DispatchPreloadAction = (event: EventEmitter, preload: VideoPreload
 export const DispatchSeekAction = (event: EventEmitter, time: number) => {
     event.emit(VideoActions.SeekAction, time);
 };
+
+export const DispatchScreenShotAction = (event: EventEmitter) => {
+    event.emit(VideoActions.ScreenShotAction);
+};

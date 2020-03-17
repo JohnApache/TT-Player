@@ -151,6 +151,29 @@ class TTPlayerVideo extends Plugin {
         return this;
     }
 
+    private screenshot () {
+        const canvas = document.createElement('canvas');
+        const width = this.video.width();
+        const height = this.video.height();
+        canvas.width = width;
+        canvas.height = height;
+        const cvs = canvas.getContext('2d');
+        if (!cvs) throw new Error('canvas not support');
+        cvs.drawImage(this.video.getInstance(), 0, 0, width, height);
+        canvas.toBlob(blob => {
+            if (!blob) return;
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = 'TTPlayer.png';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+        });
+    }
+
     private spreadVideoNativeEvent (ev: string, data: any) {
         this.event.emit(ev, data);
 
@@ -210,6 +233,9 @@ class TTPlayerVideo extends Plugin {
                     case VideoActions.DestroyAction:
                         this.destroy();
                         break;
+                    case VideoActions.ScreenShotAction:
+                        this.screenshot();
+                        break;
                     default:
                 }
             };
@@ -218,6 +244,7 @@ class TTPlayerVideo extends Plugin {
             this.actUgs.push(() => {
                 this.event.off(actionName, fn);
             });
+
         });
 
         return this;
