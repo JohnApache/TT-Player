@@ -78,6 +78,7 @@ class TTPlayerVideo extends Plugin {
         this.setVideoSrc(src)
             .setVolume(volume)
             .setMuted(muted);
+
         return this;
     }
 
@@ -149,6 +150,11 @@ class TTPlayerVideo extends Plugin {
         if (nextTime > video.duration) nextTime = video.duration;
         video.currentTime = nextTime;
         return this;
+    }
+
+    private setPlaybackRate (rate: number) {
+        const video = this.video.getInstance();
+        video.playbackRate = rate;
     }
 
     private screenshot () {
@@ -229,6 +235,9 @@ class TTPlayerVideo extends Plugin {
                         break;
                     case VideoActions.LoopAction:
                         this.setLoop(data);
+                        break;
+                    case VideoActions.PlaybackRateAction:
+                        this.setPlaybackRate(data);
                         break;
                     case VideoActions.DestroyAction:
                         this.destroy();

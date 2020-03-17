@@ -34,6 +34,10 @@ export const DispatchSeekAction = (event: EventEmitter, time: number) => {
     event.emit(VideoActions.SeekAction, time);
 };
 
+export const DispatchPlaybackRateAction = (event: EventEmitter, rate: number) => {
+    event.emit(VideoActions.PlaybackRateAction, rate);
+};
+
 export const DispatchScreenShotAction = (event: EventEmitter) => {
     event.emit(VideoActions.ScreenShotAction);
 };
