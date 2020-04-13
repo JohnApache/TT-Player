@@ -6,6 +6,7 @@ export {
     utils,
     bUtils,
     dUtils,
+    dUtils as DOMUtils,
 };
 
 export default utils;

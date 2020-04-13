@@ -1,267 +1,90 @@
-import EventEmitter from 'eventemitter3';
-import {
-    VideoActionsType, VideoSource, VideoPreload,
-} from './type';
-import VideoOptions from './options';
-import { VIDEO_NATIVE_EVENTS } from './events';
-import VideoActions from './actions';
-import { PLUGIN_NAME } from './config';
-import * as DispatchAction from './dispatch';
 import initFlvMSE from './mse/flv';
 import initHlsMSE from './mse/hls';
 import initDashMSE from './mse/dash';
 import initWebTorrentMSE from './mse/webtorrent';
-import { dUtils as DOMUtils, bUtils } from '@dking/ttplayer-utils';
-import TTPlayerCore, { Plugin } from '@dking/ttplayer-core';
+import VideoOptions from './options';
+import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
+import {
+    TTPlayerMedia, TTPlayerCore, TMediaType, TTPlayerMediaComponent,
+} from '@dking/ttplayer-core';
 
-class TTPlayerVideo extends Plugin {
+const MEDIA_TYPE: TMediaType = 'Video';
 
-    static pluginName: string = PLUGIN_NAME;
+interface TTPlayerVideoComponentCtor {
+    new (video: TTPlayerVideo): TTPlayerMediaComponent<'Video'>;
+}
 
-    public pluginName: string = PLUGIN_NAME;
-    public player: TTPlayerCore;
-    public event: EventEmitter;
+class TTPlayerVideo extends TTPlayerMedia<'Video'> {
+
+    static mediaType = MEDIA_TYPE;
+    static videoComponentsCtor: TTPlayerVideoComponentCtor[] = [];
+
     public video: DOMUtils<HTMLVideoElement>;
-    public root: DOMUtils<HTMLElement>;
-    public options: VideoOptions
-    public evs: string[] = VIDEO_NATIVE_EVENTS;
+    public options: VideoOptions;
+    public videoComponents: TTPlayerMediaComponent<'Video'>[] = []
 
-    private ugs: Function[] = [];
-    private actUgs: Function[] = [];
     private __flv__: FlvJs.Player | null = null;
     private __hls__: Hls | null = null;
     private __dash__: dashjs.MediaPlayerClass | null = null;
     private __webtorrent__: WebTorrent.Instance | null = null;
 
     constructor (player: TTPlayerCore) {
-        super();
-        this.player = player;
-        this.root = this.player.root;
-        this.event = this.player.event;
-        this.video = DOMUtils.createUtilDom('video');
-        this.options = new VideoOptions(player.options.video);
-    }
+        super(MEDIA_TYPE, player);
+        this.video = this.media;
 
-    init () {
-        this.bindEvents()
-            .bindActions()
-            .initVideoStyle()
-            .initVideoMedia()
-            .initMSE()
-            .render();
-        return this;
-    }
-
-    render () {
-        this.root.prepend(this.video.getInstance());
-        return this;
-    }
-
-    destroy () {
-        this.clearMSE()
-            .removeEvents()
-            .removeActions();
-        return this;
-    }
-
-    protected initVideoStyle () {
-        this.video
-            .addClass('ttplayer--video');
-        return this;
-    }
-
-    protected initVideoMedia () {
-        const {
-            src, volume, muted,
-        } = this.options;
-
-        this.setVideoSrc(src)
-            .setVolume(volume)
-            .setMuted(muted);
-
-        return this;
-    }
-
-    private play (): Promise<void> {
-        return this.video.getInstance().play();
-    }
-
-    private pause () {
-        this.video.getInstance().pause();
-    }
-
-    private setVideoSrc (src: string | VideoSource[]) {
-        const video = this.video.getInstance();
-
-        if (!src || src.length <= 0) {
-            this.spreadVideoNativeEvent('error', new Error('invalid video src.'));
-            return this;
-        }
-
-        if (typeof src === 'string') {
-            video.src = src;
-            return this;
-        }
-
-        src.forEach(item => {
-            const source = bUtils.CreateDom('source');
-            source.setAttribute('src', item.src);
-            source.setAttribute('type', item.type || '');
-            this.video.append(source);
-        });
-
-        return this;
-    }
-
-    private setVolume (volume: number) {
-        const video = this.video.getInstance();
-        video.volume = volume;
-        return this;
-    }
-
-    private setMuted (muted: boolean) {
-        const video = this.video.getInstance();
-        video.muted = muted;
-        return this;
-    }
-
-    private setPreload (preload: VideoPreload) {
-        const video = this.video.getInstance();
-        video.preload = preload;
-        return this;
-    }
-
-    private setPoster (poster: string) {
-        const video = this.video.getInstance();
-        video.poster = poster;
-        return this;
-    }
-
-    private setLoop (loop: boolean) {
-        const video = this.video.getInstance();
-        video.loop = loop;
-        return this;
-    }
-
-    private seek (time: number) {
-        const video = this.video.getInstance();
-        let nextTime = time;
-        if (nextTime < 0) nextTime = 0;
-        if (nextTime > video.duration) nextTime = video.duration;
-        video.currentTime = nextTime;
-        return this;
-    }
-
-    private setPlaybackRate (rate: number) {
-        const video = this.video.getInstance();
-        video.playbackRate = rate;
-    }
-
-    private screenshot () {
-        const canvas = document.createElement('canvas');
-        const width = this.video.width();
-        const height = this.video.height();
-        canvas.width = width;
-        canvas.height = height;
-        const cvs = canvas.getContext('2d');
-        if (!cvs) throw new Error('canvas not support');
-        cvs.drawImage(this.video.getInstance(), 0, 0, width, height);
-        canvas.toBlob(blob => {
-            if (!blob) return;
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = 'TTPlayer.png';
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(blobUrl);
+        this.options = new VideoOptions({
+            ...player.options.media,
+            ...player.options.video,
         });
     }
 
-    private spreadVideoNativeEvent (ev: string, data: any) {
-        this.event.emit(ev, data);
-
-        // this.event.emit(`${ PLUGIN_NAME }${ ev.charAt(0).toUpperCase() }${ ev.slice(1) }`, data);
+    static use (videoComponentCtor: TTPlayerVideoComponentCtor) {
+        this.videoComponentsCtor.push(videoComponentCtor);
         return this;
     }
 
-    protected bindEvents () {
-        const video = this.video.getInstance();
-        this.evs.forEach(ev => {
-            const fn = this.spreadVideoNativeEvent.bind(this, ev);
-            video.addEventListener(ev, fn);
-            this.ugs.push(() => {
-                video.removeEventListener(ev, fn);
-            });
+    set src (src: string) {
+        this.options.src = src;
+        this.mediaDom.src = src;
+        this.initMSE();
+    }
+
+    get poster (): string {
+        return this.mediaDom.poster;
+    }
+
+    set poster (poster: string) {
+        this.mediaDom.poster = poster;
+    }
+
+    getMediaInstance () {
+        if (!this.video) this.video = DOMUtils.createUtilDom('video');
+        return this.video.getInstance();
+    }
+
+    beforeMount () {
+        this.poster = this.options.poster;
+        this.media.addClass('ttplayer--video');
+        this.initVideoComponents();
+    }
+
+    mounted () {
+        this.videoComponents.forEach(comp => {
+            comp.mounted();
         });
-
-        return this;
     }
 
-    protected removeEvents () {
-        this.ugs.forEach(ug => ug());
-        this.ugs = [];
-        return this;
+    beforeDestroy () {
+        this.videoComponents.forEach(comp => comp.beforeDestroy());
     }
 
-    protected bindActions () {
-        const VVideoActions: VideoActionsType = VideoActions;
-        Object.keys(VVideoActions).forEach(item => {
-            const actionName = VVideoActions[item];
-            const fn = (data: any) => {
-                switch (actionName) {
-                    case VideoActions.PlayAction:
-                        this.play();
-                        break;
-                    case VideoActions.PauseAction:
-                        this.pause();
-                        break;
-                    case VideoActions.SeekAction:
-                        this.seek(data);
-                        break;
-                    case VideoActions.VolumeAction:
-                        this.setVolume(data);
-                        break;
-                    case VideoActions.MuteAction:
-                        this.setMuted(data);
-                        break;
-                    case VideoActions.PreloadAction:
-                        this.setPreload(data);
-                        break;
-                    case VideoActions.PosterAction:
-                        this.setPoster(data);
-                        break;
-                    case VideoActions.LoopAction:
-                        this.setLoop(data);
-                        break;
-                    case VideoActions.PlaybackRateAction:
-                        this.setPlaybackRate(data);
-                        break;
-                    case VideoActions.DestroyAction:
-                        this.destroy();
-                        break;
-                    case VideoActions.ScreenShotAction:
-                        this.screenshot();
-                        break;
-                    default:
-                }
-            };
-
-            this.event.on(actionName, fn);
-            this.actUgs.push(() => {
-                this.event.off(actionName, fn);
-            });
-
+    private initVideoComponents () {
+        TTPlayerVideo.videoComponentsCtor.forEach(ctor => {
+            const comp = new ctor(this);
+            comp.beforeMount();
+            this.root.append(comp.root.getInstance());
+            this.videoComponents.push(comp);
         });
-
-        return this;
-    }
-
-    protected removeActions () {
-        this.actUgs.forEach(ug => ug());
-        this.actUgs = [];
         return this;
     }
 
@@ -336,5 +159,27 @@ class TTPlayerVideo extends Plugin {
 
 }
 
-export { DispatchAction };
-export default TTPlayerVideo;
+const TTPlayerVideoFactory = (): typeof TTPlayerVideo => {
+    class T extends TTPlayerVideo {
+
+        constructor (player: TTPlayerCore) {
+            super(player);
+        }
+
+    }
+
+    return T;
+};
+
+abstract class TTPlayerVideoComponent extends TTPlayerMediaComponent<'Video'> {
+
+    constructor (media: TTPlayerMedia<'Video'>) {
+        super(media);
+    }
+
+}
+
+export {
+    TTPlayerVideo, VideoOptions, TTPlayerVideoComponent,
+};
+export default TTPlayerVideoFactory;

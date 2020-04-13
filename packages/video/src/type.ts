@@ -67,7 +67,7 @@ export interface MSEAttributes {
     dashjs: Partial<DashJsOption>;
 }
 
-export interface VideoOptionsType extends Partial<VideoAttributes>, Partial<SpecialVideoAttributes>, Partial<MSEAttributes> {
+export interface IVideoOptions extends Partial<VideoAttributes>, Partial<SpecialVideoAttributes>, Partial<MSEAttributes> {
     [key: string]: any;
 }
 

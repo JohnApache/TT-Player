@@ -14,3 +14,4 @@ export interface SVGOptionsType extends Partial<SVGOptionsAttributes>{
 export interface LocalSvgsMap {
     [key: string]: string;
 }
+

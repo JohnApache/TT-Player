@@ -1,0 +1,47 @@
+import TTPlayerMedia, { TMediaType, TTPlayerMediaComponent } from '../../media/media';
+
+interface GroupComponentCtor<T extends TMediaType> {
+    new (media: TTPlayerMedia<TMediaType>): TTPlayerMediaComponent<T>;
+}
+
+abstract class TTPlayerComponentsGroup<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+
+    static groupComponentsCtor: GroupComponentCtor<TMediaType>[] = [];
+    public groupComponents: TTPlayerMediaComponent<TMediaType>[] = [];
+
+    constructor (media: TTPlayerMedia<T>) {
+        super(media);
+    }
+
+    static use (ctor: GroupComponentCtor<TMediaType>) {
+        this.groupComponentsCtor.push(ctor);
+        return this;
+    }
+
+    beforeMount () {
+        this.renderGroup();
+        this.initGroupComponents();
+    }
+
+    mounted () {
+        this.groupComponents.forEach(comp => comp.mounted());
+    }
+
+    beforeDestroy () {
+        this.groupComponents.forEach(comp => comp.beforeDestroy());
+    }
+
+    abstract renderGroup(): any;
+
+    private initGroupComponents () {
+        TTPlayerComponentsGroup.groupComponentsCtor.forEach(ctor => {
+            const comp = new ctor(this.media);
+            comp.beforeMount();
+            this.groupComponents.push(comp);
+            this.root.append(comp.root.getInstance());
+        });
+    }
+
+}
+
+export default TTPlayerComponentsGroup;

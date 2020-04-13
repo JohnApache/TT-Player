@@ -8,3 +8,10 @@ export const PascalCase = (str: string) => {
     return newStr.charAt(0).toUpperCase() + newStr.slice(1);
 };
 
+export const floatToPercent = (num: number): string => {
+    const MAX_PERCENT = 100;
+    let percent = num * MAX_PERCENT;
+    if (percent < 0) percent = 0;
+    if (percent > MAX_PERCENT) percent = MAX_PERCENT;
+    return `${ percent }%`;
+};

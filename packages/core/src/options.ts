@@ -8,15 +8,26 @@ const DEFAULT_OPTIONS = {
     mediaType: 'video' as MediaType,
 };
 
-class Options {
+class BaseOptions {
+
+    [key: string]: any;
+    storeExtraOptions (options: NormalObject) {
+        Object.keys(options).forEach(item => {
+            if (typeof this[item] !== 'undefined') return;
+            this[item] = options[item];
+        });
+    }
+
+}
+
+class Options extends BaseOptions {
 
     public root: HTMLElement;
     public width: number | string;
     public height: number | string;
     public mediaType: MediaType;
-    [key: string]: any;
-
     constructor (options: Partial<OptionsType>) {
+        super();
         if (!options.root) throw new Error(`root can't be empty`);
         if (typeof options.root === 'string') {
             const root = document.querySelector(options.root);
@@ -38,15 +49,12 @@ class Options {
         }
 
         this.mediaType = options.mediaType || DEFAULT_OPTIONS.mediaType;
-
-        Object.keys(options).forEach(item => {
-            if (typeof this[item] !== 'undefined') return;
-            this[item] = options[item];
-        });
+        this.storeExtraOptions(options);
     }
 
 }
 
+export { BaseOptions };
 export type Selector = 'string';
 export type MediaType = 'video' | 'audio';
 

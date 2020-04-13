@@ -27,6 +27,7 @@
     "url": "https://github.com/JohnApache/TT-Player/issues"
   },
   "dependencies": {
+    "@dking/movable": "^0.0.3",
     "@dking/ttplayer-utils": "^0.0.3",
     "eventemitter3": "^4.0.0"
   }

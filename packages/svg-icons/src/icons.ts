@@ -1,4 +1,6 @@
-export default {
+import { LocalSvgsMap } from './type';
+
+const SVGLocalIcons = {
     'small-play' : 'M73.6 47.4q1.4 1 1.4 2.6 0 1.4 -1.4 2.4l-42.8 26.6q-2.4 1.6 -4.1 0.6t-1.7 -4v-51.4q0 -3 1.7 -4t4.1 0.6z',
     'small-pause': 'M67.4375 15q9 0 9 6.4v57q0 6.6 -9 6.6t-9 -6.6v-57q0 -6.4 9 -6.4zM32.4375 15q9 0 9 6.4v57q0 6.6 -9 6.6t-9 -6.6v-57q0 -6.4 9 -6.4z',
 
@@ -20,5 +22,10 @@ export default {
 
     play : 'M56.25 35.449L79.102 50L56.25 64.551zM33.398 20.898L56.25 35.449L56.25 64.551L33.398 79.102z',
     pause: 'M58.398 20.898h16.602v58.203h-16.602v-58.203zM25 79.102v-58.203h16.602v58.203h-16.602z',
-
 };
+
+type SVGName = keyof typeof SVGLocalIcons;
+
+export { SVGName };
+
+export default SVGLocalIcons as LocalSvgsMap;

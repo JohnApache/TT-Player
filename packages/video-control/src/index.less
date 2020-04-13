@@ -12,6 +12,7 @@
         top: 0;
         height: 100%;
         padding-left: 20px;
+       
     }
     .right--container {
         position: absolute;
@@ -27,7 +28,7 @@
         align-items: center;
         .icon--container {
             display: inline-block;
-            margin-right: 10px;
+            margin: 0 5px;
             .icon__svg--wrapper {
                 position: relative;
                 width: 30px;
@@ -42,40 +43,53 @@
                 }
             }
         }
-        .volume--button {
-            display: flex;
-            align-items: center;
-            .volume__bar--outer {
+        
+    }
+
+    .time__text--wrapper {
+        font-size: 13px;
+        color: #eee;
+        text-shadow: 0 0 2px rgba(0,0,0,.5);
+    }
+
+    .control__volume--container {
+        display: flex;
+        align-items: center;
+        .volume__bar--wrapper {
+            .volume__bar--outter {
                 height: 4px;
                 width: 100px;
                 background-color: #eee;
+                position: relative;
+                &.muted {
+                    .volume__bar--inner {
+                        background-color: #aaa;
+                    }
+                    .volume--thumb {
+                        background-color: #aaa;
+                    }
+                }
                 .volume__bar--inner {
                     width: 0%;
                     height: 100%;
                     position: relative;
                     background-color: pink;
-                    .volume--thumb {
-                        position: absolute;
-                        cursor: pointer;
-                        width: 10px;
-                        height: 10px;
-                        left: 0;
-                        top: 50%;
-                        transform: translate(-50%, -50%);
-                        background-color: pink;
-                        border-radius: 50%;
-                    }
+                }
+                .volume--thumb {
+                    position: absolute;
+                    cursor: pointer;
+                    width: 10px;
+                    height: 10px;
+                    left: 0;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: pink;
+                    border-radius: 50%;
                 }
             }
         }
-        .time__text--wrapper {
-            font-size: 13px;
-            color: #eee;
-            text-shadow: 0 0 2px rgba(0,0,0,.5);
-        }
     }
-
-    .progress__bar--container {
+    .ttplayer__progress--container {
         position: absolute;
         left: 10px;
         right: 10px;
@@ -84,18 +98,18 @@
         padding: 5px 10px;
         box-sizing: border-box;
         cursor: pointer;
-        .progress__bar--outter {
+        .ttplayer__progress--duration {
             position: relative;
             width: 100%;
             height: 100%;
             margin: 0 auto;
             background-color: #eee;
-            .progress__bar--inner {
+            .ttplayer__progress--current {
                 height: 100%;
                 width: 0;
                 background-color: yellowgreen;
             }
-            .progress--thumb {
+            .ttplayer__progress--thumb {
                 position: absolute;
                 cursor: pointer;
                 width: 10px;

@@ -1,12 +1,10 @@
 import pasition from 'pasition';
 import SVGOptions from './options';
-import { SVGOptionsType, LocalSvgsMap } from './type';
-import SVGLocalIcons from './icons';
+import { SVGOptionsType } from './type';
+import SVGLocalIcons, { SVGName } from './icons';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 
 const DEFAULT_PASITION_TIME = 100;
-
-type SVGName = keyof typeof SVGLocalIcons;
 
 class SVGIcons {
 
@@ -14,7 +12,6 @@ class SVGIcons {
     public icon: DOMUtils<HTMLDivElement>;
     public svgDom: HTMLElement;
     public pathDom: HTMLElement;
-    public localSvgsMap: LocalSvgsMap;
 
     constructor (options: SVGOptionsType) {
         this.options = new SVGOptions(options);
@@ -35,7 +32,6 @@ class SVGIcons {
 
         this.svgDom = this.icon.findDom('svg.icon--svg') as HTMLElement;
         this.pathDom = this.icon.findDom('path.icon__svg--path') as HTMLElement;
-        this.localSvgsMap = SVGLocalIcons;
     }
 
     init () {
@@ -61,7 +57,7 @@ class SVGIcons {
         } = this.options;
         let renderPath: string = path;
         if (svgName) {
-            renderPath = this.localSvgsMap[svgName] || path;
+            renderPath = SVGLocalIcons[svgName] || path;
             this.svgDom.setAttribute('viewBox', viewBox.join(' '));
         }
         this.pathDom.setAttribute('d', renderPath);
@@ -69,29 +65,29 @@ class SVGIcons {
     }
 
     public updatePathTo (path: string) {
-        const renderPath: string = this.localSvgsMap[path] || path;
+        const renderPath: string = SVGLocalIcons[path] || path;
         return this.setPath(renderPath);
     }
 
     public animatePathTo (path: string) {
-        const renderPath: string = this.localSvgsMap[path] || path;
+        const renderPath: string = SVGLocalIcons[path] || path;
         const currentPath = this.pathDom.getAttribute('d') || '';
         return this.pasitionSvg(currentPath, renderPath);
     }
 
     public updatePathBySvgName (svgName: SVGName) {
-        const renderPath: string = this.localSvgsMap[svgName];
+        const renderPath: string = SVGLocalIcons[svgName];
         if (!renderPath) return this;
         return this.setPath(renderPath);
     }
 
     public animatePathBySvgName (svgName: SVGName) {
-        const renderPath: string = this.localSvgsMap[svgName];
+        const renderPath: string = SVGLocalIcons[svgName];
         if (!renderPath) return this;
         return this.animatePathTo(renderPath);
     }
 
-    public setPath (path: SVGName | string) {
+    public setPath (path: string) {
         this.pathDom.setAttribute('d', path);
         return this;
     }
