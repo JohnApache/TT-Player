@@ -1,11 +1,11 @@
 const PlayerHooks = {
-    BeforeInit   : 'beforeInit',
-    Ready        : 'ready',
-    BeforeRender : 'beforeRender',
-    Rendered     : 'rendered',
-    BeforeDestroy: 'beforeDestroy',
-    Destroyed    : 'destroyed',
-    Error        : 'error',
+    BeforeInit   : 'BeforeInit',
+    Ready        : 'Ready',
+    BeforeRender : 'BeforeRender',
+    Rendered     : 'Rendered',
+    BeforeDestroy: 'BeforeDestroy',
+    Destroyed    : 'Destroyed',
+    Error        : 'Error',
 };
 
 export default PlayerHooks;
