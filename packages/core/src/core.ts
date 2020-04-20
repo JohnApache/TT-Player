@@ -17,7 +17,7 @@ class TTPlayerCore {
     public options: Options;
     public root: DOMUtils<HTMLDivElement>;
     public container: HTMLElement;
-    public medias: TTPlayerMedia<TMediaType>[] = []
+    public medias: TTPlayerMedia<TMediaType>[] = [];
 
     constructor (options: Partial<OptionsType>) {
         this.event = new EventEmitter();
