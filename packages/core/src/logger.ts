@@ -19,7 +19,7 @@ interface ILoggerOptions {
     prefix: string;
 }
 
-const DEFAULT_LOG_PREFIX = 'TTPlayer';
+const DEFAULT_LOG_PREFIX = 'TTPLAYER_LOG';
 const DEFAULT_LOG_OPTIONS: ILoggerOptions = {
     info  : true,
     debug : true,
