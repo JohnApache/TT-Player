@@ -1,5 +1,5 @@
 import {
-    TTPlayerCore, TTPlayerLoading, TTPlayerError, TTPlayerMedia,
+    TTPlayerCore, TTPlayerLoading, TTPlayerError, TTPlayerMedia, TTPlayerPIP,
 } from '@dking/ttplayer-core';
 import { TTPlayerVideo } from '@dking/ttplayer-video';
 import TTPlayerVideoPlayButton from '@dking/ttplayer-video-play-button';
@@ -53,11 +53,35 @@ class ErrorComponent extends TTPlayerError<'Video'> {
 
 }
 
+class PIPComponent extends TTPlayerPIP {
+
+    constructor (media: TTPlayerMedia<'Video'>) {
+        super(media);
+    }
+
+    renderPIP () {
+        this.root
+            .addClass('pip--button')
+            .html('画中画');
+    }
+
+    onEnterPIP () {}
+    onLeavePIP () {
+        setTimeout(() => {
+            this.media.play();
+        }, 0);
+    }
+
+    onResizePIPWindows () {}
+
+}
+
 TTPlayerVideo
     .use(TTPlayerVideoPlayButton)
     .use(TTPlayerVideoControl)
     .use(LoadingComponent)
-    .use(ErrorComponent);
+    .use(ErrorComponent)
+    .use(PIPComponent);
 
 TTPlayerCore
     .use(TTPlayerVideo);

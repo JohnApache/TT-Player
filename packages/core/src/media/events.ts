@@ -36,4 +36,9 @@ export const MEDIA_NATIVE_EVENTS: string[] = [
     'stalled', // 事件在浏览器获取媒体数据，但媒体数据不可用时触发,
     'suspend', // 事件在浏览器读取媒体数据中止时触发。
     'emptied', // 当前播放列表为空时触发, 媒体被清空（初始化）时触发。
+
+    /** Video New Events **/
+    'enterpictureinpicture', // 进入 PIP 模式
+    'leavepictureinpicture', // 离开 PIP 模式
+
 ];

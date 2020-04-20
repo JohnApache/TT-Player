@@ -15,6 +15,7 @@ import TTPlayerFullscreen from './components/fullscreen';
 import TTPlayerScreenshot from './components/screenshot';
 import TTPlayerLoading from './components/loading';
 import TTPlayerError from './components/error';
+import TTPlayerPIP from './components/pip';
 
 import TTPlayerComponentsGroup from './components/components-group';
 import {
@@ -45,6 +46,7 @@ export {
     TTPlayerScreenshot,
     TTPlayerLoading,
     TTPlayerError,
+    TTPlayerPIP,
     TTPlayerComponentsGroup,
 };
 
