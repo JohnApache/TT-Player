@@ -14,16 +14,19 @@ abstract class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
 
     beforeMount () {
         super.beforeMount();
+        this.logger.info('TTPlayerLoading beforeMount');
         this.renderLoading();
         this.bindLoadingEvents();
     }
 
     mounted () {
         super.mounted();
+        this.logger.info('TTPlayerLoading mounted');
     }
 
     beforeDestroy () {
         super.beforeDestroy();
+        this.logger.info('TTPlayerLoading beforeDestroy');
         this.removeLoadingEvents();
     }
 
@@ -57,6 +60,7 @@ abstract class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
         if (this.timerId) clearTimeout(this.timerId);
         this.timerId = setTimeout(() => {
             this.loading = true;
+            this.logger.info('show media loading');
             this.showLoading();
         });
     }

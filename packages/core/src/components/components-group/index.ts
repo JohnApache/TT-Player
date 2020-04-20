@@ -19,15 +19,18 @@ abstract class TTPlayerComponentsGroup<T extends TMediaType> extends TTPlayerMed
     }
 
     beforeMount () {
+        this.logger.info('TTPlayerComponentsGroup beforeMount');
         this.renderGroup();
         this.initGroupComponents();
     }
 
     mounted () {
+        this.logger.info('TTPlayerComponentsGroup mounted');
         this.groupComponents.forEach(comp => comp.mounted());
     }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerComponentsGroup beforeDestroy');
         this.groupComponents.forEach(comp => comp.beforeDestroy());
     }
 

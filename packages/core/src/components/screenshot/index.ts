@@ -11,13 +11,17 @@ abstract class TTPlayerScreenshot extends TTPlayerMediaComponent<'Video'> {
     abstract getScreenshotImageName(): string;
 
     beforeMount () {
+        this.logger.info('TTPlayerScreenshot beforeMount');
         this.renderScreenshot();
         this.bindScreenshotEvents();
     }
 
-    mounted () {}
+    mounted () {
+        this.logger.info('TTPlayerScreenshot mounted');
+    }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerScreenshot beforeDestroy');
         this.removeScreenshotEvents();
     }
 
@@ -30,6 +34,7 @@ abstract class TTPlayerScreenshot extends TTPlayerMediaComponent<'Video'> {
     }
 
     private handleScreenshot () {
+        this.logger.info('click screenshot button');
         const canvas = document.createElement('canvas');
         const width = this.media.media.width();
         const height = this.media.media.height();

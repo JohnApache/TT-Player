@@ -33,13 +33,17 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
     }
 
     beforeMount () {
+        this.logger.info('TTPlayerPIP beforeMount');
         this.renderPIP();
         this.bindPIPEvents();
     }
 
-    mounted () {}
+    mounted () {
+        this.logger.info('TTPlayerPIP mounted');
+    }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerPIP beforeDestroy');
         this.removePIPEvents();
     }
 
@@ -74,6 +78,7 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
     }
 
     private handleClickPIP () {
+        this.logger.info('click PIP button');
         if (!document.pictureInPictureEnabled) return;
         if (document.pictureInPictureElement) {
             this.closePIP();
@@ -83,18 +88,20 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
     }
 
     private async openPIP () {
+        this.logger.info('try open PIP mode');
         try {
             this.pipWindows = await this.mediaDom.requestPictureInPicture();
             if (this.pipWindows) {
                 this.pipWindows.addEventListener('resize', this.handleResizePIPWindows);
             }
         } catch (error) {
-            this.logger.error('open pip mode failed');
+            this.logger.error('open PIP mode failed');
             this.logger.error(error);
         }
     }
 
     private async closePIP () {
+        this.logger.info('try exit PIP mode');
         try {
             await document.exitPictureInPicture();
             if (this.pipWindows) {
@@ -103,11 +110,14 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
             }
         } catch (error) {
             this.logger.error(error);
-            this.logger.error('exit pip mode failed');
+            this.logger.error('exit PIP mode failed');
         }
     }
 
     private handleResizePIPWindows () {
+        if (!this.pipWindows) return;
+        this.logger.info('pipWindows resize');
+        this.logger.debug(`pipWindows width: ${ this.pipWindows.width } height: ${ this.pipWindows.height }`);
         this.onResizePIPWindows();
     }
 

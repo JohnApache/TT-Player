@@ -15,14 +15,16 @@ abstract class TTPlayerPlayButton<T extends TMediaType> extends TTPlayerMediaCom
     abstract onPause(e: Event): any;
 
     beforeMount () {
+        this.logger.info('TTPlayerPlayButton beforeMount');
         this.bindEvents();
     }
 
     mounted () {
-
+        this.logger.info('TTPlayerPlayButton mounted');
     }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerPlayButton beforeDestroy');
         this.removeEvents();
     }
 
@@ -53,6 +55,7 @@ abstract class TTPlayerPlayButton<T extends TMediaType> extends TTPlayerMediaCom
     }
 
     private handleClick () {
+        this.logger.info('click play button');
         if (this.paused) {
             this.media.play();
             return;

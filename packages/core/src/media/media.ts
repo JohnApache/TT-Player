@@ -38,6 +38,8 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         this.mediaDom = mediaElement;
         this.media = new DOMUtils(mediaElement);
         this.options = new MediaOptions(player.options.media);
+        this.logger.info('media type', this.mediaType);
+        this.logger.info('media options', this.options);
     }
 
     abstract getMediaInstance(): IMediaTypeMap[T];
@@ -46,6 +48,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     abstract beforeDestroy(): any;
 
     public init () {
+        this.logger.info(`media init`);
         this.bindEvents()
             .render();
         return this;
@@ -72,11 +75,14 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         this.autoplay = autoplay;
         this.controls = controls;
         this.preload = preload;
+
+        this.logger.info(`media render`);
         this.root.prepend(this.mediaDom);
         return this;
     }
 
     public destroy () {
+        this.logger.info(`media destroy`);
         this.beforeDestroy();
         this.removeEvents();
         return this;
@@ -87,6 +93,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set src (src: string) {
+        this.logger.info(`media set src ${ src }`);
         this.mediaDom.src = src;
     }
 
@@ -95,6 +102,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set autoplay (autoplay: boolean) {
+        this.logger.info(`media set autoplay ${ autoplay }`);
         this.mediaDom.autoplay = autoplay;
     }
 
@@ -103,6 +111,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set controls (controls: boolean) {
+        this.logger.info(`media set controls ${ controls }`);
         this.mediaDom.controls = controls;
     }
 
@@ -111,6 +120,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set volume (volume: number) {
+        this.logger.info(`media set volume ${ volume }`);
         this.mediaDom.volume = volume;
         this.event.emit('volumechange');
 
@@ -122,6 +132,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set muted (muted: boolean) {
+        this.logger.info(`media set muted ${ muted }`);
         this.mediaDom.muted = muted;
         this.event.emit('volumechange');
 
@@ -133,6 +144,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set preload (preload: TMediaPreload) {
+        this.logger.info(`media set preload ${ preload }`);
         this.mediaDom.preload = preload;
     }
 
@@ -141,6 +153,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set loop (loop: boolean) {
+        this.logger.info(`media set loop ${ loop }`);
         this.mediaDom.loop = loop;
     }
 
@@ -149,14 +162,17 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set playbackRate (playbackRate: number) {
+        this.logger.info(`media set playbackRate ${ playbackRate }`);
         this.mediaDom.playbackRate = playbackRate;
     }
 
     public play (): Promise<void> {
+        this.logger.info(`media play`);
         return this.mediaDom.play();
     }
 
     public pause () {
+        this.logger.info(`media pause`);
         this.mediaDom.pause();
     }
 
@@ -166,6 +182,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         if (nextTime < 0) nextTime = 0;
         if (nextTime > media.duration) nextTime = media.duration;
         media.currentTime = nextTime;
+        this.logger.info(`media seek to ${ nextTime }`);
         return this;
     }
 
@@ -190,9 +207,11 @@ abstract class TTPlayerMedia<T extends TMediaType> {
             const prom = this.play();
             prom
                 .then(() => {
+                    this.logger.info('media autoplay success');
                     this.event.emit('AutoplaySuccess');
                 })
                 .catch(() => {
+                    this.logger.error('media autoplay failed');
                     this.event.emit('AutoplayFailed');
                 });
         });

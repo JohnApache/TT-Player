@@ -11,12 +11,19 @@ abstract class TTPlayerVolumeButton<T extends TMediaType> extends TTPlayerVolume
 
     beforeMount () {
         super.beforeMount();
+        this.logger.info('TTPlayerVolumeButton beforeMount');
         this.bindButtonEvents();
         this.renderVolumeButton();
     }
 
+    mounted () {
+        super.mounted();
+        this.logger.info('TTPlayerVolumeButton mounted');
+    }
+
     beforeDestroy () {
         super.beforeDestroy();
+        this.logger.info('TTPlayerVolumeButton beforeDestroy');
         this.removeButtonEvents();
     }
 
@@ -31,6 +38,7 @@ abstract class TTPlayerVolumeButton<T extends TMediaType> extends TTPlayerVolume
     }
 
     private handleClickVolumeButton () {
+        this.logger.info('click volume button');
         this.mediaDom.muted = !this.muted;
     }
 

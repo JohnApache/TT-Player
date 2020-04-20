@@ -16,13 +16,17 @@ abstract class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent
     abstract renderTime(): any;
 
     beforeMount () {
+        this.logger.info('TTPlayerTime beforeMount');
         this.renderTime();
         this.bindTimeEvents();
     }
 
-    mounted () {}
+    mounted () {
+        this.logger.info('TTPlayerTime mounted');
+    }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerTime beforeDestroy');
         this.removeTimeEvents();
     }
 
@@ -40,11 +44,13 @@ abstract class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent
 
     private handleDurationChange (e: Event) {
         this.duration = this.mediaDom.duration;
+        this.logger.debug('duration change to', this.duration);
         this.onDurationChange(e);
     }
 
     private handleTimeUpdate (e: Event) {
         this.currentTime = this.mediaDom.currentTime;
+        this.logger.debug('time update to', this.currentTime);
         this.onTimeUpdate(e);
     }
 

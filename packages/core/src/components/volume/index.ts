@@ -12,12 +12,16 @@ abstract class TTPlayerVolume<T extends TMediaType> extends TTPlayerMediaCompone
     }
 
     beforeMount () {
+        this.logger.info('TTPlayerVolume beforeMount');
         this.bindVolumeEvents();
     }
 
-    mounted () {}
+    mounted () {
+        this.logger.info('TTPlayerVolume mounted');
+    }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerVolume beforeDestroy');
         this.removeVolumeEvents();
     }
 

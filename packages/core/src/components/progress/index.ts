@@ -26,6 +26,7 @@ abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
 
     beforeMount () {
         super.beforeMount();
+        this.logger.info('TTPlayerProgress beforeMount');
         this.renderProgress();
     }
 
@@ -33,11 +34,13 @@ abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
 
     mounted () {
         super.mounted();
+        this.logger.info('TTPlayerProgress mounted');
         this.bindProgressEvents();
     }
 
     beforeDestroy () {
         super.beforeMount();
+        this.logger.info('TTPlayerProgress beforeDestroy');
         this.removeProgressEvents();
     }
 
@@ -108,6 +111,7 @@ abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
     }
 
     private handleClickProgress (e: Event) {
+        this.logger.info('click progress bar');
         if (e.target === this.thumb.getInstance()) return;
         /* eslint-disable */
         const offsetX = (e as MouseEvent).offsetX;

@@ -12,13 +12,17 @@ abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponen
     }
 
     beforeMount () {
+        this.logger.info('TTPlayerError beforeMount');
         this.renderError();
         this.bindErrorEvents();
     }
 
-    mounted () {}
+    mounted () {
+        this.logger.info('TTPlayerError mounted');
+    }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerError beforeDestroy');
         this.removeErrorEvents();
     }
 
@@ -39,12 +43,16 @@ abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponen
     private showMediaError (error: Error) {
         this.error = error;
         this.isError = true;
+        this.logger.error('show media error');
+        this.logger.error(`media src: ${ this.media.src }`);
+        this.logger.error(error);
         this.showError();
     }
 
     private hideMediaError () {
         this.error = null;
         this.isError = false;
+        this.logger.info('hide media error');
         this.hideError();
     }
 

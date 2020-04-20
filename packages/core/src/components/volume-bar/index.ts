@@ -27,17 +27,20 @@ abstract class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T>
 
     beforeMount () {
         super.beforeMount();
+        this.logger.info('TTPlayerVolumeBar beforeMount');
         this.init();
         this.renderVolumeBar();
     }
 
     mounted () {
         super.mounted();
+        this.logger.info('TTPlayerVolumeBar mounted');
         this.bindVolumeBarEvents();
     }
 
     beforeDestroy () {
         super.beforeDestroy();
+        this.logger.info('TTPlayerVolumeBar beforeDestroy');
         this.removeVolumeBarEvents();
     }
 
@@ -103,6 +106,7 @@ abstract class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T>
     }
 
     private handleClickVolumeBar (e: Event) {
+        this.logger.info('click volume bar');
         if (e.target === this.thumb.getInstance()) return;
         /* eslint-disable */
         const offsetX = (e as MouseEvent).offsetX;
