@@ -44,7 +44,7 @@ const formatTime = (timestamp: number): string => {
 };
 
 const logger = (prefix: string, logType: keyof ILogger, flag: boolean, ...content: any[]) => {
-    console[logType](prefix, formatTime(Date.now()), ...content);
+    flag && console[logType](prefix, formatTime(Date.now()), ...content);
 };
 
 const CreateLogger = (logOptions?: boolean | Partial<ILoggerOptions>): ILogger => {
