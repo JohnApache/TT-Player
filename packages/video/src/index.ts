@@ -123,6 +123,9 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
             switch (type) {
                 case 'flv':
                     this.__flv__ = initFlvMSE(src, video, flvjs);
+                    this.__flv__.on('error', error => {
+                        this.event.emit('error', error);
+                    });
                     break;
                 case 'hls':
                     this.__hls__ = initHlsMSE(src, video, hlsjs);

@@ -109,6 +109,9 @@ abstract class TTPlayerMedia<T extends TMediaType> {
 
     set volume (volume: number) {
         this.mediaDom.volume = volume;
+        this.event.emit('volumechange');
+
+        /* Bugs: 使用 JavaScript 直接更改音量，没有界面操作行为，不会触发 volumechange 事件。 */
     }
 
     get muted (): boolean {
@@ -117,6 +120,9 @@ abstract class TTPlayerMedia<T extends TMediaType> {
 
     set muted (muted: boolean) {
         this.mediaDom.muted = muted;
+        this.event.emit('volumechange');
+
+        /* Bugs: 使用 JavaScript 直接更改音量，没有界面操作行为，不会触发 volumechange 事件。 */
     }
 
     get preload (): TMediaPreload {
@@ -160,7 +166,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         return this;
     }
 
-    private spreadVideoNativeEvent (ev: string, data: any) {
+    private spreadMediaNativeEvent (ev: string, data: any) {
         this.event.emit(ev, data);
         return this;
     }
@@ -168,11 +174,24 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     protected bindEvents () {
         const media = this.media.getInstance();
         this.evs.forEach(ev => {
-            const fn = this.spreadVideoNativeEvent.bind(this, ev);
+            const fn = this.spreadMediaNativeEvent.bind(this, ev);
             media.addEventListener(ev, fn);
             this.ugs.push(() => {
                 media.removeEventListener(ev, fn);
             });
+        });
+
+        this.event.once('canplay', () => {
+            const { autoplay } = this.options;
+            if (!autoplay) return;
+            const prom = this.play();
+            prom
+                .then(() => {
+                    this.event.emit('AutoplaySuccess');
+                })
+                .catch(() => {
+                    this.event.emit('AutoplayFailed');
+                });
         });
         return this;
     }

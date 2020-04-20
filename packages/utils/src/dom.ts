@@ -251,6 +251,16 @@ class DOMUtils <K extends HTMLElementMap> {
         this.css('width', w);
     }
 
+    hide () {
+        this.css('display', 'none');
+        return this;
+    }
+
+    show () {
+        this.css('display', 'block');
+        return this;
+    }
+
     getBoundingClientRect () {
         return this.element.getBoundingClientRect();
     }

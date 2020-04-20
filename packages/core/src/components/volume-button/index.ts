@@ -4,8 +4,6 @@ import TTPlayerVolume from '../volume';
 // TODO MIXINS 多重继承
 abstract class TTPlayerVolumeButton<T extends TMediaType> extends TTPlayerVolume<T> {
 
-    public volume: number = 0;
-    public muted: boolean = false;
     constructor (media: TTPlayerMedia<T>) {
         super(media);
         this.handleClickVolumeButton = this.handleClickVolumeButton.bind(this);

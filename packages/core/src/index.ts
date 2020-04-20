@@ -13,6 +13,8 @@ import TTPlayerVolume from './components/volume';
 import TTPlayerVolumeButton from './components/volume-button';
 import TTPlayerFullscreen from './components/fullscreen';
 import TTPlayerScreenshot from './components/screenshot';
+import TTPlayerLoading from './components/loading';
+import TTPlayerError from './components/error';
 
 import TTPlayerComponentsGroup from './components/components-group';
 import {
@@ -41,6 +43,8 @@ export {
     TTPlayerVerticalVolumeBar,
     TTPlayerFullscreen,
     TTPlayerScreenshot,
+    TTPlayerLoading,
+    TTPlayerError,
     TTPlayerComponentsGroup,
 };
 

@@ -115,6 +115,7 @@ class TTPlayerVideoControl extends TTPlayerVideoComponent {
 
 }
 
+
 TTPlayerVideoControl
     .useInLeft(ControlPlay)
     .useInLeft(ControlVolume)
@@ -122,6 +123,5 @@ TTPlayerVideoControl
     .useInRight(ControlFullscreen)
     .useInRight(ControlScreenShot)
     .use(ControlProgress);
-
 
 export default TTPlayerVideoControl;

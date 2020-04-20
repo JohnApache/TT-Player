@@ -2,10 +2,12 @@ import TTPlayerMedia, { TTPlayerMediaComponent, TMediaType } from '../../media/m
 
 abstract class TTPlayerVolume<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
-    public volume: number = 0;
-    public muted: boolean = false;
+    public volume: number;
+    public muted: boolean
     constructor (media: TTPlayerMedia<T>) {
         super(media);
+        this.volume = media.volume;
+        this.muted = media.muted;
         this.handleVolumeChange = this.handleVolumeChange.bind(this);
     }
 
