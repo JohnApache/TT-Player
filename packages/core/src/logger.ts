@@ -37,14 +37,14 @@ const fillTime = (t: number): string => {
 const formatTime = (timestamp: number): string => {
     const date = new Date(timestamp);
     const h = date.getHours();
-    const m = date.getHours();
-    const s = date.getHours();
+    const m = date.getMinutes();
+    const s = date.getSeconds();
     const ms = date.getMilliseconds();
-    return `[${ fillTime(h) }:${ fillTime(m) }:${ fillTime(s) }:${ ms }]`;
+    return `${ fillTime(h) }:${ fillTime(m) }:${ fillTime(s) }:${ ms }`;
 };
 
 const logger = (prefix: string, logType: keyof ILogger, flag: boolean, ...content: any[]) => {
-    flag && console[logType](prefix, formatTime(Date.now()), ...content);
+    flag && console[logType](`[${ prefix }][${ formatTime(Date.now()) }]`, ...content);
 };
 
 const CreateLogger = (logOptions?: boolean | Partial<ILoggerOptions>): ILogger => {

@@ -139,7 +139,7 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
                 default:
             }
         } catch (error) {
-            console.log(error);
+            this.logger.log(error);
             throw error;
         }
 

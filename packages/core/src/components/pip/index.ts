@@ -60,12 +60,12 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
     }
 
     private handleEnterPIP () {
-        console.log('enter PIP mode');
+        this.logger.info('enter PIP mode');
         this.onEnterPIP();
     }
 
     private handleLeavePIP () {
-        console.log('exit PIP mode');
+        this.logger.info('exit PIP mode');
         if (this.pipWindows) {
             this.pipWindows.removeEventListener('resize', this.handleResizePIPWindows);
             this.pipWindows = null;
@@ -89,8 +89,8 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
                 this.pipWindows.addEventListener('resize', this.handleResizePIPWindows);
             }
         } catch (error) {
-            console.log(error);
-            console.log('open pip mode failed');
+            this.logger.error('open pip mode failed');
+            this.logger.error(error);
         }
     }
 
@@ -102,8 +102,8 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
                 this.pipWindows = null;
             }
         } catch (error) {
-            console.log(error);
-            console.log('exit pip mode failed');
+            this.logger.error(error);
+            this.logger.error('exit pip mode failed');
         }
     }
 

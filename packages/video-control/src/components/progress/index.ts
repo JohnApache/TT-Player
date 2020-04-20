@@ -16,7 +16,7 @@ class ControlProgress extends TTPlayerProgress<'Video'> {
     }
 
     updateProgress (rate: number) {
-        console.log(rate);
+        this.logger.info(rate);
     }
 
 }
