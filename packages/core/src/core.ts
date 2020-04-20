@@ -2,6 +2,7 @@ import EventEmitter from 'eventemitter3';
 import Options, { OptionsType } from './options';
 import PlayerHooks from './hooks';
 import TTPlayerMedia, { TMediaType } from './media/media';
+import CreateLogger, { ILogger } from './logger';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 
 interface TTPlayerMediaCtor<T extends TMediaType> {
@@ -17,12 +18,14 @@ class TTPlayerCore {
     public options: Options;
     public root: DOMUtils<HTMLDivElement>;
     public container: HTMLElement;
+    public logger: ILogger;
     public medias: TTPlayerMedia<TMediaType>[] = [];
 
     constructor (options: Partial<OptionsType>) {
         this.event = new EventEmitter();
         this.options = new Options(options);
         this.container = this.options.root;
+        this.logger = CreateLogger(this.options.logger);
         this.root = DOMUtils.createUtilDom('div');
     }
 

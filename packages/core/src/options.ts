@@ -1,11 +1,30 @@
 import { NormalObject } from './type';
 
+type Selector = 'string';
+type MediaType = 'video' | 'audio';
+
+interface ILoggerOptions {
+    info: boolean;
+    debug: boolean;
+    log: boolean;
+    error: boolean;
+    warn: boolean;
+}
+
+interface OptionsType extends NormalObject {
+    root: Selector | HTMLElement;
+    width: number | string;
+    height: number | string;
+    mediaType: MediaType;
+    logger: boolean | Partial<ILoggerOptions>;
+}
 
 const DEFAULT_OPTIONS = {
     root     : '' as Selector,
     width    : 600,
     height   : 300,
     mediaType: 'video' as MediaType,
+    logger   : false,
 };
 
 class BaseOptions {
@@ -26,6 +45,7 @@ class Options extends BaseOptions {
     public width: number | string;
     public height: number | string;
     public mediaType: MediaType;
+    public logger: boolean | Partial<ILoggerOptions>;
     constructor (options: Partial<OptionsType>) {
         super();
         if (!options.root) throw new Error(`root can't be empty`);
@@ -49,20 +69,18 @@ class Options extends BaseOptions {
         }
 
         this.mediaType = options.mediaType || DEFAULT_OPTIONS.mediaType;
+        this.logger = options.logger || DEFAULT_OPTIONS.logger;
         this.storeExtraOptions(options);
     }
 
 }
 
-export { BaseOptions };
-export type Selector = 'string';
-export type MediaType = 'video' | 'audio';
+export {
+    BaseOptions,
+    OptionsType,
+    Selector,
+    MediaType,
+};
 
-export interface OptionsType extends NormalObject {
-    root: Selector | HTMLElement;
-    width: number | string;
-    height: number | string;
-    mediaType: MediaType;
-}
 
 export default Options;

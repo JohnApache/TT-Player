@@ -1,5 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import { TTPlayerCore } from '../core';
+import { ILogger } from '../logger';
 import { MEDIA_NATIVE_EVENTS } from './events';
 import MediaOptions, { TMediaPreload } from './options';
 import TTPlayerMediaComponent from './component';
@@ -21,6 +22,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     public root: DOMUtils<HTMLElement>;
     public media: DOMUtils<IMediaTypeMap[T]>;
     public mediaDom: IMediaTypeMap[T];
+    public logger: ILogger;
     public evs = MEDIA_NATIVE_EVENTS
     public ugs: Function[] = [];
     public event: EventEmitter;
@@ -31,6 +33,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         this.player = player;
         this.root = this.player.root;
         this.event = player.event;
+        this.logger = this.player.logger;
         const mediaElement = this.getMediaInstance();
         this.mediaDom = mediaElement;
         this.media = new DOMUtils(mediaElement);

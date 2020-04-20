@@ -1,6 +1,7 @@
 export const isString = (data: any): data is string => typeof data === 'string';
 export const isNumber = (data: any): data is number => typeof data === 'number';
 export const isUndefined = (data: any): data is undefined => typeof data === 'undefined';
+export const isBoolean = (data: any): data is boolean => typeof data === 'boolean';
 
 export const PascalCase = (str: string) => {
     const regex = /-(\w)/g;
