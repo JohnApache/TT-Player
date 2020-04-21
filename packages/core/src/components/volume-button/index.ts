@@ -39,7 +39,7 @@ abstract class TTPlayerVolumeButton<T extends TMediaType> extends TTPlayerVolume
 
     private handleClickVolumeButton () {
         this.logger.info('click volume button');
-        this.mediaDom.muted = !this.muted;
+        this.media.muted = !this.muted;
     }
 
 }

@@ -36,6 +36,8 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
             ...player.options.media,
             ...player.options.video,
         });
+
+        this.handleInitMSEError = this.handleInitMSEError.bind(this);
     }
 
     static use (videoComponentCtor: TTPlayerVideoComponentCtor) {
@@ -43,9 +45,14 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
         return this;
     }
 
+    get src (): string {
+        return this.mediaDom.src;
+    }
+
     set src (src: string) {
         this.options.src = src;
         this.mediaDom.src = src;
+        this.logger.info(`TTPlayerVideo set src ${ src }`);
         this.initMSE();
     }
 
@@ -54,6 +61,7 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
     }
 
     set poster (poster: string) {
+        this.logger.info(`TTPlayerVideo set poster ${ poster }`);
         this.mediaDom.poster = poster;
     }
 
@@ -89,10 +97,12 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
     }
 
     private initMSE () {
+        this.logger.info('TTPlayerVideo init MSE');
         this.clearMSE();
         let {
             type, src, flvjs, hlsjs, dashjs, webtorrent,
         } = this.options;
+        this.logger.debug('TTPlayerVideo init options', this.options);
         const video = this.video.getInstance();
         if (type === 'auto') {
             if ((/m3u8(#|\?|$)/i).exec(src)) {
@@ -117,29 +127,34 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
             type = 'normal';
         }
 
+        this.logger.info('TTPlayerVideo current mse type', type);
         this.options.type = type;
 
         try {
             switch (type) {
                 case 'flv':
                     this.__flv__ = initFlvMSE(src, video, flvjs);
-                    this.__flv__.on('error', error => {
-                        this.event.emit('error', error);
-                    });
+                    this.__flv__.on('error', this.handleInitMSEError);
                     break;
                 case 'hls':
                     this.__hls__ = initHlsMSE(src, video, hlsjs);
+                    this.__hls__.on('hlsError', this.handleInitMSEError);
                     break;
                 case 'dash':
                     this.__dash__ = initDashMSE(src, video, dashjs);
+                    this.__dash__.on('error', this.handleInitMSEError);
                     break;
                 case 'webtorrent':
                     this.__webtorrent__ = initWebTorrentMSE(src, video, webtorrent);
+                    this.__webtorrent__.on('error', this.handleInitMSEError);
                     break;
                 default:
             }
+
+            this.logger.info('TTPlayerVideo current src', this.src);
+
         } catch (error) {
-            this.logger.log(error);
+            this.logger.error(error);
             throw error;
         }
 
@@ -147,17 +162,21 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
     }
 
     private clearMSE () {
+        this.logger.info('TTPlayerVideo clear MSE');
         const {
             __flv__, __hls__, __dash__, __webtorrent__,
         } = this;
-
-        __flv__ && __flv__.destroy();
-        __hls__ && __hls__.destroy();
-        __dash__ && __dash__.reset();
-        __webtorrent__ && __webtorrent__.destroy();
+        __flv__ && __flv__.off('error', this.handleInitMSEError) && __flv__.destroy();
+        __hls__ && __hls__.off('hlsError', this.handleInitMSEError) && __hls__.destroy();
+        __dash__ && __dash__.off('error', this.handleInitMSEError) && __dash__.reset();
+        __webtorrent__ && __webtorrent__.off('error', this.handleInitMSEError) && __webtorrent__.destroy();
 
         this.__flv__ = this.__hls__ = this.__dash__ = this.__webtorrent__ = null;
         return this;
+    }
+
+    private handleInitMSEError (data: any) {
+        this.event.emit('error', data);
     }
 
 }

@@ -4,7 +4,7 @@ import { ILogger } from '../logger';
 import { MEDIA_NATIVE_EVENTS } from './events';
 import MediaOptions, { TMediaPreload } from './options';
 import TTPlayerMediaComponent from './component';
-import { DOMUtils } from '@dking/ttplayer-utils';
+import utils, { DOMUtils } from '@dking/ttplayer-utils';
 
 interface IMediaTypeMap {
     'Video': HTMLVideoElement;
@@ -38,8 +38,8 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         this.mediaDom = mediaElement;
         this.media = new DOMUtils(mediaElement);
         this.options = new MediaOptions(player.options.media);
-        this.logger.info('media type', this.mediaType);
-        this.logger.info('media options', this.options);
+        this.logger.info('TTPlayerMedia type', this.mediaType);
+        this.logger.info('TTPlayerMedia options', this.options);
     }
 
     abstract getMediaInstance(): IMediaTypeMap[T];
@@ -48,7 +48,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     abstract beforeDestroy(): any;
 
     public init () {
-        this.logger.info(`media init`);
+        this.logger.info(`TTPlayerMedia init`);
         this.bindEvents()
             .render();
         return this;
@@ -76,13 +76,13 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         this.controls = controls;
         this.preload = preload;
 
-        this.logger.info(`media render`);
+        this.logger.info(`TTPlayerMedia render`);
         this.root.prepend(this.mediaDom);
         return this;
     }
 
     public destroy () {
-        this.logger.info(`media destroy`);
+        this.logger.info(`TTPlayerMedia destroy`);
         this.beforeDestroy();
         this.removeEvents();
         return this;
@@ -166,23 +166,36 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         this.mediaDom.playbackRate = playbackRate;
     }
 
+    get currentTime (): number {
+        return this.mediaDom.currentTime;
+    }
+
+    set currentTime (currentTime: number) {
+        this.logger.info(`media set currentTime ${ currentTime }`);
+        this.mediaDom.currentTime = currentTime;
+    }
+
+    get duration (): number {
+        return this.mediaDom.duration;
+    }
+
     public play (): Promise<void> {
-        this.logger.info(`media play`);
+        this.logger.info(`media run play`);
         return this.mediaDom.play();
     }
 
     public pause () {
-        this.logger.info(`media pause`);
+        this.logger.info(`media run pause`);
         this.mediaDom.pause();
     }
 
     public seek (time: number) {
-        const media = this.media.getInstance();
         let nextTime = time;
         if (nextTime < 0) nextTime = 0;
-        if (nextTime > media.duration) nextTime = media.duration;
-        media.currentTime = nextTime;
-        this.logger.info(`media seek to ${ nextTime }`);
+        if (nextTime > this.duration) nextTime = this.duration;
+        this.currentTime = nextTime;
+        this.logger.info(`media run seek`);
+        this.logger.info(`media seek time ${ nextTime }`);
         return this;
     }
 
@@ -211,7 +224,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
                     this.event.emit('AutoplaySuccess');
                 })
                 .catch(() => {
-                    this.logger.error('media autoplay failed');
+                    this.logger.warn('media autoplay failed');
                     this.event.emit('AutoplayFailed');
                 });
         });

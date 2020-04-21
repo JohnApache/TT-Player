@@ -83,7 +83,7 @@ abstract class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T>
                     } else {
                         rate = offsetY / this.outter.height();
                     }
-                    this.mediaDom.volume = rate;
+                    this.media.volume = rate;
                 },
 
                 onMouseUp: () => {},
@@ -118,7 +118,7 @@ abstract class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T>
         } else {
             rate = offsetY / this.outter.height();
         }
-        this.mediaDom.volume = rate;
+        this.media.volume = rate;
         return this;
     }
 

@@ -36,8 +36,8 @@ abstract class TTPlayerVolume<T extends TMediaType> extends TTPlayerMediaCompone
     }
 
     private handleVolumeChange () {
-        this.volume = this.mediaDom.volume;
-        this.muted = this.mediaDom.muted;
+        this.volume = this.media.volume;
+        this.muted = this.media.muted;
         this.onVolumeChange(this.volume, this.muted);
     }
 

@@ -43,8 +43,8 @@ abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponen
     private showMediaError (error: Error) {
         this.error = error;
         this.isError = true;
-        this.logger.error('show media error');
-        this.logger.error(`media src: ${ this.media.src }`);
+        this.logger.warn('show media error');
+        this.logger.warn(`media src: ${ this.media.src }`);
         this.logger.error(error);
         this.showError();
     }

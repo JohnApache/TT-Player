@@ -49,21 +49,25 @@ class TTPlayerVideoControl extends TTPlayerVideoComponent {
     }
 
     beforeMount () {
+        this.logger.info('TTPlayerVideoControl beforeMount');
         this.initControlComponents()
             .render();
     }
 
     mounted () {
+        this.logger.info('TTPlayerVideoControl mounted');
         this.controlComponents.forEach(comp => {
             comp.mounted();
         });
     }
 
     beforeDestroy () {
+        this.logger.info('TTPlayerVideoControl beforeDestroy');
         this.removeControlComponents();
     }
 
     render () {
+
         this.leftControl
             .addClass('left--container');
 
@@ -74,6 +78,8 @@ class TTPlayerVideoControl extends TTPlayerVideoComponent {
             .addClass('video--control')
             .append(this.leftControl.getInstance())
             .append(this.rightControl.getInstance());
+
+        this.logger.info('TTPlayerVideoControl render');
         return this;
     }
 
@@ -84,6 +90,7 @@ class TTPlayerVideoControl extends TTPlayerVideoComponent {
             controlComponentsCtor,
         } = TTPlayerVideoControl;
 
+        this.logger.info('TTPlayerVideoControl init control components');
         leftComponentsCtor.forEach(ctor => {
             const comp = new ctor(this);
             comp.beforeMount();

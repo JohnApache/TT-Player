@@ -95,7 +95,7 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
                 this.pipWindows.addEventListener('resize', this.handleResizePIPWindows);
             }
         } catch (error) {
-            this.logger.error('open PIP mode failed');
+            this.logger.warn('open PIP mode failed');
             this.logger.error(error);
         }
     }
@@ -109,8 +109,8 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
                 this.pipWindows = null;
             }
         } catch (error) {
+            this.logger.warn('exit PIP mode failed');
             this.logger.error(error);
-            this.logger.error('exit PIP mode failed');
         }
     }
 
