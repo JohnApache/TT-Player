@@ -1,7 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import Options, { OptionsType } from './options';
 import PlayerHooks from './hooks';
-import TTPlayerMedia, { TMediaType } from './media/media';
 import TTPlayerVideo from './media/video/index';
 import TTPlayerAudio from './media/audio/index';
 import CreateLogger, { ILogger } from './logger';
