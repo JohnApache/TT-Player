@@ -35,6 +35,7 @@ class TTPlayerCore {
     }
 
     public init () {
+        this.logger.info('TTPlayerCore init');
         this.event.emit(PlayerHooks.BeforeInit);
         this.installMedias()
             .render()
@@ -43,6 +44,7 @@ class TTPlayerCore {
     }
 
     public destroy () {
+        this.logger.info('TTPlayerCore destroy');
         this.event.emit(PlayerHooks.BeforeDestroy);
         this.medias.forEach(media => media.destroy());
         this.event.emit(PlayerHooks.Destroyed);
@@ -51,7 +53,7 @@ class TTPlayerCore {
 
     private render () {
         const { width, height } = this.options;
-
+        this.logger.info('TTPlayerCore beforeRender');
         this.event.emit(PlayerHooks.BeforeRender);
 
         this.root
@@ -62,23 +64,27 @@ class TTPlayerCore {
         this.medias.forEach(media => media.mounted());
         this.event.emit(PlayerHooks.Rendered);
 
+        this.logger.info('TTPlayerCore rendered');
         return this;
     }
 
     private ready () {
+        this.logger.info('TTPlayerCore ready');
         this.event.emit(PlayerHooks.Ready);
         return this;
     }
 
     private installMedias (): TTPlayerCore {
         /* eslint-disable */
-        (this.constructor as typeof TTPlayerCore).mediasCtor.forEach(mediaCtor => {
+        const mediasCtor = (this.constructor as typeof TTPlayerCore).mediasCtor;
+         /* eslint-enable */
+        this.logger.debug('TTPlayerCore installMediasCtor:', mediasCtor);
+        mediasCtor.forEach(mediaCtor => {
             const media = new mediaCtor(this);
             media.init();
             media.beforeMount();
             this.medias.push(media);
         });
-        /* eslint-enable */
         return this;
     }
 
