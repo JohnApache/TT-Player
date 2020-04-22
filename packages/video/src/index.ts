@@ -1,7 +1,9 @@
-import initFlvMSE from './mse/flv';
-import initHlsMSE from './mse/hls';
-import initDashMSE from './mse/dash';
-import initWebTorrentMSE from './mse/webtorrent';
+import {
+    initFlvMSE,
+    initHlsMSE,
+    initDashMSE,
+    initWebTorrentMSE,
+} from './mse';
 import VideoOptions from './options';
 import { TTPlayerVideo as TTPlayerVideoBase, TTPlayerCore } from '@dking/ttplayer-core';
 
