@@ -50,6 +50,7 @@ abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponen
     }
 
     private hideMediaError () {
+        if (!this.isError || !this.error) return;
         this.error = null;
         this.isError = false;
         this.logger.info('hide media error');

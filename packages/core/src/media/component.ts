@@ -3,7 +3,7 @@ import { ILogger } from '../logger';
 import TTPlayerMedia, { TMediaType, IMediaTypeMap } from './media';
 import { DOMUtils } from '@dking/ttplayer-utils';
 
-abstract class TTPlayerMediaComponent<T extends TMediaType> {
+class TTPlayerMediaComponent<T extends TMediaType> {
 
     public media: TTPlayerMedia<T>;
     public mediaDom: IMediaTypeMap[T];
@@ -19,9 +19,9 @@ abstract class TTPlayerMediaComponent<T extends TMediaType> {
         this.root = DOMUtils.createUtilDom('div');
     }
 
-    abstract beforeMount(): any;
-    abstract mounted(): any;
-    abstract beforeDestroy(): any;
+    beforeMount () {}
+    mounted () {}
+    beforeDestroy () {}
 
 }
 

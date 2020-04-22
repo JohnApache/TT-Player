@@ -3,25 +3,9 @@ import initHlsMSE from './mse/hls';
 import initDashMSE from './mse/dash';
 import initWebTorrentMSE from './mse/webtorrent';
 import VideoOptions from './options';
-import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
-import {
-    TTPlayerMedia, TTPlayerCore, TMediaType, TTPlayerMediaComponent,
-} from '@dking/ttplayer-core';
+import { TTPlayerVideo as TTPlayerVideoBase, TTPlayerCore } from '@dking/ttplayer-core';
 
-const MEDIA_TYPE: TMediaType = 'Video';
-
-interface TTPlayerVideoComponentCtor {
-    new (video: TTPlayerVideo): TTPlayerMediaComponent<'Video'>;
-}
-
-class TTPlayerVideo extends TTPlayerMedia<'Video'> {
-
-    static mediaType = MEDIA_TYPE;
-    static videoComponentsCtor: TTPlayerVideoComponentCtor[] = [];
-
-    public video: DOMUtils<HTMLVideoElement>;
-    public options: VideoOptions;
-    public videoComponents: TTPlayerMediaComponent<'Video'>[] = []
+class TTPlayerVideo extends TTPlayerVideoBase {
 
     private __flv__: FlvJs.Player | null = null;
     private __hls__: Hls | null = null;
@@ -29,20 +13,9 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
     private __webtorrent__: WebTorrent.Instance | null = null;
 
     constructor (player: TTPlayerCore) {
-        super(MEDIA_TYPE, player);
-        this.video = this.media;
-
-        this.options = new VideoOptions({
-            ...player.options.media,
-            ...player.options.video,
-        });
-
+        super(player);
+        this.options = new VideoOptions(this.options);
         this.handleInitMSEError = this.handleInitMSEError.bind(this);
-    }
-
-    static use (videoComponentCtor: TTPlayerVideoComponentCtor) {
-        this.videoComponentsCtor.push(videoComponentCtor);
-        return this;
     }
 
     get src (): string {
@@ -56,44 +29,21 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
         this.initMSE();
     }
 
-    get poster (): string {
-        return this.mediaDom.poster;
-    }
-
-    set poster (poster: string) {
-        this.logger.info(`TTPlayerVideo set poster ${ poster }`);
-        this.mediaDom.poster = poster;
-    }
-
-    getMediaInstance () {
-        if (!this.video) this.video = DOMUtils.createUtilDom('video');
-        return this.video.getInstance();
-    }
-
     beforeMount () {
-        this.poster = this.options.poster;
-        this.media.addClass('ttplayer--video');
-        this.initVideoComponents();
+        super.beforeMount();
     }
 
     mounted () {
-        this.videoComponents.forEach(comp => {
-            comp.mounted();
-        });
+        super.mounted();
     }
 
     beforeDestroy () {
-        this.videoComponents.forEach(comp => comp.beforeDestroy());
+        super.beforeDestroy();
+        this.clearMSE();
     }
 
-    private initVideoComponents () {
-        TTPlayerVideo.videoComponentsCtor.forEach(ctor => {
-            const comp = new ctor(this);
-            comp.beforeMount();
-            this.root.append(comp.root.getInstance());
-            this.videoComponents.push(comp);
-        });
-        return this;
+    renderVideo () {
+        this.media.addClass('ttplayer--video');
     }
 
     private initMSE () {
@@ -181,9 +131,11 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
 
 }
 
+
 const TTPlayerVideoFactory = (): typeof TTPlayerVideo => {
     class T extends TTPlayerVideo {
 
+        static videoComponentsCtor = [];
         constructor (player: TTPlayerCore) {
             super(player);
         }
@@ -193,15 +145,7 @@ const TTPlayerVideoFactory = (): typeof TTPlayerVideo => {
     return T;
 };
 
-abstract class TTPlayerVideoComponent extends TTPlayerMediaComponent<'Video'> {
 
-    constructor (media: TTPlayerMedia<'Video'>) {
-        super(media);
-    }
+export { TTPlayerVideoFactory, VideoOptions };
 
-}
-
-export {
-    TTPlayerVideo, VideoOptions, TTPlayerVideoComponent,
-};
-export default TTPlayerVideoFactory;
+export default TTPlayerVideo;

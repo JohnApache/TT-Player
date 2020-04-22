@@ -1,11 +1,13 @@
 import PlayerHooks from './hooks';
-import TTPlayerCoreFactory, { TTPlayerCore } from './core';
+import TTPlayerCore, { TTPlayerCoreFactory } from './core';
 import TTPlayerMedia, {
     TMediaType,
     IMediaTypeMap,
-    MediaOptions,
+    TTPlayerMediaOptions,
     TTPlayerMediaComponent,
 } from './media/media';
+import TTPlayerVideo, { TTPlayerVideoFactory, TTPlayerVideoOptions } from './media/video';
+import TTPlayerAudio, { TTPlayerAudioFactory, TTPlayerAudioOptions } from './media/audio';
 import TTPlayerPlayButton from './components/play-button';
 import TTPlayerTime from './components/time';
 import TTPlayerProgress from './components/progress';
@@ -29,12 +31,22 @@ export {
     PlayerHooks,
     TTPlayerCore,
     TTPlayerCoreFactory,
+
     TTPlayerMedia,
     TMediaType,
     IMediaTypeMap,
     BaseOptions,
-    MediaOptions,
+    TTPlayerMediaOptions,
     TTPlayerMediaComponent,
+
+    TTPlayerVideo,
+    TTPlayerVideoFactory,
+    TTPlayerVideoOptions,
+
+    TTPlayerAudio,
+    TTPlayerAudioFactory,
+    TTPlayerAudioOptions,
+
     TTPlayerPlayButton,
     TTPlayerTime,
     TTPlayerProgress,

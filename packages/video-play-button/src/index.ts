@@ -1,7 +1,6 @@
 import PlayButtonOptions from './options';
 import SVGIcons from '@dking/ttplayer-svg-icons';
-import { TTPlayerPlayButton } from '@dking/ttplayer-core';
-import { TTPlayerVideo } from '@dking/ttplayer-video';
+import { TTPlayerPlayButton, TTPlayerVideo } from '@dking/ttplayer-core';
 
 class VideoPlayButton extends TTPlayerPlayButton<'Video'> {
 

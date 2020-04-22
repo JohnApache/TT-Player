@@ -37,14 +37,17 @@ abstract class TTPlayerComponentsGroup<T extends TMediaType> extends TTPlayerMed
     abstract renderGroup(): any;
 
     private initGroupComponents () {
-        TTPlayerComponentsGroup.groupComponentsCtor.forEach(ctor => {
+        /* eslint-disable */
+        (this.constructor as typeof TTPlayerComponentsGroup).groupComponentsCtor.forEach(ctor => {
             const comp = new ctor(this.media);
             comp.beforeMount();
             this.groupComponents.push(comp);
             this.root.append(comp.root.getInstance());
         });
+        /* eslint-enable */
     }
 
 }
+
 
 export default TTPlayerComponentsGroup;

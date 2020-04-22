@@ -2,24 +2,25 @@ import EventEmitter from 'eventemitter3';
 import Options, { OptionsType } from './options';
 import PlayerHooks from './hooks';
 import TTPlayerMedia, { TMediaType } from './media/media';
+import TTPlayerVideo from './media/video/index';
+import TTPlayerAudio from './media/audio/index';
 import CreateLogger, { ILogger } from './logger';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 
-interface TTPlayerMediaCtor<T extends TMediaType> {
-    new (player: TTPlayerCore): TTPlayerMedia<T>;
-}
+
+type TTPlayerMediaCtor = typeof TTPlayerVideo | typeof TTPlayerAudio;
 
 class TTPlayerCore {
 
     static playerHooks = PlayerHooks;
-    static mediasCtor: TTPlayerMediaCtor<TMediaType>[] = [];
+    static mediasCtor: TTPlayerMediaCtor[] = [];
 
     public event: EventEmitter;
     public options: Options;
     public root: DOMUtils<HTMLDivElement>;
     public container: HTMLElement;
     public logger: ILogger;
-    public medias: TTPlayerMedia<TMediaType>[] = [];
+    public medias: (TTPlayerVideo | TTPlayerAudio)[] = [];
 
     constructor (options: Partial<OptionsType>) {
         this.event = new EventEmitter();
@@ -29,7 +30,7 @@ class TTPlayerCore {
         this.root = DOMUtils.createUtilDom('div');
     }
 
-    static use (ctor: TTPlayerMediaCtor<TMediaType>) {
+    static use (ctor: TTPlayerMediaCtor) {
         this.mediasCtor.push(ctor);
         return this;
     }
@@ -71,21 +72,24 @@ class TTPlayerCore {
     }
 
     private installMedias (): TTPlayerCore {
-        TTPlayerCore.mediasCtor.forEach(mediaCtor => {
+        /* eslint-disable */
+        (this.constructor as typeof TTPlayerCore).mediasCtor.forEach(mediaCtor => {
             const media = new mediaCtor(this);
             media.init();
             media.beforeMount();
             this.medias.push(media);
         });
+        /* eslint-enable */
         return this;
     }
 
 }
 
 const TTPlayerCoreFactory = (): typeof TTPlayerCore => {
+
     class T extends TTPlayerCore {
 
-        static mediasCtor: TTPlayerMediaCtor<TMediaType>[] = [];
+        static mediasCtor: TTPlayerMediaCtor[] = [];
         constructor (options: Partial<OptionsType>) {
             super(options);
         }
@@ -95,6 +99,6 @@ const TTPlayerCoreFactory = (): typeof TTPlayerCore => {
     return T;
 };
 
-export { TTPlayerMediaCtor, TTPlayerCore };
+export { TTPlayerMediaCtor, TTPlayerCoreFactory };
 
-export default TTPlayerCoreFactory;
+export default TTPlayerCore;

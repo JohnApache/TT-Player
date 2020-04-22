@@ -1,7 +1,7 @@
 import {
-    TTPlayerCore, TTPlayerLoading, TTPlayerError, TTPlayerMedia, TTPlayerPIP,
+    TTPlayerCoreFactory, TTPlayerLoading, TTPlayerError, TTPlayerMedia, TTPlayerPIP,
 } from '@dking/ttplayer-core';
-import { TTPlayerVideo } from '@dking/ttplayer-video';
+import { TTPlayerVideoFactory } from '@dking/ttplayer-video';
 import TTPlayerVideoPlayButton from '@dking/ttplayer-video-play-button';
 import TTPlayerVideoControl from '@dking/ttplayer-video-control';
 import './index.less';
@@ -76,16 +76,17 @@ class PIPComponent extends TTPlayerPIP {
 
 }
 
-TTPlayerVideo
-    .use(TTPlayerVideoPlayButton)
-    .use(TTPlayerVideoControl)
-    .use(LoadingComponent)
-    .use(ErrorComponent)
-    .use(PIPComponent);
+const TTPlayerVideo =
+    TTPlayerVideoFactory()
+        .use(TTPlayerVideoPlayButton)
+        .use(TTPlayerVideoControl)
+        .use(LoadingComponent)
+        .use(ErrorComponent)
+        .use(PIPComponent);
 
-TTPlayerCore
-    .use(TTPlayerVideo);
-
+const TTPlayerCore =
+    TTPlayerCoreFactory()
+        .use(TTPlayerVideo);
 
 
 export default TTPlayerCore;

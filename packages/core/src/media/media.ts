@@ -1,10 +1,10 @@
 import EventEmitter from 'eventemitter3';
-import { TTPlayerCore } from '../core';
+import TTPlayerCore from '../core';
 import { ILogger } from '../logger';
 import { MEDIA_NATIVE_EVENTS } from './events';
-import MediaOptions, { TMediaPreload } from './options';
+import TTPlayerMediaOptions, { TMediaPreload } from './options';
 import TTPlayerMediaComponent from './component';
-import utils, { DOMUtils } from '@dking/ttplayer-utils';
+import { DOMUtils } from '@dking/ttplayer-utils';
 
 interface IMediaTypeMap {
     'Video': HTMLVideoElement;
@@ -26,7 +26,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     public evs = MEDIA_NATIVE_EVENTS
     public ugs: Function[] = [];
     public event: EventEmitter;
-    public options: MediaOptions;
+    public options: TTPlayerMediaOptions;
 
     constructor (mediaType: TMediaType, player: TTPlayerCore) {
         this.mediaType = mediaType;
@@ -37,15 +37,15 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         const mediaElement = this.getMediaInstance();
         this.mediaDom = mediaElement;
         this.media = new DOMUtils(mediaElement);
-        this.options = new MediaOptions(player.options.media);
+        this.options = new TTPlayerMediaOptions(player.options.media);
         this.logger.info('TTPlayerMedia type', this.mediaType);
         this.logger.info('TTPlayerMedia options', this.options);
     }
 
     abstract getMediaInstance(): IMediaTypeMap[T];
-    abstract beforeMount(): any;
-    abstract mounted(): any;
-    abstract beforeDestroy(): any;
+    beforeMount () {}
+    mounted () {}
+    beforeDestroy () {}
 
     public init () {
         this.logger.info(`TTPlayerMedia init`);
@@ -72,6 +72,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
         this.volume = volume;
         this.muted = muted;
         this.loop = loop;
+
         this.autoplay = autoplay;
         this.controls = controls;
         this.preload = preload;
@@ -95,6 +96,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     set src (src: string) {
         this.logger.info(`media set src ${ src }`);
         this.mediaDom.src = src;
+        this.options.src = src;
     }
 
     get autoplay (): boolean {
@@ -140,6 +142,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     get preload (): TMediaPreload {
+        // Tips: 当preload 为 none 时不会触发 canplay 事件
         return this.mediaDom.preload as TMediaPreload;
     }
 
@@ -200,17 +203,17 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     private spreadMediaNativeEvent (ev: string, data: any) {
+        this.logger.debug(`media trigger event: ${ ev }`);
         this.event.emit(ev, data);
         return this;
     }
 
     protected bindEvents () {
-        const media = this.media.getInstance();
         this.evs.forEach(ev => {
             const fn = this.spreadMediaNativeEvent.bind(this, ev);
-            media.addEventListener(ev, fn);
+            this.mediaDom.addEventListener(ev, fn);
             this.ugs.push(() => {
-                media.removeEventListener(ev, fn);
+                this.mediaDom.removeEventListener(ev, fn);
             });
         });
 
@@ -242,7 +245,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
 export {
     IMediaTypeMap,
     TMediaType,
-    MediaOptions,
+    TTPlayerMediaOptions,
     TTPlayerMediaComponent,
 };
 

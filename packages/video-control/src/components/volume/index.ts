@@ -83,6 +83,8 @@ class ControlVolumeBar extends TTPlayerHorizontalVolumeBar<'Video'> {
 
 class ControlVolume extends TTPlayerComponentsGroup<'Video'> {
 
+    static groupComponentsCtor = [];
+
     constructor (control: TTPlayerVideoControl) {
         super(control.media);
     }

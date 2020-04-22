@@ -6,16 +6,14 @@ import ControlDurationText from './components/duration';
 import ControlProgress from './components/progress';
 import ControlScreenShot from './components/screenshot';
 import ControlFullscreen from './components/fullscreen';
-
-import TTPlayerControlComponents from './component';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
-import { TTPlayerVideo, TTPlayerVideoComponent } from '@dking/ttplayer-video';
+import { TTPlayerVideo, TTPlayerMediaComponent } from '@dking/ttplayer-core';
 
 interface ControlComponentCtor {
-    new (control: TTPlayerVideoControl): TTPlayerVideoComponent;
+    new (control: TTPlayerVideoControl): TTPlayerMediaComponent<'Video'>;
 }
 
-class TTPlayerVideoControl extends TTPlayerVideoComponent {
+class TTPlayerVideoControl extends TTPlayerMediaComponent<'Video'> {
 
     static leftComponentsCtor: ControlComponentCtor[] = [];
     static rightComponentsCtor: ControlComponentCtor[] = [];
@@ -24,7 +22,7 @@ class TTPlayerVideoControl extends TTPlayerVideoComponent {
     public leftControl: DOMUtils<HTMLDivElement>;
     public rightControl: DOMUtils<HTMLDivElement>;
     public options: VideoControlOptions;
-    public controlComponents: TTPlayerControlComponents[] = [];
+    public controlComponents: TTPlayerMediaComponent<'Video'>[] = [];
 
     constructor (media: TTPlayerVideo) {
         super(media);

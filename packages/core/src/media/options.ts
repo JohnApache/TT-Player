@@ -9,7 +9,7 @@ const DEFAULT_OPTIONS = {
     muted   : false,
     loop    : false,
     controls: false,
-    preload : 'none' as TMediaPreload,
+    preload : 'auto' as TMediaPreload,
 };
 
 interface IMediaOptions {
@@ -23,7 +23,7 @@ interface IMediaOptions {
     [key: string]: any;
 }
 
-class MediaOptions extends BaseOptions {
+class TTPlayerMediaOptions extends BaseOptions {
 
     public src: string;
     public volume: number;
@@ -50,4 +50,4 @@ class MediaOptions extends BaseOptions {
 
 export { IMediaOptions, TMediaPreload };
 
-export default MediaOptions;
+export default TTPlayerMediaOptions;
