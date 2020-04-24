@@ -1,6 +1,7 @@
 import EventEmitter from 'eventemitter3';
 import TTPlayerCore from '../core';
 import { ILogger } from '../logger';
+import Hooks from '../hooks';
 import { MEDIA_NATIVE_EVENTS } from './events';
 import TTPlayerMediaOptions, { TMediaPreload } from './options';
 import TTPlayerMediaComponent from './component';
@@ -142,7 +143,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     get preload (): TMediaPreload {
-        // Tips: 当preload 为 none 时不会触发 canplay 事件
+        /* Tips: 当preload 为 none 时不会触发 canplay 事件 */
         return this.mediaDom.preload as TMediaPreload;
     }
 
@@ -224,11 +225,12 @@ abstract class TTPlayerMedia<T extends TMediaType> {
             prom
                 .then(() => {
                     this.logger.info('media autoplay success');
+                    this.event.emit(Hooks.AutoPlaySuccess);
                     this.event.emit('AutoplaySuccess');
                 })
                 .catch(() => {
                     this.logger.warn('media autoplay failed');
-                    this.event.emit('AutoplayFailed');
+                    this.event.emit(Hooks.AutoPlayError);
                 });
         });
         return this;

@@ -1,4 +1,5 @@
 import TTPlayerMedia, { TMediaType, TTPlayerMediaComponent } from '../../media/media';
+import Hooks from '../../hooks';
 import { DOMUtils } from '@dking/ttplayer-utils';
 
 interface IQualityItem {
@@ -94,14 +95,22 @@ abstract class TTPlayerQuailtySwich<T extends TMediaType> extends TTPlayerMediaC
     private handleClickQualitySwitch () {
         this.logger.info('click quality switch');
         this.logger.info(this.isShow ? 'hide quality list' : 'show quality list');
-        this.isShow ? this.hideQualityList() : this.showQualityList();
+        if (this.isShow) {
+            this.hideQualityList();
+            this.event.emit(Hooks.HideQualityList);
+        } else {
+            this.showQualityList();
+            this.event.emit(Hooks.ShowQualityList);
+        }
         this.isShow = !this.isShow;
     }
 
     private handleClickQualityItem (index: number) {
         this.logger.info('click quality item');
+        if (index === this.defaultQuality) return;
         const qualityItem = this.qualityList[index];
         this.logger.debug('switch to quality :', qualityItem);
+        this.event.emit(Hooks.SwitchQuality, qualityItem);
         this.media.src = qualityItem.url;
         this.defaultQuality = index;
         this.renderQualitySwitch();

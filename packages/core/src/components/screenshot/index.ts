@@ -1,4 +1,5 @@
 import TTPlayerMedia, { TTPlayerMediaComponent } from '../../media/media';
+import Hooks from '../../hooks';
 
 abstract class TTPlayerScreenshot extends TTPlayerMediaComponent<'Video'> {
 
@@ -35,26 +36,39 @@ abstract class TTPlayerScreenshot extends TTPlayerMediaComponent<'Video'> {
 
     private handleScreenshot () {
         this.logger.info('click screenshot button');
+        this.event.emit(Hooks.Screenshot);
         const canvas = document.createElement('canvas');
         const width = this.media.media.width();
         const height = this.media.media.height();
         canvas.width = width;
         canvas.height = height;
         const cvs = canvas.getContext('2d');
-        if (!cvs) throw new Error('canvas not support');
-        cvs.drawImage(this.mediaDom, 0, 0, width, height);
-        canvas.toBlob(blob => {
-            if (!blob) return;
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = this.getScreenshotImageName() || 'TTPlayer.png';
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(blobUrl);
-        });
+        if (!cvs) {
+            const error = new Error('canvas not support');
+            this.event.emit(Hooks.ScreenshotError, error);
+            throw error;
+        }
+        try {
+            cvs.drawImage(this.mediaDom, 0, 0, width, height);
+            canvas.toBlob(blob => {
+                if (!blob) {
+                    this.event.emit(Hooks.ScreenshotError, new Error('blob is empty'));
+                    return;
+                }
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = this.getScreenshotImageName() || 'TTPlayer.png';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                this.event.emit(Hooks.ScreenshotSuccess, { blobUrl: blobUrl, imgName: a.download });
+                URL.revokeObjectURL(blobUrl);
+            });
+        } catch (error) {
+            this.event.emit(Hooks.ScreenshotError, error);
+        }
     }
 
 }

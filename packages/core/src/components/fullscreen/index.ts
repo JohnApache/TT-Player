@@ -1,4 +1,5 @@
 import TTPlayerMedia, { TTPlayerMediaComponent } from '../../media/media';
+import Hooks from '../../hooks';
 import {
     requestFullscreen,
     exitFullscreen,
@@ -50,7 +51,6 @@ abstract class TTPlayerFullscreen extends TTPlayerMediaComponent<'Video'> {
     private handleClickFullscreen () {
         this.logger.info('click fullscreen button');
         if (!this.isFullscreen) {
-            this.logger.info('request fullscreen');
             requestFullscreen(this.getFullscreenContainer());
             return;
         }
@@ -62,6 +62,7 @@ abstract class TTPlayerFullscreen extends TTPlayerMediaComponent<'Video'> {
         this.isFullscreen = isFullscreen();
         this.logger.info('fullscreen change');
         this.logger.debug('current isFullscreen: ', this.isFullscreen);
+        this.event.emit(Hooks.FullscreenChange, this.isFullscreen);
         this.onFullscreenChange();
     }
 

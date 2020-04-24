@@ -11,7 +11,7 @@ type TTPlayerMediaCtor = typeof TTPlayerVideo | typeof TTPlayerAudio;
 
 class TTPlayerCore {
 
-    static playerHooks = PlayerHooks;
+    static Hooks = PlayerHooks;
     static mediasCtor: TTPlayerMediaCtor[] = [];
 
     public event: EventEmitter;
@@ -20,6 +20,7 @@ class TTPlayerCore {
     public container: HTMLElement;
     public logger: ILogger;
     public medias: (TTPlayerVideo | TTPlayerAudio)[] = [];
+    private ugs: Function[] = [];
 
     constructor (options: Partial<OptionsType>) {
         this.event = new EventEmitter();
@@ -35,6 +36,7 @@ class TTPlayerCore {
     }
 
     public init () {
+        this.bindEvents();
         this.logger.info('TTPlayerCore init');
         this.event.emit(PlayerHooks.BeforeInit);
         this.installMedias()
@@ -44,6 +46,7 @@ class TTPlayerCore {
     }
 
     public destroy () {
+        this.removeEvents();
         this.logger.info('TTPlayerCore destroy');
         this.event.emit(PlayerHooks.BeforeDestroy);
         this.medias.forEach(media => media.destroy());
@@ -86,6 +89,25 @@ class TTPlayerCore {
             this.medias.push(media);
         });
         return this;
+    }
+
+    private bindEvents () {
+        this.removeEvents();
+        Object.keys(PlayerHooks).forEach(hook => {
+            const HookName = PlayerHooks[hook as keyof typeof PlayerHooks];
+            const fn = () => {
+                this.logger.debug('TTPlayer trigger event: ', HookName);
+            };
+            this.event.on(HookName, fn);
+            this.ugs.push(() => {
+                this.event.off(HookName, fn);
+            });
+        });
+    }
+
+    private removeEvents () {
+        this.ugs.forEach(ug => ug());
+        this.ugs = [];
     }
 
 }
