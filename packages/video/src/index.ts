@@ -118,10 +118,26 @@ class TTPlayerVideo extends TTPlayerVideoBase {
         const {
             __flv__, __hls__, __dash__, __webtorrent__,
         } = this;
-        __flv__ && __flv__.off('error', this.handleInitMSEError) && __flv__.destroy();
-        __hls__ && __hls__.off('hlsError', this.handleInitMSEError) && __hls__.destroy();
-        __dash__ && __dash__.off('error', this.handleInitMSEError) && __dash__.reset();
-        __webtorrent__ && __webtorrent__.off('error', this.handleInitMSEError) && __webtorrent__.destroy();
+
+        if (__flv__) {
+            __flv__.off('error', this.handleInitMSEError);
+            __flv__.destroy();
+        }
+
+        if (__hls__) {
+            __hls__.off('hlsError', this.handleInitMSEError);
+            __hls__.destroy();
+        }
+
+        if (__dash__) {
+            __dash__.off('error', this.handleInitMSEError);
+            __dash__.reset();
+        }
+
+        if (__webtorrent__) {
+            __webtorrent__.off('error', this.handleInitMSEError);
+            __webtorrent__.destroy();
+        }
 
         this.__flv__ = this.__hls__ = this.__dash__ = this.__webtorrent__ = null;
         return this;

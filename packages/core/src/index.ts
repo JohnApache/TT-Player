@@ -18,6 +18,7 @@ import TTPlayerScreenshot from './components/screenshot';
 import TTPlayerLoading from './components/loading';
 import TTPlayerError from './components/error';
 import TTPlayerPIP from './components/pip';
+import TTPlayerQualitySwitch from './components/quality-switch';
 
 import TTPlayerComponentsGroup from './components/components-group';
 import {
@@ -59,6 +60,8 @@ export {
     TTPlayerLoading,
     TTPlayerError,
     TTPlayerPIP,
+    TTPlayerQualitySwitch,
+
     TTPlayerComponentsGroup,
 };
 
