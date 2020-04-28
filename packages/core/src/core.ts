@@ -92,7 +92,9 @@ class TTPlayerCore {
     }
 
     private bindEvents () {
-        this.removeEvents();
+        this.event.on(PlayerHooks.DynamicUpdateConfig, () => {
+            // TODO 动态更新配置
+        });
         Object.keys(PlayerHooks).forEach(hook => {
             const HookName = PlayerHooks[hook as keyof typeof PlayerHooks];
             const fn = () => {
