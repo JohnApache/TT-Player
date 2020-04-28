@@ -34,9 +34,9 @@ abstract class TTPlayerQuailtySwich<T extends TMediaType> extends TTPlayerMediaC
     beforeMount () {
         this.logger.info('TTPlayerQuailtySwich beforeMount');
         this.init();
-        this.renderQuality();
         this.renderQualityList();
         this.renderQualitySwitch();
+        this.renderQuality();
         this.bindQualityEvents();
     }
 

@@ -17,7 +17,9 @@ const PlayerHooks = {
     FullscreenChange : 'FullscreenChange',
     AutoPlaySuccess  : 'AutoPlaySuccess',
     AutoPlayError    : 'AutoPlayError',
-
+    PlayNext         : 'PlayNext',
+    PlayPrev         : 'PlayPrev',
+    SwitchPlayItem   : 'SwitchPlayItem',
 };
 
 export default PlayerHooks;
