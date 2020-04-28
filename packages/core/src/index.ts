@@ -23,7 +23,7 @@ import TTPlayerPlayList from './components/playList';
 import TTPlayerBasePlayList from './components/playList/base';
 import TTPlayerPlayNext from './components/play-next';
 import TTPlayerPlayPrev from './components/play-prev';
-
+import TTPlayerRotateButton from './components/rotate-button';
 import TTPlayerComponentsGroup from './components/components-group';
 import {
     TTPlayerHorizontalVolumeBar,
@@ -69,6 +69,7 @@ export {
     TTPlayerBasePlayList,
     TTPlayerPlayNext,
     TTPlayerPlayPrev,
+    TTPlayerRotateButton,
 
     TTPlayerComponentsGroup,
 };
