@@ -231,6 +231,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
                 .catch(() => {
                     this.logger.warn('media autoplay failed');
                     this.event.emit(Hooks.AutoPlayError);
+                    this.event.emit('AutoplayFailed');
                 });
         });
         return this;
