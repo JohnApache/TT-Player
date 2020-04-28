@@ -1,4 +1,4 @@
-import TTPlayerMedia, { TMediaType, TTPlayerMediaComponent } from '../../media/media';
+import TTPlayerMedia, { TMediaType } from '../../media/media';
 import Hooks from '../../hooks';
 import TTPlayerBasePlayList from '../playList/base';
 
