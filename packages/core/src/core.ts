@@ -92,9 +92,6 @@ class TTPlayerCore {
     }
 
     private bindEvents () {
-        this.event.on(PlayerHooks.DynamicUpdateConfig, () => {
-            // TODO 动态更新配置
-        });
         Object.keys(PlayerHooks).forEach(hook => {
             const HookName = PlayerHooks[hook as keyof typeof PlayerHooks];
             const fn = () => {
@@ -110,6 +107,13 @@ class TTPlayerCore {
     private removeEvents () {
         this.ugs.forEach(ug => ug());
         this.ugs = [];
+    }
+
+    public dynamicUpdateConfig (newConfig: Options) {
+        /**
+         * TODO 是否考虑动态更新配置? 怎么样通知每个组件去更新
+         */
+        this.event.emit(PlayerHooks.DynamicUpdateConfig, newConfig);
     }
 
 }

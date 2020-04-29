@@ -5,7 +5,7 @@ import Hooks from '../hooks';
 import { MEDIA_NATIVE_EVENTS } from './events';
 import TTPlayerMediaOptions, { TMediaPreload } from './options';
 import TTPlayerMediaComponent from './component';
-import { DOMUtils } from '@dking/ttplayer-utils';
+import { DOMUtils, utils } from '@dking/ttplayer-utils';
 
 interface IMediaTypeMap {
     'Video': HTMLVideoElement;
