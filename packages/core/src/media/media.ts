@@ -212,7 +212,7 @@ abstract class TTPlayerMedia<T extends TMediaType> extends LifeCycle {
     }
 
     protected spreadMediaNativeEvent (ev: string, data: any) {
-        this.logger.debug(`media trigger event: ${ ev }`);
+        // this.logger.debug(`media trigger event: ${ ev }`);
         this.event.emit(ev, data);
         return this;
     }

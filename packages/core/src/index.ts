@@ -22,7 +22,9 @@ import TTPlayerPIP from './components/pip';
 import {
     TTPlayerQualitySwitch, TTPlayerQualityList, TTPlayerBaseQuality,
 } from './components/quality-switch';
-import { TTPlayerPlayList, TTPlayerBasePlayList } from './components/play-list';
+import {
+    TTPlayerPlaySwitch, TTPlayerPlayList, TTPlayerBasePlayList,
+} from './components/play-list';
 
 import TTPlayerPlayNext from './components/play-next';
 import TTPlayerPlayPrev from './components/play-prev';
@@ -71,7 +73,7 @@ export {
     TTPlayerQualitySwitch,
     TTPlayerQualityList,
     TTPlayerBaseQuality,
-
+    TTPlayerPlaySwitch,
     TTPlayerPlayList,
     TTPlayerBasePlayList,
     TTPlayerPlayNext,

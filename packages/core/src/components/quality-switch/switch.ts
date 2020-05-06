@@ -27,20 +27,25 @@ class TTPlayerQualitySwitch<T extends TMediaType> extends TTPlayerQualityList<T>
 
     componentWillUnmount () {
         super.componentWillMount();
-        this.removQualitySwitchEvents();
+        this.removeQualitySwitchEvents();
         this.logger.debug('TTPlayerQualitySwitch componentWillUnmount');
     }
 
     beforeRender () {
         super.beforeRender();
         this.qualitySwitch.addClass(this.className);
+        this.hideQualityList();
+    }
+
+    renderQualitySwitch () {
+        const targetQuality = this.qualityList[this.current];
+        const targetContent = targetQuality ? targetQuality.name || `品质${ this.current }` : '默认';
+        targetContent !== this.qualitySwitch.html() && this.qualitySwitch.html(targetContent);
     }
 
     render () {
         super.render();
-        const targetQuality = this.qualityList[this.current];
-        const targetContent = targetQuality ? targetQuality.name || `品质${ this.current }` : '默认';
-        targetContent !== this.qualitySwitch.html() && this.qualitySwitch.html(targetContent);
+        this.renderQualitySwitch();
     }
 
     showQualityList () {
@@ -55,7 +60,7 @@ class TTPlayerQualitySwitch<T extends TMediaType> extends TTPlayerQualityList<T>
         this.qualitySwitch.on('click', this.handleClickQualitySwitch);
     }
 
-    private removQualitySwitchEvents () {
+    private removeQualitySwitchEvents () {
         this.qualitySwitch.off('click', this.handleClickQualitySwitch);
     }
 

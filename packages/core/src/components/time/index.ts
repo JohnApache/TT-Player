@@ -39,13 +39,15 @@ class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
     private handleDurationChange () {
         this.duration = this.media.duration;
+
         this.logger.debug('media duration change to', this.duration);
         this.render();
     }
 
     private handleTimeUpdate () {
         this.currentTime = this.media.currentTime;
-        this.logger.debug('media current time update to', this.currentTime);
+
+        // this.logger.debug('media current time update to', this.currentTime);
         this.render();
     }
 
