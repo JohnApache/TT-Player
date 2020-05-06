@@ -12,6 +12,7 @@ interface TTPlayerAudioComponentCtor {
 
 class TTPlayerAudio extends TTPlayerMedia<'Audio'> {
 
+    static className: string = 'ttplayer__audio--component';
     static mediaType = AUDIO_MEDIA_TYPE;
     static audioComponentsCtor: TTPlayerAudioComponentCtor[] = [];
 
@@ -29,8 +30,6 @@ class TTPlayerAudio extends TTPlayerMedia<'Audio'> {
         });
     }
 
-    renderAudio () {}
-
     static use (audioComponentCtor: TTPlayerAudioComponentCtor) {
         this.audioComponentsCtor.push(audioComponentCtor);
         return this;
@@ -42,26 +41,40 @@ class TTPlayerAudio extends TTPlayerMedia<'Audio'> {
         return this.audio.getInstance();
     }
 
-    beforeMount () {
-        this.renderAudio();
+    componentWillMount () {
+        super.componentWillMount();
         this.initAudioComponents();
     }
 
-    mounted () {
+    componentDidMount () {
+        super.componentDidMount();
         this.audioComponents.forEach(comp => {
-            comp.mounted();
+            comp.componentDidMount();
         });
     }
 
-    beforeDestroy () {
-        this.audioComponents.forEach(comp => comp.beforeDestroy());
+    componentWillUnmount () {
+        super.componentWillUnmount();
+        this.audioComponents.forEach(comp => comp.componentWillUnmount());
+    }
+
+    beforeRender () {
+        super.beforeRender();
+        this.audio
+            .addClass(this.className);
+    }
+
+    render () {
+        super.render();
     }
 
     private initAudioComponents () {
         /* eslint-disable */
         (this.constructor as typeof TTPlayerAudio).audioComponentsCtor.forEach(ctor => {
             const comp = new ctor(this);
-            comp.beforeMount();
+            comp.componentWillMount();
+            comp.beforeRender();
+            comp.render();
             this.root.append(comp.root.getInstance());
             this.audioComponents.push(comp);
         });

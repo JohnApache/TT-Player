@@ -4,8 +4,10 @@ interface GroupComponentCtor<T extends TMediaType> {
     new (media: TTPlayerMedia<TMediaType>): TTPlayerMediaComponent<T>;
 }
 
-abstract class TTPlayerComponentsGroup<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+// Consider 怎么建立组合后的，组件间的通信
+class TTPlayerComponentsGroup<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
+    static className: string = 'ttplayer__media__component--group';
     static groupComponentsCtor: GroupComponentCtor<TMediaType>[] = [];
     public groupComponents: TTPlayerMediaComponent<TMediaType>[] = [];
 
@@ -18,29 +20,33 @@ abstract class TTPlayerComponentsGroup<T extends TMediaType> extends TTPlayerMed
         return this;
     }
 
-    beforeMount () {
-        this.logger.info('TTPlayerComponentsGroup beforeMount');
-        this.renderGroup();
+    componentWillMount () {
+        this.logger.debug('TTPlayerComponentsGroup componentWillMount');
         this.initGroupComponents();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerComponentsGroup mounted');
-        this.groupComponents.forEach(comp => comp.mounted());
+    componentDidMount () {
+        this.logger.debug('TTPlayerComponentsGroup componentDidMount');
+        this.groupComponents.forEach(comp => comp.componentDidMount());
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerComponentsGroup beforeDestroy');
-        this.groupComponents.forEach(comp => comp.beforeDestroy());
+    componentWillUnmount () {
+        this.logger.debug('TTPlayerComponentsGroup componentWillUnmount');
+        this.groupComponents.forEach(comp => comp.componentWillUnmount());
     }
 
-    abstract renderGroup(): any;
+    beforeRender () {
+        this.root
+            .addClass(this.className);
+    }
 
     private initGroupComponents () {
         /* eslint-disable */
         (this.constructor as typeof TTPlayerComponentsGroup).groupComponentsCtor.forEach(ctor => {
             const comp = new ctor(this.media);
-            comp.beforeMount();
+            comp.componentWillMount();
+            comp.beforeRender();
+            comp.render();
             this.groupComponents.push(comp);
             this.root.append(comp.root.getInstance());
         });

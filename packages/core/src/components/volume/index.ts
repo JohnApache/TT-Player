@@ -1,6 +1,6 @@
 import TTPlayerMedia, { TTPlayerMediaComponent, TMediaType } from '../../media/media';
 
-abstract class TTPlayerVolume<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+class TTPlayerVolume<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
     public volume: number;
     public muted: boolean
@@ -11,21 +11,19 @@ abstract class TTPlayerVolume<T extends TMediaType> extends TTPlayerMediaCompone
         this.handleVolumeChange = this.handleVolumeChange.bind(this);
     }
 
-    beforeMount () {
-        this.logger.info('TTPlayerVolume beforeMount');
+    componentWillMount () {
+        this.logger.info('TTPlayerVolume componentWillMount');
         this.bindVolumeEvents();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerVolume mounted');
+    componentDidMount () {
+        this.logger.info('TTPlayerVolume componentDidMount');
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerVolume beforeDestroy');
+    componentWillUnmount () {
+        this.logger.info('TTPlayerVolume componentWillUnmount');
         this.removeVolumeEvents();
     }
-
-    abstract onVolumeChange(volume: number, muted: boolean): any;
 
     private bindVolumeEvents () {
         this.event.on('volumechange', this.handleVolumeChange);
@@ -38,7 +36,7 @@ abstract class TTPlayerVolume<T extends TMediaType> extends TTPlayerMediaCompone
     private handleVolumeChange () {
         this.volume = this.media.volume;
         this.muted = this.media.muted;
-        this.onVolumeChange(this.volume, this.muted);
+        this.render();
     }
 
 }

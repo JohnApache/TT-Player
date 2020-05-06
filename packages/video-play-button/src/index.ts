@@ -12,29 +12,28 @@ class VideoPlayButton extends TTPlayerPlayButton<'Video'> {
         this.options = new PlayButtonOptions(media.options.videoPlayButton);
         this.icon = new SVGIcons({ svgName: 'play' });
         this.icon.init();
-        this.init();
+        this.root.append(this.icon.getInstance());
     }
 
-    init () {
-        this.render();
-    }
-
-    onPlay () {
+    renderPlay () {
         this.icon.animatePathBySvgName('pause');
     }
 
-    onPause () {
+    renderPause () {
         this.icon.animatePathBySvgName('play');
     }
 
-    private render () {
+    beforeRender () {
+        super.beforeRender();
+        this.root
+            .addClass('ttplayer__video__play--button');
+    }
+
+    render () {
+        super.render();
         const { size } = this.options;
         this.root
-            .addClass('ttplayer__video__play--button')
-            .css({ width: `${ size }px`, height: `${ size }px` })
-            .append(this.icon.getInstance());
-
-        return this;
+            .css({ width: `${ size }px`, height: `${ size }px` });
     }
 
 }

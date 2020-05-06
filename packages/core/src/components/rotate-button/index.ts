@@ -12,8 +12,9 @@ enum EDegree {
     LEFT= LEFT_DEGREE,
 }
 
-abstract class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
+class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
 
+    static className: string = 'ttplayer__media__component--rotate-button';
     public degree: EDegree = TOP_DEGREE;
     public innerRotate: boolean = true;
 
@@ -26,17 +27,29 @@ abstract class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
         if (this.degree !== TOP_DEGREE) this.rotate(this.degree);
     }
 
-    abstract renderRotateButton(): any;
-
-    beforeMount () {
-        this.renderRotateButton();
+    componentWillMount () {
         this.bindRotateEvents();
+        this.logger.debug('TTPlayerRotateButton componentWillMount');
     }
 
-    mounted () {}
+    componentDidMount () {
+        this.logger.debug('TTPlayerRotateButton componentDidMount');
+    }
 
-    beforeDestroy () {
+    componentWillUnmount () {
         this.removeRotateEvents();
+        this.logger.debug('TTPlayerRotateButton componentWillUnmount');
+    }
+
+    beforeRender () {
+        this.root.addClass(this.className);
+    }
+
+    render () {
+        this.media.media.css({
+            transformOrigin: 'center center',
+            transfrom      : `rotate(${ this.degree }turn) scale(${ this.calcScale(this.degree) })`,
+        });
     }
 
     private bindRotateEvents () {
@@ -48,6 +61,7 @@ abstract class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
     }
 
     private handleClickRotateButton () {
+        this.logger.info('click rotate button');
         switch (this.degree) {
             case EDegree.TOP:
                 this.rotate(EDegree.BOTTOM);
@@ -68,11 +82,9 @@ abstract class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
     }
 
     private rotate (degree: EDegree) {
+        this.logger.debug(`rotate from: ${ this.degree } to: ${ degree }`);
         this.degree = degree;
-        this.media.media.css({
-            transformOrigin: 'center center',
-            transfrom      : `rotate(${ this.degree }turn) scale(${ this.calcScale(this.degree) })`,
-        });
+        this.render();
     }
 
     private calcScale (degree: EDegree): number {
@@ -87,7 +99,6 @@ abstract class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
             default:
                 return 1;
         }
-
     }
 
 }

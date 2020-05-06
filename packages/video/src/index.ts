@@ -31,21 +31,18 @@ class TTPlayerVideo extends TTPlayerVideoBase {
         this.initMSE();
     }
 
-    beforeMount () {
-        super.beforeMount();
-    }
-
-    mounted () {
-        super.mounted();
-    }
-
-    beforeDestroy () {
-        super.beforeDestroy();
+    componentWillUnmount () {
+        super.componentWillUnmount();
         this.clearMSE();
     }
 
     renderVideo () {
         this.media.addClass('ttplayer--video');
+    }
+
+    beforeRender () {
+        super.beforeRender();
+        this.video.addClass('ttplayer--video');
     }
 
     private initMSE () {

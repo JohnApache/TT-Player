@@ -1,33 +1,42 @@
 import TTPlayerMedia, { TMediaType } from '../../media/media';
 import TTPlayerVolume from '../volume';
 
-// TODO MIXINS 多重继承
-abstract class TTPlayerVolumeButton<T extends TMediaType> extends TTPlayerVolume<T> {
+// Consider MIXINS 多重继承
+class TTPlayerVolumeButton<T extends TMediaType> extends TTPlayerVolume<T> {
+
+    static className: string = 'ttplayer__media__component--volume-button';
 
     constructor (media: TTPlayerMedia<T>) {
         super(media);
         this.handleClickVolumeButton = this.handleClickVolumeButton.bind(this);
     }
 
-    beforeMount () {
-        super.beforeMount();
-        this.logger.info('TTPlayerVolumeButton beforeMount');
+    componentWillMount () {
+        super.componentWillMount();
+        this.logger.info('TTPlayerVolumeButton componentWillMount');
         this.bindButtonEvents();
-        this.renderVolumeButton();
     }
 
-    mounted () {
-        super.mounted();
-        this.logger.info('TTPlayerVolumeButton mounted');
+    componentDidMount () {
+        super.componentDidMount();
+        this.logger.info('TTPlayerVolumeButton componentDidMount');
     }
 
-    beforeDestroy () {
-        super.beforeDestroy();
-        this.logger.info('TTPlayerVolumeButton beforeDestroy');
+    componentWillUnmount () {
+        super.componentWillUnmount();
+        this.logger.info('TTPlayerVolumeButton componentWillUnmount');
         this.removeButtonEvents();
     }
 
-    abstract renderVolumeButton(): any;
+    beforeRender () {
+        this.root.addClass(this.className);
+    }
+
+    render () {
+        this.muted ?
+            this.root.addClass('muted') :
+            this.root.removeClass('muted');
+    }
 
     private bindButtonEvents () {
         this.root.on('click', this.handleClickVolumeButton);

@@ -25,6 +25,7 @@ class ControlVolumeButton extends TTPlayerVolumeButton<'Video'> {
         this.volumeLevel = VOLUME_LEVEL.Lv0;
         this.icon = SVGIcons.createSvg('volume-lv0');
         this.icon.init();
+        this.root.append(this.icon.getInstance());
     }
 
     onVolumeChange () {
@@ -46,10 +47,14 @@ class ControlVolumeButton extends TTPlayerVolumeButton<'Video'> {
         }
     }
 
-    renderVolumeButton () {
+    beforeRender () {
+        super.beforeRender();
         this.root
-            .addClass('volume--button icon--container')
-            .append(this.icon.getInstance());
+            .addClass('volume--button icon--container');
+    }
+
+    render () {
+        super.render();
     }
 
 }
@@ -60,7 +65,8 @@ class ControlVolumeBar extends TTPlayerHorizontalVolumeBar<'Video'> {
         super(media as TTPlayerMedia<'Video'>);
     }
 
-    renderVolumeBar () {
+    beforeRender () {
+        super.beforeRender();
         this.thumb
             .addClass('volume--thumb');
         this.inner
@@ -71,12 +77,11 @@ class ControlVolumeBar extends TTPlayerHorizontalVolumeBar<'Video'> {
             .addClass('volume__bar--wrapper');
     }
 
-    updateVolumeBar () {
-        if (this.muted) {
-            this.outter.addClass('muted');
-        } else {
+    render () {
+        super.render();
+        this.muted ?
+            this.outter.addClass('muted') :
             this.outter.removeClass('muted');
-        }
     }
 
 }
@@ -89,7 +94,8 @@ class ControlVolume extends TTPlayerComponentsGroup<'Video'> {
         super(control.media);
     }
 
-    renderGroup () {
+    beforeRender () {
+        super.beforeRender();
         this.root.addClass('control__volume--container');
     }
 

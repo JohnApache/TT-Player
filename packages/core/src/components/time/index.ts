@@ -1,6 +1,6 @@
 import TTPlayerMedia, { TTPlayerMediaComponent, TMediaType } from '../../media/media';
 
-abstract class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
     public duration: number = 0;
     public currentTime: number = 0;
@@ -11,22 +11,17 @@ abstract class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent
         this.handleDurationChange = this.handleDurationChange.bind(this);
     }
 
-    abstract onTimeUpdate(e: Event): any;
-    abstract onDurationChange(e: Event): any;
-    abstract renderTime(): any;
-
-    beforeMount () {
-        this.logger.info('TTPlayerTime beforeMount');
-        this.renderTime();
+    componentWillMount () {
+        this.logger.debug('TTPlayerTime componentWillMount');
         this.bindTimeEvents();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerTime mounted');
+    componentDidMount () {
+        this.logger.debug('TTPlayerTime componentDidMount');
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerTime beforeDestroy');
+    componentWillUnmount () {
+        this.logger.debug('TTPlayerTime componentWillUnmount');
         this.removeTimeEvents();
     }
 
@@ -42,21 +37,21 @@ abstract class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent
         return this;
     }
 
-    private handleDurationChange (e: Event) {
+    private handleDurationChange () {
         this.duration = this.media.duration;
         this.logger.debug('media duration change to', this.duration);
-        this.onDurationChange(e);
+        this.render();
     }
 
-    private handleTimeUpdate (e: Event) {
+    private handleTimeUpdate () {
         this.currentTime = this.media.currentTime;
         this.logger.debug('media current time update to', this.currentTime);
-        this.onTimeUpdate(e);
+        this.render();
     }
 
     formatTime (second: number): string {
         if (!second || second <= 0) return '00:00';
-
+        if (second) return 'Infinity:Infinity';
         const ONE_HOUR = 3600;
         const ONE_MINUTE = 60;
 

@@ -11,26 +11,21 @@ class ControlPlayButton extends TTPlayerPlayButton<'Video'> {
         super(control.media);
         this.icon = SVGIcons.createSvg('small-play');
         this.icon.init();
-        this.init();
+        this.root.append(this.icon.getInstance());
     }
 
-    init () {
-        this.render();
-    }
-
-    onPlay () {
+    renderPlay () {
         this.icon.updatePathBySvgName('small-pause');
     }
 
-    onPause () {
+    renderPause () {
         this.icon.updatePathBySvgName('small-play');
     }
 
-    private render () {
+    beforeRender () {
+        super.beforeRender();
         this.root
-            .addClass('play--button icon--container')
-            .append(this.icon.getInstance());
-        return this;
+            .addClass('play--button icon--container');
     }
 
 }

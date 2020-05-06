@@ -4,14 +4,16 @@ import PlayerHooks from './hooks';
 import TTPlayerVideo from './media/video/index';
 import TTPlayerAudio from './media/audio/index';
 import CreateLogger, { ILogger } from './logger';
+import Base from './base';
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 
 
 type TTPlayerMediaCtor = typeof TTPlayerVideo | typeof TTPlayerAudio;
 
-class TTPlayerCore {
+class TTPlayerCore extends Base {
 
     static Hooks = PlayerHooks;
+    static className: string = 'ttplayer--container';
     static mediasCtor: TTPlayerMediaCtor[] = [];
 
     public event: EventEmitter;
@@ -23,6 +25,7 @@ class TTPlayerCore {
     private ugs: Function[] = [];
 
     constructor (options: Partial<OptionsType>) {
+        super();
         this.event = new EventEmitter();
         this.options = new Options(options);
         this.container = this.options.root;
@@ -37,7 +40,7 @@ class TTPlayerCore {
 
     public init () {
         this.bindEvents();
-        this.logger.info('TTPlayerCore init');
+        this.logger.debug('TTPlayerCore init');
         this.event.emit(PlayerHooks.BeforeInit);
         this.installMedias()
             .render()
@@ -47,32 +50,32 @@ class TTPlayerCore {
 
     public destroy () {
         this.removeEvents();
-        this.logger.info('TTPlayerCore destroy');
+        this.logger.debug('TTPlayerCore destroy');
         this.event.emit(PlayerHooks.BeforeDestroy);
-        this.medias.forEach(media => media.destroy());
+        this.medias.forEach(media => media.componentWillUnmount());
         this.event.emit(PlayerHooks.Destroyed);
         return this;
     }
 
     private render () {
         const { width, height } = this.options;
-        this.logger.info('TTPlayerCore beforeRender');
+        this.logger.debug('TTPlayerCore beforeRender');
         this.event.emit(PlayerHooks.BeforeRender);
 
         this.root
-            .addClass('ttplayer--container')
+            .addClass(this.className)
             .css({ width, height })
             .prependTo(this.container);
 
-        this.medias.forEach(media => media.mounted());
+        this.medias.forEach(media => media.componentDidMount());
         this.event.emit(PlayerHooks.Rendered);
 
-        this.logger.info('TTPlayerCore rendered');
+        this.logger.debug('TTPlayerCore rendered');
         return this;
     }
 
     private ready () {
-        this.logger.info('TTPlayerCore ready');
+        this.logger.debug('TTPlayerCore ready');
         this.event.emit(PlayerHooks.Ready);
         return this;
     }
@@ -84,8 +87,10 @@ class TTPlayerCore {
         this.logger.debug('TTPlayerCore installMediasCtor:', mediasCtor);
         mediasCtor.forEach(mediaCtor => {
             const media = new mediaCtor(this);
-            media.init();
-            media.beforeMount();
+            media.componentWillMount();
+            media.beforeRender();
+            media.render();
+            this.root.prepend(media.media.getInstance());
             this.medias.push(media);
         });
         return this;
@@ -109,11 +114,12 @@ class TTPlayerCore {
         this.ugs = [];
     }
 
-    public dynamicUpdateConfig (newConfig: Options) {
+    public dynamicUpdateOption (newOptions: Options) {
         /**
          * TODO 是否考虑动态更新配置? 怎么样通知每个组件去更新
          */
-        this.event.emit(PlayerHooks.DynamicUpdateConfig, newConfig);
+        super.dynamicUpdateOption(newOptions);
+        this.event.emit(PlayerHooks.DynamicUpdateOptions, newOptions);
     }
 
 }

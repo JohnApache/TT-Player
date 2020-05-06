@@ -13,6 +13,7 @@ interface TTPlayerVideoComponentCtor {
 
 class TTPlayerVideo extends TTPlayerMedia<'Video'> {
 
+    static className: string = 'ttplayer__video--component';
     static mediaType = VIDEO_MEDIA_TYPE;
     static videoComponentsCtor: TTPlayerVideoComponentCtor[] = [];
 
@@ -29,8 +30,6 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
             ...player.options.video,
         });
     }
-
-    renderVideo () {}
 
     static use (videoComponentCtor: TTPlayerVideoComponentCtor) {
         this.videoComponentsCtor.push(videoComponentCtor);
@@ -51,31 +50,44 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
         return this.video.getInstance();
     }
 
-    beforeMount () {
-        this.renderVideo();
+    componentWillMount () {
+        super.componentWillMount();
         this.initVideoComponents();
     }
 
-    mounted () {
+    componentDidMount () {
+        super.componentDidMount();
         this.videoComponents.forEach(comp => {
-            comp.mounted();
+            comp.componentDidMount();
         });
     }
 
-    beforeDestroy () {
-        this.videoComponents.forEach(comp => comp.beforeDestroy());
+    componentWillUnmount () {
+        super.componentWillUnmount();
+        this.videoComponents.forEach(comp => comp.componentWillUnmount());
+    }
+
+    beforeRender () {
+        super.beforeRender();
+        this.video
+            .addClass(this.className);
+    }
+
+    render () {
+        super.render();
     }
 
     private initVideoComponents () {
         /* eslint-disable */
         (this.constructor as typeof TTPlayerVideo).videoComponentsCtor.forEach(ctor => {
             const comp = new ctor(this);
-            comp.beforeMount();
+            comp.componentWillMount();
+            comp.beforeRender();
+            comp.render();
             this.root.append(comp.root.getInstance());
             this.videoComponents.push(comp);
         });
          /* eslint-enable */
-        return this;
     }
 
 }

@@ -13,6 +13,10 @@ class ControlDurationText extends TTPlayerTime<'Video'> {
         this.currentText = DOMUtils.createUtilDom('span');
         this.durationText = DOMUtils.createUtilDom('span');
         this.splitLine = DOMUtils.createUtilDom('span');
+        this.root
+            .append(this.currentText.getInstance())
+            .append(this.splitLine.getInstance())
+            .append(this.durationText.getInstance());
     }
 
     onDurationChange () {
@@ -25,7 +29,8 @@ class ControlDurationText extends TTPlayerTime<'Video'> {
         this.currentText.html(this.formatTime(this.currentTime));
     }
 
-    renderTime () {
+    beforeRender () {
+        super.beforeRender();
         this.splitLine
             .addClass('split--line')
             .html('/');
@@ -37,12 +42,30 @@ class ControlDurationText extends TTPlayerTime<'Video'> {
         this.currentText
             .addClass('current--time')
             .html('00:00');
-
         this.root
-            .addClass('time__text--wrapper icon--container')
-            .append(this.currentText.getInstance())
-            .append(this.splitLine.getInstance())
-            .append(this.durationText.getInstance());
+            .addClass('time__text--wrapper icon--container');
+    }
+
+    render () {
+        super.render();
+        this.renderDurationText();
+        this.renderCurrentText();
+        this.renderSplitLine();
+    }
+
+    renderDurationText () {
+        if (this.formatTime(this.duration) === this.durationText.html()) return;
+        this.durationText.html(this.formatTime(this.duration));
+    }
+
+    renderCurrentText () {
+        if (this.formatTime(this.currentTime) === this.currentText.html()) return;
+        this.currentText.html(this.formatTime(this.currentTime));
+    }
+
+    renderSplitLine () {
+        if (this.splitLine.html() === '/') return;
+        this.splitLine.html('/');
     }
 
 }

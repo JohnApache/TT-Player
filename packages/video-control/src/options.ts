@@ -1,7 +1,7 @@
 import { VideoControlOptionsType } from './type';
 import utils from '@dking/ttplayer-utils';
 
-const DEFAULT_OPTIONS = { height: '100px' };
+const DEFAULT_OPTIONS = { height: '50px' };
 
 class VideoControlOptions {
 

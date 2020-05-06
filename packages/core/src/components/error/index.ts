@@ -1,7 +1,8 @@
 import TTPlayerMedia, { TTPlayerMediaComponent, TMediaType } from '../../media/media';
 
-abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
+    static className = 'ttplayer__media__component--error';
     public error: Error | null = null;
     public isError: boolean = false;
 
@@ -11,24 +12,40 @@ abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponen
         this.hideMediaError = this.hideMediaError.bind(this);
     }
 
-    beforeMount () {
-        this.logger.info('TTPlayerError beforeMount');
-        this.renderError();
+    componentWillMount () {
+        this.logger.info('TTPlayerError componentWillMount');
         this.bindErrorEvents();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerError mounted');
+    componentDidMount () {
+        this.logger.info('TTPlayerError componentDidMount');
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerError beforeDestroy');
+    componentWillUnmount () {
+        this.logger.info('TTPlayerError componentWillUnmount');
         this.removeErrorEvents();
     }
 
-    abstract renderError(): any;
-    abstract showError(): any;
-    abstract hideError(): any;
+    beforeRender () {
+        this.root
+            .addClass(this.className);
+    }
+
+    renderError () {
+        this.root.html('媒体异常').show();
+    }
+
+    hideError () {
+        this.root.html('').hide();
+    }
+
+    render () {
+        if (this.isError) {
+            this.renderError();
+            return;
+        }
+        this.hideError();
+    }
 
     private bindErrorEvents () {
         this.event.on('error', this.showMediaError);
@@ -46,7 +63,7 @@ abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponen
         this.logger.warn('show media error');
         this.logger.warn(`media src: ${ this.media.src }`);
         this.logger.error(error);
-        this.showError();
+        this.render();
     }
 
     private hideMediaError () {
@@ -54,7 +71,7 @@ abstract class TTPlayerError<T extends TMediaType> extends TTPlayerMediaComponen
         this.error = null;
         this.isError = false;
         this.logger.info('hide media error');
-        this.hideError();
+        this.render();
     }
 
 }

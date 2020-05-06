@@ -3,8 +3,9 @@ import TTPlayerMedia, { TMediaType } from '../../media/media';
 import TTPlayerTime from '../time';
 import utils, { DOMUtils } from '@dking/ttplayer-utils';
 
-abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
+class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
 
+    static className = 'ttplayer__media__component--progress';
     public cacheProgress: DOMUtils<HTMLDivElement>;
     public currentProgress: DOMUtils<HTMLDivElement>;
     public durationProgress: DOMUtils<HTMLDivElement>;
@@ -12,6 +13,7 @@ abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
     public thumb: DOMUtils<HTMLDivElement>;
     public targetTime: number = 0;
     public lock: boolean = false;
+    public progressRate: number = 0;
 
     private ugs: Function[] = [];
     constructor (media: TTPlayerMedia<T>) {
@@ -20,54 +22,51 @@ abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
         this.currentProgress = DOMUtils.createUtilDom('div');
         this.durationProgress = DOMUtils.createUtilDom('div');
         this.thumb = DOMUtils.createUtilDom('div');
-        this.init();
-        this.handleClickProgress = this.handleClickProgress.bind(this);
-    }
 
-    beforeMount () {
-        super.beforeMount();
-        this.logger.info('TTPlayerProgress beforeMount');
-        this.renderProgress();
-    }
-
-    renderTime () {}
-
-    mounted () {
-        super.mounted();
-        this.logger.info('TTPlayerProgress mounted');
-        this.bindProgressEvents();
-    }
-
-    beforeDestroy () {
-        super.beforeMount();
-        this.logger.info('TTPlayerProgress beforeDestroy');
-        this.removeProgressEvents();
-    }
-
-    onTimeUpdate () {
-        const rate = this.currentTime / this.duration;
-        this.currentProgress.width(utils.floatToPercent(rate));
-        this.thumb.css('left', `${ this.durationProgress.width() * rate }px`);
-        this.updateProgress(rate);
-    }
-
-    onDurationChange () {
-        const rate = this.currentTime / this.duration;
-        this.currentProgress.width(utils.floatToPercent(rate));
-        this.thumb.css('left', `${ this.durationProgress.width() * rate }px`);
-        this.updateProgress(rate);
-    }
-
-    abstract renderProgress(): any;
-    abstract updateProgress(rate: number): any;
-
-    private init () {
         this.durationProgress
             .append(this.cacheProgress.getInstance())
             .append(this.currentProgress.getInstance())
             .append(this.thumb.getInstance());
+
         this.root
             .append(this.durationProgress.getInstance());
+
+        this.handleClickProgress = this.handleClickProgress.bind(this);
+    }
+
+    componentWillMount () {
+        super.componentWillMount();
+        this.logger.debug('TTPlayerProgress componentWillMount');
+    }
+
+    componentDidMount () {
+        super.componentDidMount();
+        this.logger.debug('TTPlayerProgress componentDidMount');
+        this.bindProgressEvents();
+    }
+
+    componentWillUnmount () {
+        super.componentWillUnmount();
+        this.logger.info('TTPlayerProgress componentWillUnmount');
+        this.removeProgressEvents();
+    }
+
+    beforeRender () {
+        this.root.addClass(this.className);
+        this.durationProgress.addClass(`${ this.className }-duration`);
+        this.cacheProgress.addClass(`${ this.className }-cache`);
+        this.currentProgress.addClass(`${ this.className }-current`);
+        this.thumb.addClass(`${ this.className }-thumb`);
+    }
+
+    render () {
+        const rate = this.currentTime / this.duration;
+        this.updateProgress(rate);
+    }
+
+    updateProgress (rate: number) {
+        this.currentProgress.width(utils.floatToPercent(rate));
+        this.thumb.css('left', `${ this.durationProgress.width() * rate }px`);
     }
 
     private bindProgressEvents () {
@@ -84,17 +83,18 @@ abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
                     const rate = curLeft / this.durationProgress.width();
                     this.currentProgress.css('width', utils.floatToPercent(rate));
                     this.targetTime = this.duration * rate;
-                    this.updateProgress(rate);
                 },
 
                 onMouseUp: () => {
-                    this.media.seek(this.targetTime);
+                    this.logger.info('mouse up from progress thumb');
                     this.lock = false; // 滑动结束的时候关开启自动变化
+                    this.media.seek(this.targetTime);
                 },
 
                 onMouseDown: (e: Event) => {
-                    e.stopPropagation();
+                    this.logger.info('mouse down from progress thumb');
                     this.lock = true;  // 滑动的时候关闭自动变化
+                    e.stopPropagation();
                 },
             },
         );
@@ -118,11 +118,9 @@ abstract class TTPlayerProgress<T extends TMediaType> extends TTPlayerTime<T> {
         /* eslint-enable */
 
         const rate = offsetX / this.durationProgress.width();
-        this.currentProgress.width(utils.floatToPercent(rate));
-        this.thumb.css('left', `${ this.durationProgress.width() * rate }px`);
+        this.updateProgress(rate);
         this.targetTime = rate * this.duration;
         this.media.seek(this.targetTime);
-        this.updateProgress(rate);
         return this;
     }
 

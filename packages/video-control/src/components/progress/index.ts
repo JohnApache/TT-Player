@@ -7,7 +7,8 @@ class ControlProgress extends TTPlayerProgress<'Video'> {
         super(control.media);
     }
 
-    renderProgress () {
+    beforeRender () {
+        super.beforeRender();
         this.root.addClass('ttplayer__progress--container');
         this.durationProgress.addClass('ttplayer__progress--duration');
         this.cacheProgress.addClass('ttplayer__progress--cache');
@@ -15,7 +16,9 @@ class ControlProgress extends TTPlayerProgress<'Video'> {
         this.thumb.addClass('ttplayer__progress--thumb');
     }
 
-    updateProgress () {}
+    updateProgress (rate: number) {
+        super.updateProgress(rate);
+    }
 
 }
 

@@ -10,25 +10,25 @@ class ControlFullScreen extends TTPlayerFullscreen {
         super(control.media);
         this.control = control;
         this.icon = SVGIcons.createSvg('fullscreen');
+        this.icon.init();
+        this.root.append(this.icon.getInstance());
     }
 
     renderFullscreen () {
-        this.icon.init();
-        this.root
-            .addClass('fullscreen--button icon--container')
-            .append(this.icon.getInstance());
+        this.media.root.addClass('fullscreen');
     }
 
-    onFullscreenChange () {
-        if (this.isFullscreen) {
-            this.control.media.root.addClass('fullscreen');
-        } else {
-            this.control.media.root.removeClass('fullscreen');
-        }
+    hideFullscreen () {
+        this.media.root.removeClass('fullscreen');
     }
 
     getFullscreenContainer () {
-        return this.control.media.root.getInstance();
+        return this.media.root.getInstance();
+    }
+
+    beforeRender () {
+        super.beforeRender();
+        this.root.addClass('fullscreen--button icon--container');
     }
 
 }

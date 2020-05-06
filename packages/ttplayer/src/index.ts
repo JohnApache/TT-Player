@@ -13,15 +13,15 @@ class LoadingComponent extends TTPlayerLoading<'Video'> {
         super(media);
     }
 
-    renderLoading () {
-        this.root
-            .addClass('loading--text')
-            .html('加载中')
-            .hide();
+    beforeRender () {
+        super.beforeRender();
+        this.root.addClass('loading--text');
     }
 
-    showLoading () {
-        this.root.show();
+    renderLoading () {
+        this.root
+            .html('加载中')
+            .hide();
     }
 
     hideLoading () {
@@ -36,15 +36,14 @@ class ErrorComponent extends TTPlayerError<'Video'> {
         super(media);
     }
 
-    renderError () {
-        this.root
-            .addClass('error--text')
-            .html('视频加载失败')
-            .hide();
+    beforeRender () {
+        this.root.addClass('error--text');
     }
 
-    showError () {
-        this.root.show();
+    renderError () {
+        this.root
+            .html('视频加载失败')
+            .show();
     }
 
     hideError () {
@@ -59,20 +58,20 @@ class PIPComponent extends TTPlayerPIP {
         super(media);
     }
 
+    beforeRender () {
+        super.beforeRender();
+        this.root.addClass('pip--button');
+    }
+
     renderPIP () {
         this.root
-            .addClass('pip--button')
             .html('画中画');
     }
 
-    onEnterPIP () {}
-    onLeavePIP () {
-        setTimeout(() => {
-            this.media.play();
-        }, 0);
+    hidePIP () {
+        this.root
+            .html('取消画中画');
     }
-
-    onResizePIPWindows () {}
 
 }
 
@@ -87,7 +86,6 @@ const TTPlayerVideo =
 const TTPlayerCore =
     TTPlayerCoreFactory()
         .use(TTPlayerVideo);
-
 
 export default TTPlayerCore;
 

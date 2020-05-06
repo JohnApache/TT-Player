@@ -3,10 +3,11 @@ import Hooks from '../../hooks';
 
 interface IPlayItem {
     url: string;
+    name?: string;
     type?: string;
 }
 
-abstract class TTPlayerBasePlayList<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+class TTPlayerBasePlayList<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
     public current: number = -1;
     public playList: IPlayItem [] = [];
@@ -22,15 +23,11 @@ abstract class TTPlayerBasePlayList<T extends TMediaType> extends TTPlayerMediaC
         this.handlePlayItemChange = this.handlePlayItemChange.bind(this);
     }
 
-    abstract onPlayItemChange(current: number): any;
-
-    beforeMount () {
+    componentWillMount () {
         this.bindPlayListEvents();
     }
 
-    mounted () {}
-
-    beforeDestroy () {
+    componentWillUnmount () {
         this.removePlayListEvents();
     }
 
@@ -44,7 +41,7 @@ abstract class TTPlayerBasePlayList<T extends TMediaType> extends TTPlayerMediaC
 
     private handlePlayItemChange (index: number) {
         this.current = index;
-        this.onPlayItemChange(this.current);
+        this.render();
     }
 
 }

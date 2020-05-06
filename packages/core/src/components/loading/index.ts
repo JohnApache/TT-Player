@@ -1,10 +1,11 @@
 import TTPlayerMedia, { TMediaType } from '../../media/media';
 import TTPlayerError from '../error';
-import Hooks from '../../hooks';
 
 const DEFAULT_LOADING_DELAY = 500;
 
-abstract class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
+class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
+
+    static className = 'ttplayer__media__component--loading';
 
     public loading: boolean = false;
     public LODING_DELAY: number = DEFAULT_LOADING_DELAY;
@@ -16,36 +17,47 @@ abstract class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
         this.hideMediaLoading = this.hideMediaLoading.bind(this);
     }
 
-    beforeMount () {
-        super.beforeMount();
-        this.logger.info('TTPlayerLoading beforeMount');
-        this.renderLoading();
+    componentWillMount () {
+        super.componentWillMount();
+        this.logger.debug('TTPlayerLoading componentWillMount');
         this.bindLoadingEvents();
     }
 
-    mounted () {
-        super.mounted();
-        this.logger.info('TTPlayerLoading mounted');
+    componentDidMount () {
+        super.componentDidMount();
+        this.logger.debug('TTPlayerLoading componentDidMount');
     }
 
-    beforeDestroy () {
-        super.beforeDestroy();
-        this.logger.info('TTPlayerLoading beforeDestroy');
+    componentWillUnmount () {
+        super.componentWillUnmount();
+        this.logger.debug('TTPlayerLoading componentWillUnmount');
         this.removeLoadingEvents();
     }
 
-    renderError () {}
-
-    showError () {
-        if (!this.loading) return;
-        this.hideMediaLoading();
+    renderLoading () {
+        this.root
+            .html('加载中')
+            .show();
     }
 
-    hideError () {}
+    hideLoading () {
+        this.root
+            .html('')
+            .hide();
+    }
 
-    abstract showLoading(): any;
-    abstract hideLoading(): any;
-    abstract renderLoading(): any;
+    beforeRender () {
+        this.root
+            .addClass(this.className);
+    }
+
+    render () {
+        if (this.loading) {
+            this.renderLoading();
+            return;
+        }
+        this.hideLoading();
+    }
 
     private bindLoadingEvents () {
         this.event.on('waiting', this.showMediaLoading);
@@ -64,9 +76,8 @@ abstract class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
         if (this.timerId) clearTimeout(this.timerId);
         this.timerId = setTimeout(() => {
             this.loading = true;
-            this.showLoading();
             this.logger.info('show media loading');
-            this.event.emit(Hooks.ShowLoading);
+            this.render();
         }, this.LODING_DELAY);
     }
 
@@ -74,9 +85,8 @@ abstract class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
         if (!this.loading) return;
         if (this.timerId) clearTimeout(this.timerId);
         this.loading = false;
-        this.hideLoading();
         this.logger.info('hide media loading');
-        this.event.emit(Hooks.HideLoading);
+        this.render();
     }
 
 }

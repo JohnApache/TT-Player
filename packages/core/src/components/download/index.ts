@@ -1,54 +1,61 @@
 import TTPlayerMedia, { TMediaType, TTPlayerMediaComponent } from '../../media/media';
 import { bUtils } from '@dking/ttplayer-utils';
 
-abstract class TTPlayerDownload<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+class TTPlayerDownload<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+
+    static className = 'ttplayer__media__download--component'
 
     public filename: string;
-    public downloadUrl: string = '';
+    public downloadUrl: string;
 
     constructor (media: TTPlayerMedia<T>) {
         super(media);
         const download = this.media.options.download || {};
         this.filename = download.filename || 'TTPlayer';
-        this.downloadUrl = download.url || this.media.options.src || this.media.src || '';
+        this.downloadUrl = download.url;
         this.handleClickDownload = this.handleClickDownload.bind(this);
-        this.watchMediaLoadStart = this.watchMediaLoadStart.bind(this);
+        this.logger.info('TTPlayerDownload option', download);
     }
 
-    abstract renderDownload(): any;
-
-    beforeMount () {
-        this.renderDownload();
+    componentWillMount () {
+        this.logger.debug('TTPlayerDownload componentWillMount');
         this.bindDownloadEvents();
     }
 
-    mounted () {}
+    componentDidMount () {
+        this.logger.debug('TTPlayerDownload componentDidMount');
+    }
 
-    beforeDestroy () {
+    componentWillUnmount () {
+        this.logger.debug('TTPlayerDownload componentWillUnmount');
         this.removeDownloadEvents();
     }
 
+    beforeRender () {
+        this.root
+            .addClass(this.className);
+    }
+
+    render () {
+        this.root.html('下载');
+    }
+
     private bindDownloadEvents () {
-        this.event.on('loadstart', this.watchMediaLoadStart);
         this.root.on('click', this.handleClickDownload);
     }
 
     private removeDownloadEvents () {
-        this.event.off('loadstart', this.watchMediaLoadStart);
         this.root.off('click', this.handleClickDownload);
     }
 
     private handleClickDownload () {
+        this.logger.info('click download btn');
         this.download(this.downloadUrl);
-    }
-
-    private watchMediaLoadStart () {
-        const download = this.media.options.download || {};
-        this.downloadUrl = download.downloadUrl || this.media.options.src || this.media.src || '';
     }
 
     private download (downloadUrl: string) {
         if (!downloadUrl) return;
+        this.logger.info(`download media from ${ downloadUrl }`);
         const a = bUtils.CreateDom('a');
         a.href = downloadUrl;
         a.setAttribute('download', this.filename);

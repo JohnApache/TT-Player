@@ -2,6 +2,7 @@ import EventEmitter from 'eventemitter3';
 import TTPlayerCore from '../core';
 import { ILogger } from '../logger';
 import Hooks from '../hooks';
+import { LifeCycle } from '../base';
 import { MEDIA_NATIVE_EVENTS } from './events';
 import TTPlayerMediaOptions, { TMediaPreload } from './options';
 import TTPlayerMediaComponent from './component';
@@ -15,8 +16,9 @@ interface IMediaTypeMap {
 type TMediaType = keyof IMediaTypeMap;
 
 
-abstract class TTPlayerMedia<T extends TMediaType> {
+abstract class TTPlayerMedia<T extends TMediaType> extends LifeCycle {
 
+    static className: string = 'ttplayer__media--component'
     static mediaType: TMediaType;
     public mediaType: TMediaType;
     public player: TTPlayerCore;
@@ -30,6 +32,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     public options: TTPlayerMediaOptions;
 
     constructor (mediaType: TMediaType, player: TTPlayerCore) {
+        super();
         this.mediaType = mediaType;
         this.player = player;
         this.root = this.player.root;
@@ -44,18 +47,27 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     abstract getMediaInstance(): IMediaTypeMap[T];
-    beforeMount () {}
-    mounted () {}
-    beforeDestroy () {}
 
-    public init () {
-        this.logger.info(`TTPlayerMedia init`);
-        this.bindEvents()
-            .render();
-        return this;
+    componentWillMount () {
+        this.logger.debug(`TTPlayerMedia componentWillMount`);
+        this.bindEvents();
     }
 
-    public render () {
+    componentDidMount () {
+        this.logger.debug(`TTPlayerMedia componentDidMount`);
+    }
+
+    componentWillUnmount () {
+        this.logger.debug(`TTPlayerMedia componentWillUnmount`);
+        this.removeEvents();
+    }
+
+    beforeRender () {
+        this.media
+            .addClass(this.className);
+    }
+
+    render () {
         const {
             src,
             volume,
@@ -66,26 +78,20 @@ abstract class TTPlayerMedia<T extends TMediaType> {
             preload,
         } = this.options;
 
-        this.media
-            .addClass('ttplayer__media--component');
-
         this.src = src;
         this.volume = volume;
         this.muted = muted;
         this.loop = loop;
-
         this.autoplay = autoplay;
         this.controls = controls;
         this.preload = preload;
 
-        this.logger.info(`TTPlayerMedia render`);
-        this.root.prepend(this.mediaDom);
-        return this;
+        this.logger.debug(`TTPlayerMedia render`);
     }
 
     public destroy () {
-        this.logger.info(`TTPlayerMedia destroy`);
-        this.beforeDestroy();
+        this.logger.debug(`TTPlayerMedia destroy`);
+        this.componentWillUnmount();
         this.removeEvents();
         return this;
     }
@@ -95,7 +101,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set src (src: string) {
-        this.logger.info(`media set src ${ src }`);
+        this.logger.debug(`media set src ${ src }`);
         this.mediaDom.src = src;
         this.options.src = src;
     }
@@ -105,7 +111,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set autoplay (autoplay: boolean) {
-        this.logger.info(`media set autoplay ${ autoplay }`);
+        this.logger.debug(`media set autoplay ${ autoplay }`);
         this.mediaDom.autoplay = autoplay;
     }
 
@@ -114,7 +120,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set controls (controls: boolean) {
-        this.logger.info(`media set controls ${ controls }`);
+        this.logger.debug(`media set controls ${ controls }`);
         this.mediaDom.controls = controls;
     }
 
@@ -123,7 +129,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set volume (volume: number) {
-        this.logger.info(`media set volume ${ volume }`);
+        this.logger.debug(`media set volume ${ volume }`);
         this.mediaDom.volume = volume;
         this.event.emit('volumechange');
 
@@ -135,7 +141,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set muted (muted: boolean) {
-        this.logger.info(`media set muted ${ muted }`);
+        this.logger.debug(`media set muted ${ muted }`);
         this.mediaDom.muted = muted;
         this.event.emit('volumechange');
 
@@ -148,7 +154,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set preload (preload: TMediaPreload) {
-        this.logger.info(`media set preload ${ preload }`);
+        this.logger.debug(`media set preload ${ preload }`);
         this.mediaDom.preload = preload;
     }
 
@@ -157,7 +163,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set loop (loop: boolean) {
-        this.logger.info(`media set loop ${ loop }`);
+        this.logger.debug(`media set loop ${ loop }`);
         this.mediaDom.loop = loop;
     }
 
@@ -166,7 +172,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set playbackRate (playbackRate: number) {
-        this.logger.info(`media set playbackRate ${ playbackRate }`);
+        this.logger.debug(`media set playbackRate ${ playbackRate }`);
         this.mediaDom.playbackRate = playbackRate;
     }
 
@@ -175,7 +181,7 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     set currentTime (currentTime: number) {
-        this.logger.info(`media set currentTime ${ currentTime }`);
+        this.logger.debug(`media set currentTime ${ currentTime }`);
         this.mediaDom.currentTime = currentTime;
     }
 
@@ -194,16 +200,18 @@ abstract class TTPlayerMedia<T extends TMediaType> {
     }
 
     public seek (time: number) {
+        // 当seek的时间不是标准时间的时候不能seek
+        if (time === Infinity || Number.isNaN) return;
         let nextTime = time;
         if (nextTime < 0) nextTime = 0;
         if (nextTime > this.duration) nextTime = this.duration;
         this.currentTime = nextTime;
         this.logger.info(`media run seek`);
-        this.logger.info(`media seek time ${ nextTime }`);
+        this.logger.debug(`media seek time ${ nextTime }`);
         return this;
     }
 
-    private spreadMediaNativeEvent (ev: string, data: any) {
+    protected spreadMediaNativeEvent (ev: string, data: any) {
         this.logger.debug(`media trigger event: ${ ev }`);
         this.event.emit(ev, data);
         return this;

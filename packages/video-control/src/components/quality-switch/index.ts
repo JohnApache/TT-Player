@@ -7,7 +7,8 @@ class ControlQualitySwitch extends TTPlayerQualitySwitch<'Video'> {
         super(control.media);
     }
 
-    renderQuality () {
+    beforeRender () {
+        super.beforeRender();
         this.root.addClass('ttplayer__quality--container');
         this.qualitySwitch.addClass('ttplayer__quality__switch');
         this.qualityListRoot.addClass('ttplayer__quality--list');
@@ -16,7 +17,9 @@ class ControlQualitySwitch extends TTPlayerQualitySwitch<'Video'> {
         });
     }
 
-    updateProgress () {}
+    render () {
+        super.render();
+    }
 
 }
 

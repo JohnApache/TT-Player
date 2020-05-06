@@ -8,8 +8,9 @@ enum EDirection {
     HORIZONTAL
 }
 
-abstract class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T> {
+class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T> {
 
+    static className: string = 'ttplayer__media__component--volume-bar';
     public outter: DOMUtils<HTMLDivElement>;
     public inner: DOMUtils<HTMLDivElement>;
     public thumb: DOMUtils<HTMLDivElement>;
@@ -22,44 +23,42 @@ abstract class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T>
         this.outter = DOMUtils.createUtilDom('div');
         this.inner = DOMUtils.createUtilDom('div');
         this.thumb = DOMUtils.createUtilDom('div');
-        this.handleClickVolumeBar = this.handleClickVolumeBar.bind(this);
-    }
-
-    beforeMount () {
-        super.beforeMount();
-        this.logger.info('TTPlayerVolumeBar beforeMount');
-        this.init();
-        this.renderVolumeBar();
-    }
-
-    mounted () {
-        super.mounted();
-        this.logger.info('TTPlayerVolumeBar mounted');
-        this.bindVolumeBarEvents();
-    }
-
-    beforeDestroy () {
-        super.beforeDestroy();
-        this.logger.info('TTPlayerVolumeBar beforeDestroy');
-        this.removeVolumeBarEvents();
-    }
-
-    onVolumeChange () {
-        const rate = this.volume;
-        this.inner.width(utils.floatToPercent(rate));
-        this.thumb.css('left', `${ this.outter.width() * rate }px`);
-        this.updateVolumeBar(rate);
-    }
-
-    abstract renderVolumeBar(): any;
-    abstract updateVolumeBar(rate: number): any;
-
-    private init () {
         this.outter
             .append(this.inner.getInstance())
             .append(this.thumb.getInstance());
         this.root
             .append(this.outter.getInstance());
+        this.handleClickVolumeBar = this.handleClickVolumeBar.bind(this);
+    }
+
+    componentWillMount () {
+        super.componentWillMount();
+        this.logger.info('TTPlayerVolumeBar componentWillMount');
+    }
+
+    componentDidMount () {
+        super.componentDidMount();
+        this.logger.info('TTPlayerVolumeBar componentDidMount');
+        this.bindVolumeBarEvents();
+    }
+
+    componentWillUnmount () {
+        super.componentWillUnmount();
+        this.logger.info('TTPlayerVolumeBar componentWillUnmount');
+        this.removeVolumeBarEvents();
+    }
+
+    beforeRender () {
+        this.root.addClass(this.className);
+        this.outter.addClass(`${ this.className }-outter`);
+        this.inner.addClass(`${ this.className }-inner`);
+        this.thumb.addClass(`${ this.className }-thumb`);
+    }
+
+    render () {
+        const rate = this.volume;
+        this.inner.width(utils.floatToPercent(rate));
+        this.thumb.css('left', `${ this.outter.width() * rate }px`);
     }
 
     private bindVolumeBarEvents () {
@@ -119,7 +118,6 @@ abstract class TTPlayerVolumeBar<T extends TMediaType> extends TTPlayerVolume<T>
             rate = offsetY / this.outter.height();
         }
         this.media.volume = rate;
-        return this;
     }
 
 }

@@ -4,21 +4,22 @@ import { TTPlayerScreenshot } from '@dking/ttplayer-core';
 
 class ControlScreenshot extends TTPlayerScreenshot {
 
+    static screenshotImageName: string = 'TTPlayer2.png';
     public icon: SVGIcons;
     constructor (control: TTPlayerVideoControl) {
         super(control.media);
         this.icon = SVGIcons.createSvg('camera');
-    }
-
-    getScreenshotImageName () {
-        return 'TTPlayer.png';
-    }
-
-    renderScreenshot () {
         this.icon.init();
+        this.root.append(this.icon.getInstance());
+    }
+
+    beforeRender () {
         this.root
-            .addClass('screenshot--button icon--container')
-            .append(this.icon.getInstance());
+            .addClass('screenshot--button icon--container');
+    }
+
+    render () {
+        super.render();
     }
 
 }

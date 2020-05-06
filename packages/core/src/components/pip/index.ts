@@ -20,9 +20,11 @@ declare global {
     }
 }
 
-abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
+class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
 
+    static className = 'ttplayer__media__component--pip';
     public pipWindows: PictureInPictureWindow | null = null;
+    public isPIP: boolean = false;
 
     constructor (media: TTPlayerMedia<'Video'>) {
         super(media);
@@ -32,25 +34,41 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
         this.handleResizePIPWindows = this.handleResizePIPWindows.bind(this);
     }
 
-    beforeMount () {
-        this.logger.info('TTPlayerPIP beforeMount');
-        this.renderPIP();
+    componentWillMount () {
+        this.logger.debug('TTPlayerPIP componentWillMount');
         this.bindPIPEvents();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerPIP mounted');
+    componentDidMount () {
+        this.logger.debug('TTPlayerPIP componentDidMount');
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerPIP beforeDestroy');
+    componentWillUnmount () {
+        this.logger.debug('TTPlayerPIP componentWillUnmount');
         this.removePIPEvents();
     }
 
-    abstract renderPIP(): any;
-    abstract onEnterPIP(): any;
-    abstract onLeavePIP(): any;
-    abstract onResizePIPWindows(): any;
+    renderPIP () {
+        this.root.html('画中画');
+    }
+
+    hidePIP () {
+        this.root.html('取消画中画');
+    }
+
+    beforeRender () {
+        this.root.addClass(this.className);
+    }
+
+    render () {
+        if (this.isPIP) {
+            this.hidePIP();
+            return;
+        }
+        this.renderPIP();
+    }
+
+    onResizePIPWindows () {}
 
     private bindPIPEvents () {
         this.event.on('enterpictureinpicture', this.handleEnterPIP);
@@ -63,18 +81,22 @@ abstract class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
         this.event.off('leavepictureinpicture', this.handleLeavePIP);
     }
 
-    private handleEnterPIP () {
+    public handleEnterPIP () {
         this.logger.info('enter PIP mode');
-        this.onEnterPIP();
+        this.isPIP = true;
+        this.render();
     }
 
-    private handleLeavePIP () {
+    public handleLeavePIP () {
         this.logger.info('exit PIP mode');
         if (this.pipWindows) {
             this.pipWindows.removeEventListener('resize', this.handleResizePIPWindows);
             this.pipWindows = null;
         }
-        this.onLeavePIP();
+        this.render();
+        setTimeout(() => {
+            this.media.play();
+        }, 0);
     }
 
     private handleClickPIP () {

@@ -8,10 +8,12 @@ import {
     isFullscreen,
 } from './fullscreen';
 
-abstract class TTPlayerFullscreen extends TTPlayerMediaComponent<'Video'> {
+class TTPlayerFullscreen extends TTPlayerMediaComponent<'Video'> {
 
+    static className = 'ttplayer__media__component--fullscreen';
     public isFullscreen: boolean = false;
     public FULLSCREEN_API: FullScreenApiType;
+
     constructor (media: TTPlayerMedia<'Video'>) {
         super(media);
         this.handleClickFullscreen = this.handleClickFullscreen.bind(this);
@@ -19,24 +21,44 @@ abstract class TTPlayerFullscreen extends TTPlayerMediaComponent<'Video'> {
         this.FULLSCREEN_API = getFullScreenApi();
     }
 
-    abstract renderFullscreen(): any;
-    abstract getFullscreenContainer(): HTMLElement;
-    abstract onFullscreenChange(): any;
-
-    beforeMount () {
-        this.logger.info('TTPlayerFullscreen beforeMount');
-        this.renderFullscreen();
+    componentWillMount () {
+        this.logger.debug('TTPlayerFullscreen componentWillMount');
         this.bindFullscreenEvents();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerFullscreen mounted');
+    componentDidMount () {
+        this.logger.debug('TTPlayerFullscreen componentDidMount');
         this.isFullscreen = isFullscreen();
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerFullscreen beforeDestroy');
+    componentWillUnmount () {
+        this.logger.debug('TTPlayerFullscreen componentWillUnmount');
         this.removeFullscreenEvents();
+    }
+
+    beforeRender () {
+        this.root
+            .addClass(this.className);
+    }
+
+    renderFullscreen () {
+        this.root.html('全屏');
+    }
+
+    hideFullscreen () {
+        this.root.html('取消全屏');
+    }
+
+    render () {
+        if (this.isFullscreen) {
+            this.renderFullscreen();
+            return;
+        }
+        this.hideFullscreen();
+    }
+
+    getFullscreenContainer (): HTMLElement {
+        return this.media.root.getInstance();
     }
 
     private bindFullscreenEvents () {
@@ -61,9 +83,8 @@ abstract class TTPlayerFullscreen extends TTPlayerMediaComponent<'Video'> {
     private handleFullscreenChange () {
         this.isFullscreen = isFullscreen();
         this.logger.info('fullscreen change');
-        this.logger.debug('current isFullscreen: ', this.isFullscreen);
+        this.logger.info('current isFullscreen: ', this.isFullscreen);
         this.event.emit(Hooks.FullscreenChange, this.isFullscreen);
-        this.onFullscreenChange();
     }
 
 }

@@ -1,8 +1,9 @@
 import TTPlayerMediaComponent from '../../media/component';
 import TTPlayerMedia, { TMediaType } from '../../media/media';
 
-abstract class TTPlayerPlayButton<T extends TMediaType> extends TTPlayerMediaComponent<T> {
+class TTPlayerPlayButton<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
+    static className = 'ttplayer__media__component--play-button';
     public paused: boolean = true;
     constructor (media: TTPlayerMedia<T>) {
         super(media);
@@ -11,21 +12,41 @@ abstract class TTPlayerPlayButton<T extends TMediaType> extends TTPlayerMediaCom
         this.handleClick = this.handleClick.bind(this);
     }
 
-    abstract onPlay(e: Event): any;
-    abstract onPause(e: Event): any;
-
-    beforeMount () {
-        this.logger.info('TTPlayerPlayButton beforeMount');
+    componentWillMount () {
+        this.logger.debug('TTPlayerPlayButton componentWillMount');
         this.bindEvents();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerPlayButton mounted');
+    componentDidMount () {
+        this.logger.debug('TTPlayerPlayButton componentDidMount');
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerPlayButton beforeDestroy');
+    componentWillUnmount () {
+        this.logger.debug('TTPlayerPlayButton componentWillUnmount');
         this.removeEvents();
+    }
+
+    renderPlay () {
+        this.root
+            .html('播放');
+    }
+
+    renderPause () {
+        this.root
+            .html('暂停');
+    }
+
+    beforeRender () {
+        this.root
+            .addClass(this.className);
+    }
+
+    render () {
+        if (this.paused) {
+            this.renderPause();
+            return;
+        }
+        this.renderPlay();
     }
 
     private bindEvents () {
@@ -42,19 +63,20 @@ abstract class TTPlayerPlayButton<T extends TMediaType> extends TTPlayerMediaCom
         return this;
     }
 
-    private handlePause (e: Event) {
+    private handlePause () {
         this.paused = true;
-        this.onPause(e);
+        this.render();
         return this;
     }
 
-    private handlePlay (e: Event) {
+    private handlePlay () {
         this.paused = false;
-        this.onPlay(e);
+        this.render();
         return this;
     }
 
-    private handleClick () {
+    private handleClick (e: Event) {
+        e.stopPropagation();
         this.logger.info('click play button');
         if (this.paused) {
             this.media.play();

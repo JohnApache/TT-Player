@@ -31,6 +31,9 @@ class TTPlayerVideoControl extends TTPlayerMediaComponent<'Video'> {
         this.leftControl = DOMUtils.createUtilDom('div');
         this.rightControl = DOMUtils.createUtilDom('div');
         this.options = new VideoControlOptions(media.options.videoControl);
+        this.root
+            .append(this.leftControl.getInstance())
+            .append(this.rightControl.getInstance());
     }
 
     static use (controlComponentCtor: ControlComponentCtor) {
@@ -48,26 +51,25 @@ class TTPlayerVideoControl extends TTPlayerMediaComponent<'Video'> {
         return this;
     }
 
-    beforeMount () {
-        this.logger.info('TTPlayerVideoControl beforeMount');
+    componentWillMount () {
+        this.logger.debug('TTPlayerVideoControl componentWillMount');
         this.initControlComponents()
             .render();
     }
 
-    mounted () {
-        this.logger.info('TTPlayerVideoControl mounted');
+    componentDidMount () {
+        this.logger.debug('TTPlayerVideoControl componentDidMount');
         this.controlComponents.forEach(comp => {
-            comp.mounted();
+            comp.componentDidMount();
         });
     }
 
-    beforeDestroy () {
-        this.logger.info('TTPlayerVideoControl beforeDestroy');
+    componentWillUnmount () {
+        this.logger.debug('TTPlayerVideoControl componentWillUnmount');
         this.removeControlComponents();
     }
 
-    render () {
-
+    beforeRender () {
         this.leftControl
             .addClass('left--container');
 
@@ -75,12 +77,13 @@ class TTPlayerVideoControl extends TTPlayerMediaComponent<'Video'> {
             .addClass('right--container');
 
         this.root
-            .addClass('video--control')
-            .append(this.leftControl.getInstance())
-            .append(this.rightControl.getInstance());
+            .addClass('video--control');
+    }
 
-        this.logger.info('TTPlayerVideoControl render');
-        return this;
+    render () {
+        const { height } = this.options;
+        this.root.height(height);
+        this.logger.debug('TTPlayerVideoControl render');
     }
 
     private initControlComponents () {
@@ -93,30 +96,36 @@ class TTPlayerVideoControl extends TTPlayerMediaComponent<'Video'> {
         this.logger.info('TTPlayerVideoControl init control components');
         leftComponentsCtor.forEach(ctor => {
             const comp = new ctor(this);
-            comp.beforeMount();
+            comp.componentWillMount();
+            comp.beforeRender();
+            comp.render();
             this.controlComponents.push(comp);
             this.leftControl.append(comp.root.getInstance());
         });
 
         rightComponentsCtor.forEach(ctor => {
             const comp = new ctor(this);
-            comp.beforeMount();
+            comp.componentWillMount();
+            comp.beforeRender();
+            comp.render();
             this.controlComponents.push(comp);
             this.rightControl.append(comp.root.getInstance());
         });
 
         controlComponentsCtor.forEach(ctor => {
             const comp = new ctor(this);
-            comp.beforeMount();
-            this.controlComponents.push(comp);
+            comp.componentWillMount();
+            comp.beforeRender();
+            comp.render();
             this.root.append(comp.root.getInstance());
+            this.controlComponents.push(comp);
         });
 
         return this;
     }
 
     private removeControlComponents () {
-        this.controlComponents.forEach(comp => comp.beforeDestroy());
+        this.controlComponents.forEach(comp => comp.componentWillUnmount());
         return this;
     }
 
