@@ -93,6 +93,7 @@ class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
             this.pipWindows.removeEventListener('resize', this.handleResizePIPWindows);
             this.pipWindows = null;
         }
+        this.isPIP = false;
         this.render();
         setTimeout(() => {
             this.media.play();
