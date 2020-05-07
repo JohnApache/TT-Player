@@ -37,7 +37,7 @@ class TTPlayerPlaybackRateSwitch<T extends TMediaType> extends TTPlayerQualityLi
     }
 
     renderPlaybackRateSwitch () {
-        this.playbackRateSwitch.html() !== '播放列表' && this.playbackRateSwitch.html('播放列表');
+        this.playbackRateSwitch.html() !== '播放速度' && this.playbackRateSwitch.html('播放速度');
     }
 
     render () {

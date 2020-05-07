@@ -53,7 +53,7 @@ class TTPlayerTime<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
     formatTime (second: number): string {
         if (!second || second <= 0) return '00:00';
-        if (second) return 'Infinity:Infinity';
+        if (second === Infinity) return 'Infinity:Infinity';
         const ONE_HOUR = 3600;
         const ONE_MINUTE = 60;
 

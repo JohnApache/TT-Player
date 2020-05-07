@@ -52,7 +52,7 @@ class TTPlayerLoading<T extends TMediaType> extends TTPlayerError<T> {
     }
 
     render () {
-        if (this.loading) {
+        if (this.loading && !this.isError) {
             this.renderLoading();
             return;
         }
