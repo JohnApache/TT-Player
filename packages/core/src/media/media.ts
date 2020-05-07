@@ -96,6 +96,14 @@ abstract class TTPlayerMedia<T extends TMediaType> extends LifeCycle {
         return this;
     }
 
+    get readyState (): number {
+        return this.mediaDom.readyState;
+    }
+
+    get networkState (): number {
+        return this.mediaDom.networkState;
+    }
+
     get src (): string {
         return this.mediaDom.src;
     }
@@ -242,6 +250,7 @@ abstract class TTPlayerMedia<T extends TMediaType> extends LifeCycle {
                     this.event.emit('AutoplayFailed');
                 });
         });
+
         return this;
     }
 

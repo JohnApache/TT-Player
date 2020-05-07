@@ -25,6 +25,7 @@ class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
     static className = 'ttplayer__media__component--pip';
     public pipWindows: PictureInPictureWindow | null = null;
     public isPIP: boolean = false;
+    public isReady: boolean = false;
 
     constructor (media: TTPlayerMedia<'Video'>) {
         super(media);
@@ -70,6 +71,10 @@ class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
 
     onResizePIPWindows () {}
 
+    checkCanUsePIP (): boolean {
+        return this.media.readyState !== 0;
+    }
+
     private bindPIPEvents () {
         this.event.on('enterpictureinpicture', this.handleEnterPIP);
         this.event.on('leavepictureinpicture', this.handleLeavePIP);
@@ -112,6 +117,10 @@ class TTPlayerPIP extends TTPlayerMediaComponent<'Video'> {
 
     private async openPIP () {
         this.logger.info('try open PIP mode');
+        if (!this.checkCanUsePIP()) {
+            this.logger.warn('media not ready, open PIP mode blocked');
+            return;
+        }
         try {
             this.pipWindows = await this.mediaDom.requestPictureInPicture();
             if (this.pipWindows) {
