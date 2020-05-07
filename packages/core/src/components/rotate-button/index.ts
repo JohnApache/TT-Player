@@ -43,12 +43,14 @@ class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
 
     beforeRender () {
         this.root.addClass(this.className);
+        this.root.html('旋转');
     }
 
     render () {
         this.media.media.css({
             transformOrigin: 'center center',
-            transfrom      : `rotate(${ this.degree }turn) scale(${ this.calcScale(this.degree) })`,
+            transform      : `rotate(${ this.degree }turn) scale(${ this.calcScale(this.degree) })`,
+            webKitTransform: `rotate(${ this.degree }turn) scale(${ this.calcScale(this.degree) })`,
         });
     }
 
@@ -64,12 +66,12 @@ class TTPlayerRotateButton extends TTPlayerMediaComponent<'Video'> {
         this.logger.info('click rotate button');
         switch (this.degree) {
             case EDegree.TOP:
-                this.rotate(EDegree.BOTTOM);
-                break;
-            case EDegree.BOTTOM:
                 this.rotate(EDegree.RIGHT);
                 break;
             case EDegree.RIGHT:
+                this.rotate(EDegree.BOTTOM);
+                break;
+            case EDegree.BOTTOM:
                 this.rotate(EDegree.LEFT);
                 break;
             case EDegree.LEFT:

@@ -8,6 +8,7 @@ import ControlScreenShot from './components/screenshot';
 import ControlFullscreen from './components/fullscreen';
 import ControlQualitySwitch from './components/quality-switch';
 import ControlPlaySwitch from './components/play-switch';
+import ControlRotate from './components/rotate';
 
 import { dUtils as DOMUtils } from '@dking/ttplayer-utils';
 import { TTPlayerVideo, TTPlayerMediaComponent } from '@dking/ttplayer-core';
@@ -141,6 +142,7 @@ TTPlayerVideoControl
     .useInRight(ControlScreenShot)
     .useInRight(ControlQualitySwitch)
     .useInRight(ControlPlaySwitch)
+    .useInRight(ControlRotate)
     .use(ControlProgress);
 
 export default TTPlayerVideoControl;
