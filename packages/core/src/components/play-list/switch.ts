@@ -4,7 +4,6 @@ import { DOMUtils } from '@dking/ttplayer-utils';
 
 class TTPlayerPlaySwitch<T extends TMediaType> extends TTPlayerPlayList<T> {
 
-    static className = 'ttplayer__media__play--switch';
     public playSwitch: DOMUtils<HTMLDivElement>;
     public isShow: boolean = false;
     constructor (media: TTPlayerMedia<T>) {
@@ -33,7 +32,7 @@ class TTPlayerPlaySwitch<T extends TMediaType> extends TTPlayerPlayList<T> {
 
     beforeRender () {
         super.beforeRender();
-        this.playSwitch.addClass(this.className);
+        this.playSwitch.addClass(`${ this.className }--switch`);
         this.hidePlayList();
     }
 

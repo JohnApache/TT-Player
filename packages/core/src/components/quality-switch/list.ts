@@ -5,7 +5,6 @@ import { DOMUtils } from '@dking/ttplayer-utils';
 
 class TTPlayerQualityList<T extends TMediaType> extends TTPlayerBaseQuality<T> {
 
-    static className: string = 'ttplayer__media__quality--list';
     public qualityListRoot: DOMUtils<HTMLDivElement>;
     public qualityListItems: DOMUtils<HTMLDivElement>[] = [];
 
@@ -40,11 +39,11 @@ class TTPlayerQualityList<T extends TMediaType> extends TTPlayerBaseQuality<T> {
     }
 
     beforeRender () {
-        this.qualityListRoot.addClass(this.className);
-        this.qualityListItems.forEach(item => item.addClass(`${ this.className }-item`));
+        this.qualityListRoot.addClass(`${ this.className }--list`);
+        this.qualityListItems.forEach(item => item.addClass(`${ this.className }__list--item`));
     }
 
-    render () {
+    renderQualityList () {
         this.qualityListItems.forEach((item, index) => {
             if (this.current === index) {
                 !item.hasClass('current') && item.addClass('current');
@@ -56,14 +55,13 @@ class TTPlayerQualityList<T extends TMediaType> extends TTPlayerBaseQuality<T> {
         });
     }
 
+    render () {
+        this.renderQualityList();
+    }
+
     private bindQualityListEvents () {
         this.qualityListItems.forEach((item, index) => {
-            if (this.current === index) {
-                !item.hasClass('current') && item.addClass('current');
-                return;
-            }
             const ug = item.on('click', this.handleClickQualityListItem.bind(this, index));
-
             this.ugs.push(ug);
         });
     }
@@ -78,8 +76,8 @@ class TTPlayerQualityList<T extends TMediaType> extends TTPlayerBaseQuality<T> {
         const qualityItem = this.qualityList[index];
         this.logger.debug('switch to quality :', qualityItem);
         this.event.emit(Hooks.SwitchQuality, index);
-        this.media.src = qualityItem.url;
         this.current = index;
+        this.media.src = qualityItem.url;
     }
 
 }

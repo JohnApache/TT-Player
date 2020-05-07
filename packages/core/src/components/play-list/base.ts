@@ -9,6 +9,7 @@ interface IPlayItem {
 
 class TTPlayerBasePlayList<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
+    static className = 'ttplayer__media__component--playlist';
     public current: number = -1;
     public playList: IPlayItem [] = [];
 

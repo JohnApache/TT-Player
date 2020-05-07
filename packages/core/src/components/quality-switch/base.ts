@@ -9,6 +9,7 @@ interface IQualityItem {
 
 class TTPlayerBaseQuality<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
+    static className: string = 'ttplayer__media__component--quality';
     public current: number = -1;
     public qualityList: IQualityItem [] = [];
 

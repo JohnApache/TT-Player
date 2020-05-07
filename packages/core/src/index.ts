@@ -20,11 +20,21 @@ import TTPlayerError from './components/error';
 import TTPlayerPIP from './components/pip';
 
 import {
-    TTPlayerQualitySwitch, TTPlayerQualityList, TTPlayerBaseQuality,
+    TTPlayerQualitySwitch,
+    TTPlayerQualityList,
+    TTPlayerBaseQuality,
 } from './components/quality-switch';
 import {
-    TTPlayerPlaySwitch, TTPlayerPlayList, TTPlayerBasePlayList,
+    TTPlayerPlaySwitch,
+    TTPlayerPlayList,
+    TTPlayerBasePlayList,
 } from './components/play-list';
+
+import {
+    TTPlayerPlaybackRateList,
+    TTPlayerPlaybackRateSwitch,
+    TTPlayerBasePlaybackRate,
+} from './components/playbackRate-swtich';
 
 import TTPlayerPlayNext from './components/play-next';
 import TTPlayerPlayPrev from './components/play-prev';
@@ -70,12 +80,19 @@ export {
     TTPlayerLoading,
     TTPlayerError,
     TTPlayerPIP,
+
     TTPlayerQualitySwitch,
     TTPlayerQualityList,
     TTPlayerBaseQuality,
+
     TTPlayerPlaySwitch,
     TTPlayerPlayList,
     TTPlayerBasePlayList,
+
+    TTPlayerPlaybackRateList,
+    TTPlayerPlaybackRateSwitch,
+    TTPlayerBasePlaybackRate,
+
     TTPlayerPlayNext,
     TTPlayerPlayPrev,
     TTPlayerRotateButton,

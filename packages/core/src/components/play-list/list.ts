@@ -5,7 +5,6 @@ import { DOMUtils } from '@dking/ttplayer-utils';
 
 class TTPlayerPlayList<T extends TMediaType> extends TTPlayerBasePlayList<T> {
 
-    static className = 'ttplayer__media__component--play-list';
     public playListRoot: DOMUtils<HTMLDivElement>;
     public playListItems: DOMUtils<HTMLDivElement>[];
     private ugs: Function[] = [];
@@ -38,9 +37,9 @@ class TTPlayerPlayList<T extends TMediaType> extends TTPlayerBasePlayList<T> {
     }
 
     beforeRender () {
-        this.playListRoot.addClass(this.className);
+        this.playListRoot.addClass(`${ this.className }--list`);
         this.playListItems.forEach(playItem => {
-            playItem.addClass(`${ this.className }-item`);
+            playItem.addClass(`${ this.className }__list--item`);
         });
     }
 
@@ -52,7 +51,7 @@ class TTPlayerPlayList<T extends TMediaType> extends TTPlayerBasePlayList<T> {
         playItem.html() !== targetContent && playItem.html(targetContent);
     }
 
-    render () {
+    renderPlayList () {
         this.playListItems.forEach((playItem, index) => {
             this.renderPlayItem(index);
             if (index === this.current) {
@@ -63,10 +62,13 @@ class TTPlayerPlayList<T extends TMediaType> extends TTPlayerBasePlayList<T> {
         });
     }
 
+    render () {
+        this.renderPlayList();
+    }
+
     private bindEvents () {
-        this.playList.forEach((_, index) => {
-            const playItem = this.playListItems[index];
-            const ug = playItem.on('click', this.handleClickPlayItem.bind(this, index));
+        this.playListItems.forEach((item, index) => {
+            const ug = item.on('click', this.handleClickPlayItem.bind(this, index));
             this.ugs.push(ug);
         });
     }

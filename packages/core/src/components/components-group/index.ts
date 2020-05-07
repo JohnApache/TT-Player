@@ -5,6 +5,7 @@ interface GroupComponentCtor<T extends TMediaType> {
 }
 
 // Consider 怎么建立组合后的，组件间的通信
+// Group 怎么赋能更多的事情
 class TTPlayerComponentsGroup<T extends TMediaType> extends TTPlayerMediaComponent<T> {
 
     static className: string = 'ttplayer__media__component--group';

@@ -10,7 +10,7 @@ class ControlPlaySwitch extends TTPlayerPlaySwitch<'Video'> {
     beforeRender () {
         super.beforeRender();
         this.root.addClass('ttplayer__play--container');
-        this.playSwitch.addClass('ttplayer__play__switch');
+        this.playSwitch.addClass('ttplayer__play--switch');
         this.playListRoot.addClass('ttplayer__play--list');
         this.playListItems.forEach(dom => {
             dom.addClass('ttplayer__play--item');

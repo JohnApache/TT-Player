@@ -10,7 +10,7 @@ class ControlQualitySwitch extends TTPlayerQualitySwitch<'Video'> {
     beforeRender () {
         super.beforeRender();
         this.root.addClass('ttplayer__quality--container');
-        this.qualitySwitch.addClass('ttplayer__quality__switch');
+        this.qualitySwitch.addClass('ttplayer__quality--switch');
         this.qualityListRoot.addClass('ttplayer__quality--list');
         this.qualityListItems.forEach(dom => {
             dom.addClass('ttplayer__quality--item');

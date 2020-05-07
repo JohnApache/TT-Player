@@ -32,7 +32,7 @@ export const MEDIA_NATIVE_EVENTS: string[] = [
     'loadeddata', // 事件在浏览器加载视频/音频（audio/video）当前帧时触发触发。
     'loadedmetadata', // 事件在指定视频/音频（audio/video）的元数据加载后触发。
     'progress', // 事件在浏览器下载指定的视频/音频（audio/video）时触发
-    'onratechange', // 事件在视频/音频（audio/video）的播放速度发送改变时触发。
+    'ratechange', // 事件在视频/音频（audio/video）的播放速度发送改变时触发。
     'stalled', // 事件在浏览器获取媒体数据，但媒体数据不可用时触发,
     'suspend', // 事件在浏览器读取媒体数据中止时触发。
     'emptied', // 当前播放列表为空时触发, 媒体被清空（初始化）时触发。

@@ -33,7 +33,7 @@ class TTPlayerQualitySwitch<T extends TMediaType> extends TTPlayerQualityList<T>
 
     beforeRender () {
         super.beforeRender();
-        this.qualitySwitch.addClass(this.className);
+        this.qualitySwitch.addClass(`${ this.className }--switch`);
         this.hideQualityList();
     }
 
