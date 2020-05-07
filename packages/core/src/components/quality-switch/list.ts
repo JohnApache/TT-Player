@@ -43,15 +43,22 @@ class TTPlayerQualityList<T extends TMediaType> extends TTPlayerBaseQuality<T> {
         this.qualityListItems.forEach(item => item.addClass(`${ this.className }__list--item`));
     }
 
+    renderQualityItem (index: number) {
+        const item = this.qualityList[index];
+        const qualityItem = this.qualityListItems[index];
+        if (!qualityItem || !item) return;
+        const targetContent = item.name || `品质${ index }`;
+        qualityItem.html() !== targetContent && qualityItem.html(targetContent);
+    }
+
     renderQualityList () {
         this.qualityListItems.forEach((item, index) => {
+            this.renderQualityItem(index);
             if (this.current === index) {
                 !item.hasClass('current') && item.addClass('current');
                 return;
             }
             item.hasClass('current') && item.removeClass('current');
-            const targetContent = this.qualityList[index].name || `品质${ index }`;
-            item.html() !== targetContent && item.html(targetContent);
         });
     }
 

@@ -13,19 +13,19 @@ class LoadingComponent extends TTPlayerLoading<'Video'> {
         super(media);
     }
 
-    beforeRender () {
-        super.beforeRender();
-        this.root.addClass('loading--text');
-    }
-
     renderLoading () {
         this.root
             .html('加载中')
-            .hide();
+            .show();
     }
 
     hideLoading () {
         this.root.hide();
+    }
+
+    beforeRender () {
+        super.beforeRender();
+        this.root.addClass('loading--text');
     }
 
 }
@@ -36,10 +36,6 @@ class ErrorComponent extends TTPlayerError<'Video'> {
         super(media);
     }
 
-    beforeRender () {
-        this.root.addClass('error--text');
-    }
-
     renderError () {
         this.root
             .html('视频加载失败')
@@ -48,6 +44,10 @@ class ErrorComponent extends TTPlayerError<'Video'> {
 
     hideError () {
         this.root.hide();
+    }
+
+    beforeRender () {
+        this.root.addClass('error--text');
     }
 
 }

@@ -50,16 +50,22 @@ class TTPlayerPlaybackRateList<T extends TMediaType> extends TTPlayerBasePlaybac
         this.playbackRateListItems.forEach(item => item.addClass(`${ this.className }__list--item`));
     }
 
+    renderPlaybackRateItem (index: number) {
+        const item = this.playbackRateList[index];
+        const rateItem = this.playbackRateListItems[index];
+        if (!rateItem || !item) return;
+        const targetContent = item.name || `${ item.value.toFixed(1) }x`;
+        rateItem.html() !== targetContent && rateItem.html(targetContent);
+    }
+
     renderPlaybackRateList () {
-        this.playbackRateList.forEach((rateItem, index) => {
-            const item = this.playbackRateListItems[index];
-            if (this.playbackRate === rateItem.value) {
+        this.playbackRateListItems.forEach((item, index) => {
+            this.renderPlaybackRateItem(index);
+            if (this.current === index) {
                 !item.hasClass('current') && item.addClass('current');
                 return;
             }
             item.hasClass('current') && item.removeClass('current');
-            const targetContent = rateItem.name;
-            item.html() !== targetContent && item.html(targetContent);
         });
     }
 
@@ -82,7 +88,7 @@ class TTPlayerPlaybackRateList<T extends TMediaType> extends TTPlayerBasePlaybac
         this.logger.info('click playbackRate item');
         const rateItem = this.playbackRateList[index];
         const targetRate = rateItem.value;
-        if (this.current === index || this.playbackRate === targetRate) return;
+        if (this.current === index) return;
         this.logger.debug('switch to playbackRate :', targetRate);
         this.event.emit(Hooks.SwitchPlaybackRate, index);
         this.media.playbackRate = targetRate;
