@@ -113,6 +113,7 @@ const WatchPackages = [
     'video',
     'video-play-button',
     'video-control',
+    'components',
     {
         name   : 'ttplayer',
         libName: 'TTPlayer',

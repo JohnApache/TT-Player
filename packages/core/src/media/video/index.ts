@@ -29,6 +29,7 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
             ...player.options.media,
             ...player.options.video,
         });
+        this.initVideoComponents();
     }
 
     static use (videoComponentCtor: TTPlayerVideoComponentCtor) {
@@ -52,7 +53,7 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
 
     componentWillMount () {
         super.componentWillMount();
-        this.initVideoComponents();
+        this.renderVideoComponents();
     }
 
     componentDidMount () {
@@ -80,14 +81,18 @@ class TTPlayerVideo extends TTPlayerMedia<'Video'> {
     private initVideoComponents () {
         /* eslint-disable */
         (this.constructor as typeof TTPlayerVideo).videoComponentsCtor.forEach(ctor => {
-            const comp = new ctor(this);
+            this.videoComponents.push(new ctor(this));
+        });
+         /* eslint-enable */
+    }
+
+    private renderVideoComponents () {
+        this.videoComponents.forEach(comp => {
             comp.componentWillMount();
             comp.beforeRender();
             comp.render();
             this.root.append(comp.root.getInstance());
-            this.videoComponents.push(comp);
         });
-         /* eslint-enable */
     }
 
 }

@@ -1,0 +1,37 @@
+.control__volume--container {
+    display: flex;
+    align-items: center;
+    .volume__bar--wrapper {
+        .volume__bar--outter {
+            height: 4px;
+            width: 100px;
+            background-color: #eee;
+            position: relative;
+            &.muted {
+                .volume__bar--inner {
+                    background-color: #aaa;
+                }
+                .volume--thumb {
+                    background-color: #aaa;
+                }
+            }
+            .volume__bar--inner {
+                width: 0%;
+                height: 100%;
+                position: relative;
+                background-color: pink;
+            }
+            .volume--thumb {
+                position: absolute;
+                cursor: pointer;
+                width: 10px;
+                height: 10px;
+                left: 0;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                background-color: pink;
+                border-radius: 50%;
+            }
+        }
+    }
+}

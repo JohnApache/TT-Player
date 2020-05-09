@@ -31,6 +31,7 @@ class TTPlayerCore extends Base {
         this.container = this.options.root;
         this.logger = CreateLogger(this.options.logger);
         this.root = DOMUtils.createUtilDom('div');
+        this.initMedias();
     }
 
     static use (ctor: TTPlayerMediaCtor) {
@@ -42,7 +43,7 @@ class TTPlayerCore extends Base {
         this.bindEvents();
         this.logger.debug('TTPlayerCore init');
         this.event.emit(PlayerHooks.BeforeInit);
-        this.installMedias()
+        this.renderMedias()
             .render()
             .ready();
         return this;
@@ -80,18 +81,23 @@ class TTPlayerCore extends Base {
         return this;
     }
 
-    private installMedias (): TTPlayerCore {
+    private initMedias () {
         /* eslint-disable */
         const mediasCtor = (this.constructor as typeof TTPlayerCore).mediasCtor;
-         /* eslint-enable */
-        this.logger.debug('TTPlayerCore installMediasCtor:', mediasCtor);
+        /* eslint-enable */
+        this.logger.debug('TTPlayerCore initMediasCtor:', mediasCtor);
         mediasCtor.forEach(mediaCtor => {
-            const media = new mediaCtor(this);
+            this.medias.push(new mediaCtor(this));
+        });
+    }
+
+    private renderMedias (): TTPlayerCore {
+        this.logger.debug('TTPlayerCore renderMedias');
+        this.medias.forEach(media => {
             media.componentWillMount();
             media.beforeRender();
             media.render();
             this.root.prepend(media.media.getInstance());
-            this.medias.push(media);
         });
         return this;
     }

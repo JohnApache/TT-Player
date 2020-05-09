@@ -28,6 +28,7 @@ class TTPlayerAudio extends TTPlayerMedia<'Audio'> {
             ...player.options.media,
             ...player.options.audio,
         });
+        this.initAudioComponents();
     }
 
     static use (audioComponentCtor: TTPlayerAudioComponentCtor) {
@@ -43,7 +44,7 @@ class TTPlayerAudio extends TTPlayerMedia<'Audio'> {
 
     componentWillMount () {
         super.componentWillMount();
-        this.initAudioComponents();
+        this.renderAudioComponents();
     }
 
     componentDidMount () {
@@ -71,15 +72,19 @@ class TTPlayerAudio extends TTPlayerMedia<'Audio'> {
     private initAudioComponents () {
         /* eslint-disable */
         (this.constructor as typeof TTPlayerAudio).audioComponentsCtor.forEach(ctor => {
-            const comp = new ctor(this);
+            this.audioComponents.push(new ctor(this));
+        });
+         /* eslint-enable */
+        return this;
+    }
+
+    private renderAudioComponents () {
+        this.audioComponents.forEach(comp => {
             comp.componentWillMount();
             comp.beforeRender();
             comp.render();
             this.root.append(comp.root.getInstance());
-            this.audioComponents.push(comp);
         });
-         /* eslint-enable */
-        return this;
     }
 
 }

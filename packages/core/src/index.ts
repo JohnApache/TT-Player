@@ -41,6 +41,7 @@ import TTPlayerPlayPrev from './components/play-prev';
 import TTPlayerRotateButton from './components/rotate-button';
 import TTPlayerDownload from './components/download';
 import TTPlayerComponentsGroup from './components/components-group';
+import TTPlayerControl from './components/control';
 import {
     TTPlayerHorizontalVolumeBar,
     TTPlayerVerticalVolumeBar,
@@ -98,6 +99,8 @@ export {
     TTPlayerRotateButton,
     TTPlayerDownload,
     TTPlayerComponentsGroup,
+
+    TTPlayerControl,
 };
 
 export default TTPlayerCoreFactory;

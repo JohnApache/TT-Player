@@ -1,0 +1,55 @@
+.video--control {
+    height: 40px;
+    width: 100%;
+    background-color: #000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    user-select: none;
+    .left--container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        padding-left: 20px;
+       
+    }
+    .right--container {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        padding-right: 20px;
+    }
+
+    .left--container,
+    .right--container {
+        display: flex;
+        align-items: center;
+        .icon--container {
+            display: inline-block;
+            margin: 0 5px;
+            .icon__svg--wrapper {
+                position: relative;
+                width: 30px;
+                height: 30px;
+                opacity: .8;
+                cursor: pointer;
+                &:hover {
+                    opacity: 1;
+                }
+                .icon--svg {
+                    fill: #fff;
+                }
+            }
+        }
+    }
+
+    @import url('../duration-text/index.less');
+    @import url('../volume/index.less');
+    @import url('../progress/index.less');
+    @import url('../quality-switch/index.less');
+    @import url('../play-switch/index.less');
+    @import url('../playbackRate-switch/index.less');
+    @import url('../rotate-button/index.less');
+}

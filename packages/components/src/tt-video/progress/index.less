@@ -1,0 +1,34 @@
+.ttplayer__progress--container {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: -10px;
+    height: 14px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    .ttplayer__progress--duration {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        background-color: #eee;
+        .ttplayer__progress--current {
+            height: 100%;
+            width: 0;
+            background-color: yellowgreen;
+        }
+        .ttplayer__progress--thumb {
+            position: absolute;
+            cursor: pointer;
+            width: 10px;
+            height: 10px;
+            left: 0;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: yellowgreen;
+            border-radius: 50%;
+        }
+    }
+    
+}
