@@ -28,9 +28,7 @@
   "dependencies": {
     "@dking/ttplayer-components": "^0.0.3",
     "@dking/ttplayer-core": "^0.0.3",
-    "@dking/ttplayer-utils": "^0.0.3",
-    "@dking/ttplayer-video": "^0.0.3",
-    "@dking/ttplayer-video-control": "^0.0.3",
-    "@dking/ttplayer-video-play-button": "^0.0.3"
+    "@dking/ttplayer-mse": "^0.0.3",
+    "@dking/ttplayer-utils": "^0.0.3"
   }
 }

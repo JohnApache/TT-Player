@@ -981,3 +981,4 @@ declare namespace dashjs {
     export type TrackSwitchMode = 'alwaysReplace' | 'neverReplace';
     export type TrackSelectionMode = 'highestBitrate' | 'widestRange';
 }
+

@@ -6,9 +6,17 @@ import {
     TTVideoPlayButton,
 } from '@dking/ttplayer-components';
 import {
-    TTPlayerCoreFactory, TTPlayerVideo as Video, TTPlayerCore as Core,
+    FlvMSE,
+    HlsMSE,
+    DashMSE,
+    WebTorrentMSE,
+} from '@dking/ttplayer-mse';
+import {
+    TTPlayerCoreFactory,
+    TTPlayerVideoFactory,
+    TTPlayerVideo as Video,
+    TTPlayerCore as Core,
 } from '@dking/ttplayer-core';
-import { TTPlayerVideoFactory } from '@dking/ttplayer-video';
 import './index.less';
 
 const TTPlayerVideo: typeof Video =
@@ -17,7 +25,11 @@ const TTPlayerVideo: typeof Video =
         .use(TTVideoLoading)
         .use(TTVideoError)
         .use(TTVideoPIPButton)
-        .use(TTVideoPlayButton);
+        .use(TTVideoPlayButton)
+        .useMSE(FlvMSE)
+        .useMSE(HlsMSE)
+        .useMSE(DashMSE)
+        .useMSE(WebTorrentMSE);
 
 const TTPlayerCore: typeof Core =
     TTPlayerCoreFactory()

@@ -6,7 +6,11 @@ import TTPlayerMedia, {
     TTPlayerMediaOptions,
     TTPlayerMediaComponent,
 } from './media/media';
-import TTPlayerVideo, { TTPlayerVideoFactory, TTPlayerVideoOptions } from './media/video';
+import TTPlayerVideo, {
+    TTPlayerVideoFactory,
+    TTPlayerVideoOptions,
+    VideoMSE,
+} from './media/video';
 import TTPlayerAudio, { TTPlayerAudioFactory, TTPlayerAudioOptions } from './media/audio';
 import TTPlayerPlayButton from './components/play-button';
 import TTPlayerTime from './components/time';
@@ -24,6 +28,7 @@ import {
     TTPlayerQualityList,
     TTPlayerBaseQuality,
 } from './components/quality-switch';
+
 import {
     TTPlayerPlaySwitch,
     TTPlayerPlayList,
@@ -61,6 +66,7 @@ export {
     TTPlayerMediaOptions,
     TTPlayerMediaComponent,
 
+    VideoMSE,
     TTPlayerVideo,
     TTPlayerVideoFactory,
     TTPlayerVideoOptions,

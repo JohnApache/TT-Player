@@ -110,9 +110,7 @@ const WatchPackages = [
     'utils',
     'core',
     'svg-icons',
-    'video',
-    'video-play-button',
-    'video-control',
+    'mse',
     'components',
     {
         name   : 'ttplayer',
